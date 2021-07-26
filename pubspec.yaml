@@ -15,8 +15,8 @@ dependencies:
   shared_preferences: ^2.0.6
   xapptor_logic:
     path: ../xapptor_logic
-  xapptor_routing:
-    path: ../xapptor_routing
+  xapptor_router:
+    path: ../xapptor_router
   xapptor_translation:
     path: ../xapptor_translation
   xapptor_ui:

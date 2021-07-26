@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xapptor_routing/app_screen.dart';
-import 'package:xapptor_routing/app_screens.dart';
+import 'package:xapptor_router/app_screen.dart';
+import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/screens/abeinstitute/home.dart' as Abeinstitute;
 import 'package:xapptor_ui/screens/lum/home.dart' as Lum;
 import 'package:xapptor_ui/values/version.dart';

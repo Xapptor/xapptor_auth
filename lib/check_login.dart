@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/generic_user.dart';
-import 'package:xapptor_routing/app_screen.dart';
-import 'package:xapptor_routing/app_screens.dart';
+import 'package:xapptor_router/app_screen.dart';
+import 'package:xapptor_router/app_screens.dart';
 
 import 'open_home.dart';
 
