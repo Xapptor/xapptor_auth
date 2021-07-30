@@ -40,6 +40,7 @@ class UserInfoView extends StatefulWidget {
     required this.logo_width,
     required this.has_back_button,
     required this.text_field_background_color,
+    this.edit_icon_use_text_field_background_color,
   });
 
   final String uid;
@@ -65,6 +66,7 @@ class UserInfoView extends StatefulWidget {
   final double logo_width;
   final bool has_back_button;
   final Color? text_field_background_color;
+  final bool? edit_icon_use_text_field_background_color;
 
   @override
   _UserInfoViewState createState() => _UserInfoViewState();
@@ -162,7 +164,7 @@ class _UserInfoViewState extends State<UserInfoView> {
   void initState() {
     super.initState();
     check_metadata_app();
-    check_login();
+    if (widget.user_info_form_type == UserInfoFormType.login) check_login();
 
     init_prefs(is_login);
     translation_stream.init(widget.text_list, update_text_list);
@@ -192,13 +194,8 @@ class _UserInfoViewState extends State<UserInfoView> {
   @override
   Widget build(BuildContext context) {
     user_id = widget.uid;
-
-    if (is_edit_account(widget.user_info_form_type)) {
-      fetch_fields();
-    }
-
+    if (is_edit_account(widget.user_info_form_type)) fetch_fields();
     bool portrait = MediaQuery.of(context).orientation == Orientation.portrait;
-
     return UserInfoViewContainer(
       custom_background: widget.custom_background,
       has_language_picker: widget.has_language_picker,
@@ -213,36 +210,39 @@ class _UserInfoViewState extends State<UserInfoView> {
           key: user_info_view_form_key,
           child: Row(
             children: [
+              Spacer(flex: 1),
               Expanded(
-                flex: 9,
+                flex: 10,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
                       height: sized_box_space * 6,
                     ),
-                    widget.logo_image_path.contains("http")
-                        ? Container(
-                            height: widget.logo_height,
-                            width: widget.logo_width,
-                            child: Webview(
-                              id: "20",
-                              src: widget.logo_image_path,
-                              function: () {},
-                            ),
-                          )
-                        : Container(
-                            height: widget.logo_height,
-                            width: widget.logo_width,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.contain,
-                                image: AssetImage(
-                                  widget.logo_image_path,
+                    Container(
+                      child: widget.logo_image_path.contains("http")
+                          ? Container(
+                              height: widget.logo_height,
+                              width: widget.logo_width,
+                              child: Webview(
+                                id: "20",
+                                src: widget.logo_image_path,
+                                function: () {},
+                              ),
+                            )
+                          : Container(
+                              height: widget.logo_height,
+                              width: widget.logo_width,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.contain,
+                                  image: AssetImage(
+                                    widget.logo_image_path,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                    ),
                     is_forgot_password(widget.user_info_form_type)
                         ? Column(
                             children: [
@@ -866,103 +866,6 @@ class _UserInfoViewState extends State<UserInfoView> {
                             ],
                           )
                         : Container(),
-                    SizedBox(
-                      height: sized_box_space,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 2,
-                      height: 60,
-                      child: CustomCard(
-                        border_radius: MediaQuery.of(context).size.width,
-                        elevation: (widget.first_button_color.colors.first ==
-                                    Colors.transparent &&
-                                widget.first_button_color.colors.last ==
-                                    Colors.transparent)
-                            ? 0
-                            : 7,
-                        on_pressed: () {
-                          if (widget.first_button_action == null) {
-                            if (is_edit_account(widget.user_info_form_type)) {
-                              if (editing_email ||
-                                  editing_password ||
-                                  editing_name_and_info) {
-                                show_alert_dialog(context);
-                              }
-                            } else if (is_register(
-                                widget.user_info_form_type)) {
-                              List<TextEditingController> inputControllers = [
-                                firstname_input_controller,
-                                last_name_input_controller,
-                                email_input_controller,
-                                confirm_email_input_controller,
-                                password_input_controller,
-                                confirm_password_input_controller,
-                              ];
-
-                              UserInfoFormFunctions().register(
-                                context: context,
-                                accept_terms: accept_terms,
-                                register_form_key: user_info_view_form_key,
-                                input_controllers: inputControllers,
-                                selected_date: selected_date,
-                                gender_value: gender_value,
-                                country_value: country_value ?? "",
-                                birthday_label: birthday_label,
-                              );
-                            } else if (is_login(widget.user_info_form_type)) {
-                              List<TextEditingController> inputControllers = [
-                                email_input_controller,
-                                password_input_controller,
-                              ];
-
-                              UserInfoFormFunctions().login(
-                                context: context,
-                                remember_me: remember_me,
-                                login_form_key: user_info_view_form_key,
-                                input_controllers: inputControllers,
-                                prefs: prefs,
-                                persistence: Persistence.LOCAL,
-                              );
-                            } else if (is_forgot_password(
-                                widget.user_info_form_type)) {
-                              UserInfoFormFunctions().forgot_password(
-                                context: context,
-                                forgot_password_form_key:
-                                    user_info_view_form_key,
-                                email_input_controller: email_input_controller,
-                              );
-                            }
-                          } else {
-                            widget.first_button_action!();
-                          }
-                        },
-                        linear_gradient: widget.first_button_color,
-                        child: Center(
-                          child: Text(
-                            widget.text_list[
-                                is_edit_account(widget.user_info_form_type)
-                                    ? 7
-                                    : is_login(widget.user_info_form_type)
-                                        ? 3
-                                        : is_forgot_password(
-                                                widget.user_info_form_type)
-                                            ? 2
-                                            : 8],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: (widget.first_button_color.colors.first ==
-                                          Colors.transparent &&
-                                      widget.first_button_color.colors.last ==
-                                          Colors.transparent)
-                                  ? widget.second_button_color
-                                  : Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
                     is_login(widget.user_info_form_type)
                         ? Column(
                             children: [
@@ -997,7 +900,6 @@ class _UserInfoViewState extends State<UserInfoView> {
                                       style: TextStyle(
                                         color: widget.second_button_color,
                                         fontSize: 12,
-                                        //fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
@@ -1023,7 +925,6 @@ class _UserInfoViewState extends State<UserInfoView> {
                                       style: TextStyle(
                                         color: widget.third_button_color,
                                         fontSize: 12,
-                                        //fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
@@ -1032,6 +933,48 @@ class _UserInfoViewState extends State<UserInfoView> {
                             ],
                           )
                         : Container(),
+                    SizedBox(
+                      height: sized_box_space,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2,
+                      height: 60,
+                      child: CustomCard(
+                        border_radius: MediaQuery.of(context).size.width,
+                        elevation: (widget.first_button_color.colors.first ==
+                                    Colors.transparent &&
+                                widget.first_button_color.colors.last ==
+                                    Colors.transparent)
+                            ? 0
+                            : 7,
+                        on_pressed: () => on_pressed_main_button,
+                        linear_gradient: widget.first_button_color,
+                        child: Center(
+                          child: Text(
+                            widget.text_list[
+                                is_edit_account(widget.user_info_form_type)
+                                    ? 7
+                                    : is_login(widget.user_info_form_type)
+                                        ? 3
+                                        : is_forgot_password(
+                                                widget.user_info_form_type)
+                                            ? 2
+                                            : 8],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: (widget.first_button_color.colors.first ==
+                                          Colors.transparent &&
+                                      widget.first_button_color.colors.last ==
+                                          Colors.transparent)
+                                  ? widget.second_button_color
+                                  : Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: sized_box_space,
                     ),
@@ -1044,14 +987,16 @@ class _UserInfoViewState extends State<UserInfoView> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Spacer(flex: 3),
+                          Spacer(flex: 6),
                           Expanded(
                             flex: 1,
                             child: IconButton(
                               padding: EdgeInsets.all(0),
                               icon: Icon(
-                                Icons.edit,
-                                color: widget.text_color,
+                                editing_email
+                                    ? Icons.delete_outlined
+                                    : Icons.edit,
+                                color: get_edit_icon_color(),
                               ),
                               onPressed: () {
                                 editing_email = !editing_email;
@@ -1063,14 +1008,16 @@ class _UserInfoViewState extends State<UserInfoView> {
                               },
                             ),
                           ),
-                          Spacer(flex: 2),
+                          Spacer(flex: 3),
                           Expanded(
                             flex: 1,
                             child: IconButton(
                               padding: EdgeInsets.all(0),
                               icon: Icon(
-                                Icons.edit,
-                                color: widget.text_color,
+                                editing_password
+                                    ? Icons.delete_outlined
+                                    : Icons.edit,
+                                color: get_edit_icon_color(),
                               ),
                               onPressed: () {
                                 editing_password = !editing_password;
@@ -1085,14 +1032,16 @@ class _UserInfoViewState extends State<UserInfoView> {
                               },
                             ),
                           ),
-                          Spacer(flex: 2),
+                          Spacer(flex: 3),
                           Expanded(
                             flex: 1,
                             child: IconButton(
                               padding: EdgeInsets.all(0),
                               icon: Icon(
-                                Icons.edit,
-                                color: widget.text_color,
+                                editing_name_and_info
+                                    ? Icons.delete_outlined
+                                    : Icons.edit,
+                                color: get_edit_icon_color(),
                               ),
                               onPressed: () {
                                 editing_name_and_info = !editing_name_and_info;
@@ -1104,7 +1053,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                               },
                             ),
                           ),
-                          Spacer(flex: 6),
+                          Spacer(flex: 9),
                         ],
                       ),
                     )
@@ -1114,6 +1063,68 @@ class _UserInfoViewState extends State<UserInfoView> {
         ),
       ),
     );
+  }
+
+  on_pressed_main_button() {
+    if (widget.first_button_action == null) {
+      if (is_edit_account(widget.user_info_form_type)) {
+        if (editing_email || editing_password || editing_name_and_info) {
+          show_alert_dialog(context);
+        }
+      } else if (is_register(widget.user_info_form_type)) {
+        List<TextEditingController> inputControllers = [
+          firstname_input_controller,
+          last_name_input_controller,
+          email_input_controller,
+          confirm_email_input_controller,
+          password_input_controller,
+          confirm_password_input_controller,
+        ];
+
+        UserInfoFormFunctions().register(
+          context: context,
+          accept_terms: accept_terms,
+          register_form_key: user_info_view_form_key,
+          input_controllers: inputControllers,
+          selected_date: selected_date,
+          gender_value: gender_value,
+          country_value: country_value ?? "",
+          birthday_label: birthday_label,
+        );
+      } else if (is_login(widget.user_info_form_type)) {
+        List<TextEditingController> inputControllers = [
+          email_input_controller,
+          password_input_controller,
+        ];
+
+        UserInfoFormFunctions().login(
+          context: context,
+          remember_me: remember_me,
+          login_form_key: user_info_view_form_key,
+          input_controllers: inputControllers,
+          prefs: prefs,
+          persistence: Persistence.LOCAL,
+        );
+      } else if (is_forgot_password(widget.user_info_form_type)) {
+        UserInfoFormFunctions().forgot_password(
+          context: context,
+          forgot_password_form_key: user_info_view_form_key,
+          email_input_controller: email_input_controller,
+        );
+      }
+    } else {
+      widget.first_button_action!();
+    }
+  }
+
+  Color get_edit_icon_color() {
+    return widget.edit_icon_use_text_field_background_color != null
+        ? widget.edit_icon_use_text_field_background_color!
+            ? widget.text_field_background_color != null
+                ? widget.text_field_background_color!
+                : widget.text_color
+            : widget.text_color
+        : widget.text_color;
   }
 
   show_alert_dialog(BuildContext context) {
@@ -1286,7 +1297,7 @@ class _UserInfoViewState extends State<UserInfoView> {
           .doc(user_id)
           .get();
 
-      print(user.data);
+      print(user.data());
       User auth_user = FirebaseAuth.instance.currentUser!;
 
       firstname = user.get("firstname");
@@ -1309,9 +1320,19 @@ class _UserInfoViewState extends State<UserInfoView> {
     password_input_controller.text = "Aa00000000";
     confirm_password_input_controller.text = "Aa00000000";
     birthday_label = birthday;
-    gender_value = gender;
-    country_value = country;
+    gender_value = validate_picker_value(gender, widget.gender_values);
+    country_value = widget.country_values != null
+        ? validate_picker_value(country, widget.country_values!)
+        : "";
     selected_date = date;
     setState(() {});
+  }
+
+  String validate_picker_value(String value, List<String> list) {
+    bool match = false;
+    for (var list_item in list) {
+      if (list_item == value) match = true;
+    }
+    return match ? value : list.first;
   }
 }
