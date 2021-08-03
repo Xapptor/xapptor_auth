@@ -14,6 +14,6 @@ check_metadata_app() async {
   } else if (UniversalPlatform.isIOS) {
     app_enabled = metadata_app["enabled"]["ios"];
   }
-  print("app_enabled: ${app_enabled}");
+  print("app_enabled: $app_enabled");
   if (!app_enabled) exit(0);
 }
