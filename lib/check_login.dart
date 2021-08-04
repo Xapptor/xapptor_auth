@@ -20,7 +20,7 @@ check_login() async {
       birthday: user.get("birthday").toString(),
       gender: user.get("gender"),
       country: user.get("country"),
-      admin: false,
+      admin: user.get("admin"),
     );
     open_home(generic_user);
   } else {
