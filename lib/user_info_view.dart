@@ -1309,7 +1309,7 @@ class _UserInfoViewState extends State<UserInfoView> {
       firstname = user.get("firstname");
       lastname = user.get("lastname");
       email = auth_user.email!;
-      birthday = TimestampToDate().convert(user.get("birthday"));
+      birthday = timestamp_to_date(user.get("birthday"));
       gender = user.get("gender");
       country = user.get("country");
       date = DateTime.parse(user.get("birthday").toDate().toString());

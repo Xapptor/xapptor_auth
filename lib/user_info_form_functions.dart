@@ -1,5 +1,5 @@
 import 'package:universal_platform/universal_platform.dart';
-import 'package:xapptor_auth/generic_user.dart';
+import 'package:xapptor_auth/xapptor_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -36,29 +36,17 @@ class UserInfoFormFunctions {
         User user = value.user!;
         String uid = user.uid;
 
-        DocumentSnapshot firestore_user =
+        DocumentSnapshot snapshot_user =
             await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
         if (value.user!.emailVerified) {
           if (remember_me) prefs.setString("email", value.user!.email!);
-
-          bool admin = false;
-
-          if ((firestore_user.data() as Map).containsKey("admin"))
-            admin = firestore_user["admin"];
-
-          GenericUser generic_user = GenericUser(
-            uid: uid,
-            firstname: firestore_user["firstname"],
-            lastname: firestore_user["lastname"],
-            email: user.email!,
-            birthday: firestore_user["birthday"].toString(),
-            gender: firestore_user["gender"],
-            country: firestore_user["country"],
-            admin: admin,
+          XapptorUser xapptor_user = XapptorUser.from_snapshot(
+            uid,
+            snapshot_user.data() as Map<String, dynamic>,
           );
 
-          open_home(generic_user);
+          open_home(xapptor_user);
 
           email_input_controller.clear();
           password_input_controller.clear();
