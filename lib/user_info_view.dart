@@ -210,7 +210,9 @@ class _UserInfoViewState extends State<UserInfoView> {
           key: user_info_view_form_key,
           child: Row(
             children: [
-              Spacer(flex: 1),
+              is_edit_account(widget.user_info_form_type)
+                  ? Spacer(flex: 1)
+                  : Container(),
               Expanded(
                 flex: 10,
                 child: Column(
@@ -219,6 +221,10 @@ class _UserInfoViewState extends State<UserInfoView> {
                     SizedBox(
                       height: sized_box_space * 6,
                     ),
+                    // Container(
+                    //   height: widget.logo_height,
+                    //   width: widget.logo_width,
+                    // ),
                     Container(
                       child: widget.logo_image_path.contains("http")
                           ? Container(
@@ -947,7 +953,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                     Colors.transparent)
                             ? 0
                             : 7,
-                        on_pressed: () => on_pressed_main_button,
+                        on_pressed: on_pressed_main_button,
                         linear_gradient: widget.first_button_color,
                         child: Center(
                           child: Text(
