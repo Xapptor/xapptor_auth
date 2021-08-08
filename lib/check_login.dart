@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_auth/xapptor_user.dart';
-import 'open_home.dart';
+import 'package:xapptor_logic/opening_functions.dart';
 
 check_login() async {
   if (FirebaseAuth.instance.currentUser != null) {

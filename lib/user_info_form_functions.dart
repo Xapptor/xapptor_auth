@@ -4,10 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:xapptor_logic/opening_functions.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
-
-import 'open_home.dart';
 
 class UserInfoFormFunctions {
   login({

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:xapptor_ui/widgets/user_info_view_container.dart';
@@ -36,8 +37,6 @@ class UserInfoView extends StatefulWidget {
     required this.outline_border,
     required this.secret_question_values,
     required this.secret_answer_values,
-    required this.logo_height,
-    required this.logo_width,
     required this.has_back_button,
     required this.text_field_background_color,
     this.edit_icon_use_text_field_background_color,
@@ -62,8 +61,6 @@ class UserInfoView extends StatefulWidget {
   final bool outline_border;
   final List<String> secret_question_values;
   final List<List<String>> secret_answer_values;
-  final double logo_height;
-  final double logo_width;
   final bool has_back_button;
   final Color? text_field_background_color;
   final bool? edit_icon_use_text_field_background_color;
@@ -196,6 +193,9 @@ class _UserInfoViewState extends State<UserInfoView> {
     user_id = widget.uid;
     if (is_edit_account(widget.user_info_form_type)) fetch_fields();
     bool portrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    double screen_height = MediaQuery.of(context).size.height;
+    double screen_width = MediaQuery.of(context).size.width;
+
     return UserInfoViewContainer(
       custom_background: widget.custom_background,
       has_language_picker: widget.has_language_picker,
@@ -219,17 +219,13 @@ class _UserInfoViewState extends State<UserInfoView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
-                      height: sized_box_space * 6,
+                      height: sized_box_space,
                     ),
-                    // Container(
-                    //   height: widget.logo_height,
-                    //   width: widget.logo_width,
-                    // ),
                     Container(
                       child: widget.logo_image_path.contains("http")
                           ? Container(
-                              height: widget.logo_height,
-                              width: widget.logo_width,
+                              height: logo_height(context),
+                              width: logo_width(context),
                               child: Webview(
                                 id: "20",
                                 src: widget.logo_image_path,
@@ -237,8 +233,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                               ),
                             )
                           : Container(
-                              height: widget.logo_height,
-                              width: widget.logo_width,
+                              height: logo_height(context),
+                              width: logo_width(context),
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   fit: BoxFit.contain,
@@ -310,6 +306,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                               value: value!,
                               type: FormFieldValidatorsType.email,
                             ).validate(),
+                            keyboardType: TextInputType.emailAddress,
                           ),
                           SizedBox(
                             height: sized_box_space,
@@ -341,6 +338,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                     value: value!,
                                     type: FormFieldValidatorsType.email,
                                   ).validate(),
+                                  keyboardType: TextInputType.emailAddress,
                                 )
                               : Container(),
                           widget.secret_question_values.isNotEmpty &&
@@ -655,7 +653,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                       height: sized_box_space,
                                     ),
                                     Container(
-                                      width: MediaQuery.of(context).size.width,
+                                      width: screen_width,
                                       child: ElevatedButton(
                                         style: ButtonStyle(
                                           elevation:
@@ -878,9 +876,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                               SizedBox(
                                 height: sized_box_space,
                               ),
-                              Flex(
-                                direction:
-                                    portrait ? Axis.vertical : Axis.horizontal,
+                              Row(
+                                //direction: portrait ? Axis.vertical : Axis.horizontal,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
@@ -890,7 +887,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                           RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
-                                            MediaQuery.of(context).size.width,
+                                            screen_width,
                                           ),
                                         ),
                                       ),
@@ -915,7 +912,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                           RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
-                                            MediaQuery.of(context).size.width,
+                                            screen_width,
                                           ),
                                         ),
                                       ),
@@ -943,17 +940,17 @@ class _UserInfoViewState extends State<UserInfoView> {
                       height: sized_box_space,
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width / 2,
-                      height: 60,
+                      width: screen_width / 2,
+                      height: 50,
                       child: CustomCard(
-                        border_radius: MediaQuery.of(context).size.width,
+                        border_radius: screen_width,
                         elevation: (widget.first_button_color.colors.first ==
                                     Colors.transparent &&
                                 widget.first_button_color.colors.last ==
                                     Colors.transparent)
                             ? 0
                             : 7,
-                        on_pressed: on_pressed_main_button,
+                        on_pressed: on_pressed_first_button,
                         linear_gradient: widget.first_button_color,
                         child: Center(
                           child: Text(
@@ -1071,7 +1068,7 @@ class _UserInfoViewState extends State<UserInfoView> {
     );
   }
 
-  on_pressed_main_button() {
+  on_pressed_first_button() {
     if (widget.first_button_action == null) {
       if (is_edit_account(widget.user_info_form_type)) {
         if (editing_email || editing_password || editing_name_and_info) {
