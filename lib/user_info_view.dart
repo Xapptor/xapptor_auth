@@ -5,7 +5,7 @@ import 'package:xapptor_ui/values/ui.dart';
 import 'package:xapptor_ui/widgets/user_info_view_container.dart';
 import 'package:xapptor_ui/webview/webview.dart';
 import 'check_login.dart';
-import 'package:xapptor_auth/check_metadata_app.dart';
+import 'package:xapptor_logic/check_metadata_app.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
 import 'form_field_validators.dart';
 import 'user_info_form_functions.dart';
@@ -193,7 +193,6 @@ class _UserInfoViewState extends State<UserInfoView> {
     user_id = widget.uid;
     if (is_edit_account(widget.user_info_form_type)) fetch_fields();
     bool portrait = MediaQuery.of(context).orientation == Orientation.portrait;
-    double screen_height = MediaQuery.of(context).size.height;
     double screen_width = MediaQuery.of(context).size.width;
 
     return UserInfoViewContainer(
