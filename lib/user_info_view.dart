@@ -872,14 +872,13 @@ class _UserInfoViewState extends State<UserInfoView> {
                         : Container(),
                     is_login(widget.user_info_form_type)
                         ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SizedBox(
                                 height: sized_box_space,
                               ),
                               Row(
-                                //direction: portrait ? Axis.vertical : Axis.horizontal,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   TextButton(
                                     style: ButtonStyle(
@@ -940,8 +939,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                       height: sized_box_space,
                     ),
                     Container(
-                      width: screen_width / 2,
                       height: 50,
+                      width: screen_width / (portrait ? 2 : 8),
                       child: CustomCard(
                         border_radius: screen_width,
                         elevation: (widget.first_button_color.colors.first ==
