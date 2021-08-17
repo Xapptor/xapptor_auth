@@ -30,8 +30,6 @@ class UserInfoFormFunctions {
         password: password_input_controller.text,
       )
           .then((UserCredential value) async {
-        print("value: " + value.user.toString());
-
         User user = value.user!;
         String uid = user.uid;
 
@@ -291,8 +289,6 @@ class UserInfoFormFunctions {
         User user = FirebaseAuth.instance.currentUser!;
 
         user.updatePassword(password_input_controller.text).then((_) {
-          print("Succesfull changed password");
-
           editing_password = false;
 
           widget_parent.setState(() {});
