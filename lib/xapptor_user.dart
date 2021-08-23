@@ -9,6 +9,7 @@ class XapptorUser {
   String gender;
   String country;
   bool admin;
+  bool owner;
 
   XapptorUser({
     required this.id,
@@ -19,6 +20,7 @@ class XapptorUser {
     required this.gender,
     required this.country,
     required this.admin,
+    required this.owner,
   });
 
   XapptorUser.from_snapshot(String id, Map<String, dynamic> snapshot)
@@ -29,7 +31,8 @@ class XapptorUser {
         birthday = timestamp_to_date(snapshot['birthday']),
         gender = snapshot['gender'],
         country = snapshot['country'],
-        admin = snapshot['admin'];
+        admin = snapshot['admin'] ?? false,
+        owner = snapshot['owner'] ?? false;
 
   Map<String, dynamic> to_json() {
     return {
@@ -40,6 +43,7 @@ class XapptorUser {
       'gender': gender,
       'country': country,
       'admin': admin,
+      'owner': owner,
     };
   }
 }
