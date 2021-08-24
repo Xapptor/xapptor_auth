@@ -206,6 +206,10 @@ class _UserInfoViewState extends State<UserInfoView> {
     bool portrait = MediaQuery.of(context).orientation == Orientation.portrait;
     double screen_width = MediaQuery.of(context).size.width;
 
+    Color dropdown_color = widget.text_color == Colors.white
+        ? widget.text_field_background_color!
+        : Colors.white;
+
     return UserInfoViewContainer(
       user_info_form_type: widget.user_info_form_type,
       custom_background: widget.custom_background,
@@ -373,6 +377,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                           height: 1,
                                           color: widget.text_color,
                                         ),
+                                        dropdownColor: dropdown_color,
                                         onChanged: (new_value) {
                                           setState(() {
                                             secret_question_value = new_value!;
@@ -413,6 +418,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                           height: 1,
                                           color: widget.text_color,
                                         ),
+                                        dropdownColor: dropdown_color,
                                         onChanged: (new_value) {
                                           setState(() {
                                             secret_answer_value = new_value!;
@@ -735,6 +741,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                         height: 1,
                                         color: widget.text_color,
                                       ),
+                                      dropdownColor: dropdown_color,
                                       onChanged: (new_value) {
                                         if (is_edit_account(
                                             widget.user_info_form_type)) {
@@ -780,6 +787,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                               height: 1,
                                               color: widget.text_color,
                                             ),
+                                            dropdownColor: dropdown_color,
                                             onChanged: (new_value) {
                                               if (is_edit_account(
                                                   widget.user_info_form_type)) {
