@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
-import 'package:xapptor_ui/widgets/user_info_view_container.dart';
+import 'package:xapptor_ui/screens/user_info_view_container.dart';
 import 'package:xapptor_ui/webview/webview.dart';
 import 'check_login.dart';
 import 'package:xapptor_logic/check_metadata_app.dart';
@@ -158,6 +158,17 @@ class _UserInfoViewState extends State<UserInfoView> {
   }
 
   @override
+  void dispose() {
+    firstname_input_controller.dispose();
+    last_name_input_controller.dispose();
+    email_input_controller.dispose();
+    confirm_email_input_controller.dispose();
+    password_input_controller.dispose();
+    confirm_password_input_controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     check_metadata_app();
@@ -196,6 +207,7 @@ class _UserInfoViewState extends State<UserInfoView> {
     double screen_width = MediaQuery.of(context).size.width;
 
     return UserInfoViewContainer(
+      user_info_form_type: widget.user_info_form_type,
       custom_background: widget.custom_background,
       has_language_picker: widget.has_language_picker,
       topbar_color: widget.topbar_color,
@@ -950,6 +962,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                             : 7,
                         on_pressed: on_pressed_first_button,
                         linear_gradient: widget.first_button_color,
+                        splash_color:
+                            widget.second_button_color.withOpacity(0.2),
                         child: Center(
                           child: Text(
                             widget.text_list[
@@ -977,7 +991,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                       ),
                     ),
                     SizedBox(
-                      height: sized_box_space,
+                      height: sized_box_space * 2,
                     ),
                   ],
                 ),
