@@ -37,10 +37,12 @@ class FormFieldValidators {
 
       case FormFieldValidatorsType.name:
         {
-          pattern = r"^[a-zA-Z]{2,25}$";
-          message = "Enter a valid name";
+          if (value.length > 1 && value.length < 26) {
+            return null;
+          } else {
+            return "Enter a valid name";
+          }
         }
-        break;
 
       case FormFieldValidatorsType.custom:
         {
