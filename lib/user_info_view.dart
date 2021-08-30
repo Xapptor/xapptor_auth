@@ -467,6 +467,9 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 child: Column(
                                   children: [
                                     TextFormField(
+                                      onFieldSubmitted: (value) {
+                                        on_pressed_first_button();
+                                      },
                                       style:
                                           TextStyle(color: widget.text_color),
                                       enabled: is_edit_account(
