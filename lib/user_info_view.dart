@@ -20,6 +20,7 @@ class UserInfoView extends StatefulWidget {
   const UserInfoView({
     required this.uid,
     required this.text_list,
+    required this.t_and_c_and_pp_text,
     required this.first_button_action,
     required this.second_button_action,
     required this.third_button_action,
@@ -44,6 +45,7 @@ class UserInfoView extends StatefulWidget {
 
   final String uid;
   final List<String> text_list;
+  final RichText t_and_c_and_pp_text;
   final Function? first_button_action;
   final Function? second_button_action;
   final Function? third_button_action;
@@ -862,18 +864,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                                       Spacer(flex: 1),
                                                       Expanded(
                                                         flex: 12,
-                                                        child: Text(
-                                                          widget.text_list[7],
-                                                          textAlign:
-                                                              TextAlign.left,
-                                                          maxLines: 3,
-                                                          overflow: TextOverflow
-                                                              .visible,
-                                                          style: TextStyle(
-                                                            color: widget
-                                                                .text_color,
-                                                          ),
-                                                        ),
+                                                        child: widget
+                                                            .t_and_c_and_pp_text,
                                                       ),
                                                       Spacer(flex: 1),
                                                     ],
@@ -977,15 +969,9 @@ class _UserInfoViewState extends State<UserInfoView> {
                             widget.second_button_color.withOpacity(0.2),
                         child: Center(
                           child: Text(
-                            widget.text_list[
-                                is_edit_account(widget.user_info_form_type)
-                                    ? 7
-                                    : is_login(widget.user_info_form_type)
-                                        ? 3
-                                        : is_forgot_password(
-                                                widget.user_info_form_type)
-                                            ? 2
-                                            : 8],
+                            is_login(widget.user_info_form_type)
+                                ? widget.text_list[widget.text_list.length - 3]
+                                : widget.text_list.last,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: (widget.first_button_color.colors.first ==
