@@ -20,7 +20,7 @@ class UserInfoView extends StatefulWidget {
   const UserInfoView({
     required this.uid,
     required this.text_list,
-    required this.t_and_c_and_pp_text,
+    required this.tc_and_pp_text,
     required this.first_button_action,
     required this.second_button_action,
     required this.third_button_action,
@@ -45,7 +45,7 @@ class UserInfoView extends StatefulWidget {
 
   final String uid;
   final List<String> text_list;
-  final RichText t_and_c_and_pp_text;
+  final RichText tc_and_pp_text;
   final Function? first_button_action;
   final Function? second_button_action;
   final Function? third_button_action;
@@ -865,7 +865,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                                       Expanded(
                                                         flex: 12,
                                                         child: widget
-                                                            .t_and_c_and_pp_text,
+                                                            .tc_and_pp_text,
                                                       ),
                                                       Spacer(flex: 1),
                                                     ],
