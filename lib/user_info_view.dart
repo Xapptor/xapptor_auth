@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'user_info_form_type.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:xapptor_logic/is_portrait.dart';
 
 class UserInfoView extends StatefulWidget {
   const UserInfoView({
@@ -205,7 +206,7 @@ class _UserInfoViewState extends State<UserInfoView> {
   Widget build(BuildContext context) {
     user_id = widget.uid;
     if (is_edit_account(widget.user_info_form_type)) fetch_fields();
-    bool portrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool portrait = is_portrait(context);
     double screen_width = MediaQuery.of(context).size.width;
 
     Color dropdown_color = widget.text_color == Colors.white
