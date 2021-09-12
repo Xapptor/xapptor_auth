@@ -178,6 +178,8 @@ class _UserInfoViewState extends State<UserInfoView> {
       list_index: 0,
     );
 
+    translation_stream_list = [translation_stream];
+
     if (is_register(widget.user_info_form_type) ||
         is_edit_account(widget.user_info_form_type)) {
       setState(() {
