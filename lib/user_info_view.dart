@@ -74,14 +74,14 @@ class UserInfoView extends StatefulWidget {
 
 class _UserInfoViewState extends State<UserInfoView> {
   final GlobalKey<ScaffoldState> scaffold_key = new GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> user_info_view_form_key = GlobalKey<FormState>();
+  final GlobalKey<FormState> email_form_key = GlobalKey<FormState>();
+  final GlobalKey<FormState> password_form_key = GlobalKey<FormState>();
+  final GlobalKey<FormState> name_and_info_form_key = GlobalKey<FormState>();
 
   bool editing_email = false;
   bool editing_password = false;
   bool editing_name_and_info = false;
-
-  final GlobalKey<FormState> email_form_key = GlobalKey<FormState>();
-  final GlobalKey<FormState> password_form_key = GlobalKey<FormState>();
-  final GlobalKey<FormState> name_and_info_form_key = GlobalKey<FormState>();
 
   String firstname = "";
   String lastname = "";
@@ -99,8 +99,6 @@ class _UserInfoViewState extends State<UserInfoView> {
   String current_language = "en";
   bool accept_terms = false;
   String birthday_label = "";
-
-  final GlobalKey<FormState> user_info_view_form_key = GlobalKey<FormState>();
 
   TextEditingController firstname_input_controller = TextEditingController();
   TextEditingController last_name_input_controller = TextEditingController();
@@ -142,7 +140,6 @@ class _UserInfoViewState extends State<UserInfoView> {
   }
 
   late SharedPreferences prefs;
-  TranslationStream translation_stream = TranslationStream();
 
   init_prefs(Function is_login) async {
     prefs = await SharedPreferences.getInstance();
@@ -155,20 +152,16 @@ class _UserInfoViewState extends State<UserInfoView> {
     }
   }
 
-  update_text_list(int index, String new_text) {
+  late TranslationStream translation_stream;
+  late List<TranslationStream> translation_stream_list;
+
+  update_text_list({
+    required int index,
+    required String new_text,
+    required int list_index,
+  }) {
     widget.text_list[index] = new_text;
     setState(() {});
-  }
-
-  @override
-  void dispose() {
-    firstname_input_controller.dispose();
-    last_name_input_controller.dispose();
-    email_input_controller.dispose();
-    confirm_email_input_controller.dispose();
-    password_input_controller.dispose();
-    confirm_password_input_controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -178,8 +171,12 @@ class _UserInfoViewState extends State<UserInfoView> {
     if (widget.user_info_form_type == UserInfoFormType.login) check_login();
 
     init_prefs(is_login);
-    translation_stream.init(widget.text_list, update_text_list);
-    translation_stream.translate();
+
+    translation_stream = TranslationStream(
+      text_list: widget.text_list,
+      update_text_list_function: update_text_list,
+      list_index: 0,
+    );
 
     if (is_register(widget.user_info_form_type) ||
         is_edit_account(widget.user_info_form_type)) {
@@ -196,10 +193,15 @@ class _UserInfoViewState extends State<UserInfoView> {
     }
   }
 
-  language_picker_callback(String new_current_language) async {
-    current_language = new_current_language;
-    translation_stream.translate();
-    setState(() {});
+  @override
+  void dispose() {
+    firstname_input_controller.dispose();
+    last_name_input_controller.dispose();
+    email_input_controller.dispose();
+    confirm_email_input_controller.dispose();
+    password_input_controller.dispose();
+    confirm_password_input_controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -214,13 +216,12 @@ class _UserInfoViewState extends State<UserInfoView> {
         : Colors.white;
 
     return UserInfoViewContainer(
+      translation_stream_list: translation_stream_list,
       user_info_form_type: widget.user_info_form_type,
       custom_background: widget.custom_background,
       has_language_picker: widget.has_language_picker,
       topbar_color: widget.topbar_color,
       text_color: widget.text_color,
-      current_language: current_language,
-      language_picker_callback: language_picker_callback,
       has_back_button: widget.has_back_button,
       child: FractionallySizedBox(
         widthFactor: portrait ? 0.75 : 0.25,
