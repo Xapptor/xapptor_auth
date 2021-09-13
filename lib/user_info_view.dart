@@ -153,7 +153,7 @@ class _UserInfoViewState extends State<UserInfoView> {
   }
 
   late TranslationStream translation_stream;
-  late List<TranslationStream> translation_stream_list;
+  List<TranslationStream> translation_stream_list = [];
 
   update_text_list({
     required int index,
