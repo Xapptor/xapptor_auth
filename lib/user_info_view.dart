@@ -90,8 +90,6 @@ class _UserInfoViewState extends State<UserInfoView> {
   bool _password_visible = false;
   bool remember_me = false;
 
-  late String user_id;
-  bool filled_fields = false;
   bool accept_terms = false;
   String birthday_label = "";
 
@@ -215,7 +213,6 @@ class _UserInfoViewState extends State<UserInfoView> {
 
   @override
   Widget build(BuildContext context) {
-    user_id = widget.uid;
     bool portrait = is_portrait(context);
     double screen_width = MediaQuery.of(context).size.width;
 
@@ -941,7 +938,6 @@ class _UserInfoViewState extends State<UserInfoView> {
                               onPressed: () {
                                 editing_email = !editing_email;
                                 if (!editing_email) {
-                                  filled_fields = false;
                                   fill_fields();
                                 }
                                 setState(() {});
@@ -962,7 +958,6 @@ class _UserInfoViewState extends State<UserInfoView> {
                               onPressed: () {
                                 editing_password = !editing_password;
                                 if (!editing_password) {
-                                  filled_fields = false;
                                   fill_fields();
                                 } else {
                                   password_input_controller.text = "";
@@ -986,7 +981,6 @@ class _UserInfoViewState extends State<UserInfoView> {
                               onPressed: () {
                                 editing_name_and_info = !editing_name_and_info;
                                 if (!editing_name_and_info) {
-                                  filled_fields = false;
                                   fill_fields();
                                 }
                                 setState(() {});
@@ -1115,7 +1109,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                           gender_value:
                               widget.gender_values.indexOf(gender_value),
                           country_value: country_value ?? "",
-                          user_id: user_id,
+                          user_id: widget.uid,
                           editing_name_and_info: editing_name_and_info,
                           widget_parent: this,
                         );
@@ -1132,7 +1126,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                           scaffold_key: scaffold_key,
                           password_form_key: user_info_view_form_key,
                           input_controllers: inputControllers,
-                          user_id: user_id,
+                          user_id: widget.uid,
                           email: email_input_controller.text,
                           editing_password: editing_password,
                           widget_parent: this,
@@ -1150,7 +1144,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                           scaffold_key: scaffold_key,
                           email_form_key: user_info_view_form_key,
                           input_controllers: inputControllers,
-                          user_id: user_id,
+                          user_id: widget.uid,
                           editing_email: editing_email,
                           widget_parent: this,
                         );
@@ -1231,11 +1225,10 @@ class _UserInfoViewState extends State<UserInfoView> {
   }
 
   fetch_fields() async {
-    if (!filled_fields) {
-      filled_fields = true;
+    if (widget.uid.isNotEmpty) {
       DocumentSnapshot user = await FirebaseFirestore.instance
           .collection("users")
-          .doc(user_id)
+          .doc(widget.uid)
           .get();
 
       print(user.data());
