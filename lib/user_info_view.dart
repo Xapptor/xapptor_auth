@@ -87,7 +87,7 @@ class _UserInfoViewState extends State<UserInfoView> {
   String lastname = "";
   String email = "";
   String birthday = "";
-  String gender = "";
+  int gender_index = 0;
   String country = "";
   DateTime date = DateTime.now();
 
@@ -153,6 +153,7 @@ class _UserInfoViewState extends State<UserInfoView> {
   }
 
   late TranslationStream translation_stream;
+  late TranslationStream translation_stream_gender;
   List<TranslationStream> translation_stream_list = [];
 
   update_text_list({
@@ -160,7 +161,15 @@ class _UserInfoViewState extends State<UserInfoView> {
     required String new_text,
     required int list_index,
   }) {
-    widget.text_list[index] = new_text;
+    if (list_index == 0) {
+      widget.text_list[index] = new_text;
+    } else if (list_index == 1) {
+      widget.gender_values[index] = new_text;
+
+      if (gender_index == index) {
+        gender_value = new_text;
+      }
+    }
     setState(() {});
   }
 
@@ -176,12 +185,23 @@ class _UserInfoViewState extends State<UserInfoView> {
       text_list: widget.text_list,
       update_text_list_function: update_text_list,
       list_index: 0,
+      active_translation: widget.has_language_picker,
     );
 
-    translation_stream_list = [translation_stream];
+    translation_stream_gender = TranslationStream(
+      text_list: widget.gender_values,
+      update_text_list_function: update_text_list,
+      list_index: 1,
+      active_translation: widget.has_language_picker,
+      //active_translation: false,
+    );
 
-    if (is_register(widget.user_info_form_type) ||
-        is_edit_account(widget.user_info_form_type)) {
+    translation_stream_list = [
+      translation_stream,
+      translation_stream_gender,
+    ];
+
+    if (is_register(widget.user_info_form_type)) {
       setState(() {
         gender_value = widget.gender_values[0];
         country_value = widget.country_values?[0];
@@ -193,6 +213,8 @@ class _UserInfoViewState extends State<UserInfoView> {
       secret_question_value = widget.secret_question_values[0];
       secret_answer_value = widget.secret_answer_values[0][0];
     }
+
+    if (is_edit_account(widget.user_info_form_type)) fetch_fields();
   }
 
   @override
@@ -209,7 +231,6 @@ class _UserInfoViewState extends State<UserInfoView> {
   @override
   Widget build(BuildContext context) {
     user_id = widget.uid;
-    if (is_edit_account(widget.user_info_form_type)) fetch_fields();
     bool portrait = is_portrait(context);
     double screen_width = MediaQuery.of(context).size.width;
 
@@ -1103,7 +1124,7 @@ class _UserInfoViewState extends State<UserInfoView> {
           register_form_key: user_info_view_form_key,
           input_controllers: inputControllers,
           selected_date: selected_date,
-          gender_value: gender_value,
+          gender_value: widget.gender_values.indexOf(gender_value),
           country_value: country_value ?? "",
           birthday_label: birthday_label,
         );
@@ -1188,7 +1209,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                           name_and_info_form_key: user_info_view_form_key,
                           input_controllers: inputControllers,
                           selected_date: selected_date,
-                          gender_value: gender_value,
+                          gender_value:
+                              widget.gender_values.indexOf(gender_value),
                           country_value: country_value ?? "",
                           user_id: user_id,
                           editing_name_and_info: editing_name_and_info,
@@ -1320,7 +1342,7 @@ class _UserInfoViewState extends State<UserInfoView> {
       lastname = user.get("lastname");
       email = auth_user.email!;
       birthday = timestamp_to_date(user.get("birthday"));
-      gender = user.get("gender");
+      gender_index = user.get("gender");
       country = user.get("country");
       date = DateTime.parse(user.get("birthday").toDate().toString());
 
@@ -1336,7 +1358,7 @@ class _UserInfoViewState extends State<UserInfoView> {
     password_input_controller.text = "Aa00000000";
     confirm_password_input_controller.text = "Aa00000000";
     birthday_label = birthday;
-    gender_value = validate_picker_value(gender, widget.gender_values);
+    gender_value = widget.gender_values[gender_index];
     country_value = widget.country_values != null
         ? validate_picker_value(country, widget.country_values!)
         : "";

@@ -104,7 +104,7 @@ class UserInfoFormFunctions {
     required GlobalKey<FormState> register_form_key,
     required List<TextEditingController> input_controllers,
     required DateTime selected_date,
-    required String gender_value,
+    required int gender_value,
     required String country_value,
     required String birthday_label,
   }) {
@@ -314,7 +314,7 @@ class UserInfoFormFunctions {
     required GlobalKey<FormState> name_and_info_form_key,
     required List<TextEditingController> input_controllers,
     required DateTime selected_date,
-    required String gender_value,
+    required int gender_value,
     required String country_value,
     required String user_id,
     required bool editing_name_and_info,

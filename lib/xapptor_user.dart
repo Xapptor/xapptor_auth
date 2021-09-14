@@ -6,7 +6,7 @@ class XapptorUser {
   String lastname;
   String email;
   String birthday;
-  String gender;
+  int gender;
   String country;
   bool admin;
   bool owner;
