@@ -37,8 +37,6 @@ class UserInfoView extends StatefulWidget {
     required this.custom_background,
     required this.user_info_form_type,
     required this.outline_border,
-    required this.secret_question_values,
-    required this.secret_answer_values,
     required this.has_back_button,
     required this.text_field_background_color,
     this.edit_icon_use_text_field_background_color,
@@ -62,8 +60,6 @@ class UserInfoView extends StatefulWidget {
   final Widget? custom_background;
   final UserInfoFormType user_info_form_type;
   final bool outline_border;
-  final List<String> secret_question_values;
-  final List<List<String>> secret_answer_values;
   final bool has_back_button;
   final Color? text_field_background_color;
   final bool? edit_icon_use_text_field_background_color;
@@ -96,7 +92,6 @@ class _UserInfoViewState extends State<UserInfoView> {
 
   late String user_id;
   bool filled_fields = false;
-  String current_language = "en";
   bool accept_terms = false;
   String birthday_label = "";
 
@@ -111,10 +106,6 @@ class _UserInfoViewState extends State<UserInfoView> {
 
   String gender_value = "";
   String? country_value = "";
-
-  String secret_question_value = "";
-  int secret_question_current_index = 0;
-  String secret_answer_value = "";
 
   static DateTime over_18 = DateTime(
       DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
@@ -206,12 +197,6 @@ class _UserInfoViewState extends State<UserInfoView> {
         gender_value = widget.gender_values[0];
         country_value = widget.country_values?[0];
       });
-    }
-
-    if (widget.secret_question_values.isNotEmpty &&
-        widget.secret_answer_values.isNotEmpty) {
-      secret_question_value = widget.secret_question_values[0];
-      secret_answer_value = widget.secret_answer_values[0][0];
     }
 
     if (is_edit_account(widget.user_info_form_type)) fetch_fields();
@@ -381,88 +366,6 @@ class _UserInfoViewState extends State<UserInfoView> {
                                     type: FormFieldValidatorsType.email,
                                   ).validate(),
                                   keyboardType: TextInputType.emailAddress,
-                                )
-                              : Container(),
-                          widget.secret_question_values.isNotEmpty &&
-                                  widget.secret_answer_values.isNotEmpty
-                              ? Container(
-                                  child: Column(
-                                    children: [
-                                      DropdownButton<String>(
-                                        icon: Icon(
-                                          Icons.arrow_drop_down,
-                                          color: widget.text_color,
-                                        ),
-                                        isExpanded: true,
-                                        value: secret_question_value,
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        style: TextStyle(
-                                          color: widget.text_color,
-                                        ),
-                                        underline: Container(
-                                          height: 1,
-                                          color: widget.text_color,
-                                        ),
-                                        dropdownColor: dropdown_color,
-                                        onChanged: (new_value) {
-                                          setState(() {
-                                            secret_question_value = new_value!;
-                                            secret_question_current_index =
-                                                widget.secret_question_values
-                                                    .indexOf(
-                                                        secret_question_value);
-                                            secret_answer_value = widget
-                                                    .secret_answer_values[
-                                                secret_question_current_index][0];
-                                          });
-                                        },
-                                        items: widget.secret_question_values
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      ),
-                                      SizedBox(
-                                        height: sized_box_space,
-                                      ),
-                                      DropdownButton<String>(
-                                        icon: Icon(
-                                          Icons.arrow_drop_down,
-                                          color: widget.text_color,
-                                        ),
-                                        isExpanded: true,
-                                        value: secret_answer_value,
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        style: TextStyle(
-                                          color: widget.text_color,
-                                        ),
-                                        underline: Container(
-                                          height: 1,
-                                          color: widget.text_color,
-                                        ),
-                                        dropdownColor: dropdown_color,
-                                        onChanged: (new_value) {
-                                          setState(() {
-                                            secret_answer_value = new_value!;
-                                          });
-                                        },
-                                        items: widget.secret_answer_values[
-                                                secret_question_current_index]
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ],
-                                  ),
                                 )
                               : Container(),
                         ],
