@@ -1093,7 +1093,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                     context: context,
                     email: email,
                     text_color: widget.text_color,
-                    function: () async {
+                    function: () {
                       if (editing_name_and_info) {
                         List<TextEditingController> inputControllers = [
                           firstname_input_controller,
@@ -1121,7 +1121,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                           confirm_password_input_controller,
                         ];
 
-                        await UserInfoFormFunctions().update_user_password(
+                        UserInfoFormFunctions().update_user_password(
                           context: context,
                           scaffold_key: scaffold_key,
                           password_form_key: user_info_view_form_key,
