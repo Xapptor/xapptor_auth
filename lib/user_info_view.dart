@@ -3,10 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
-import 'package:xapptor_ui/screens/user_info_view_container.dart';
 import 'package:xapptor_ui/widgets/webview/webview.dart';
-import 'package:xapptor_logic/check_metadata_app.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
+import 'check_metadata_app.dart';
 import 'form_field_validators.dart';
 import 'user_info_form_functions.dart';
 import 'package:xapptor_translation/translate.dart';
@@ -16,6 +15,8 @@ import 'user_info_form_type.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_logic/is_portrait.dart';
+
+import 'user_info_view_container.dart';
 
 class UserInfoView extends StatefulWidget {
   const UserInfoView({
