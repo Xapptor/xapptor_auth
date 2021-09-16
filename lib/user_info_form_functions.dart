@@ -1,10 +1,8 @@
 import 'package:universal_platform/universal_platform.dart';
-import 'package:xapptor_auth/xapptor_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:xapptor_logic/opening_functions.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
 
@@ -38,13 +36,7 @@ class UserInfoFormFunctions {
 
         if (value.user!.emailVerified) {
           if (remember_me) prefs.setString("email", value.user!.email!);
-          XapptorUser xapptor_user = XapptorUser.from_snapshot(
-            uid,
-            snapshot_user.data() as Map<String, dynamic>,
-          );
-
-          open_home(xapptor_user);
-
+          open_screen("home");
           email_input_controller.clear();
           password_input_controller.clear();
         } else {

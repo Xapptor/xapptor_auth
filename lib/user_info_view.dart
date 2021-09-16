@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:xapptor_ui/screens/user_info_view_container.dart';
-import 'package:xapptor_ui/webview/webview.dart';
-import 'check_login.dart';
+import 'package:xapptor_ui/widgets/webview/webview.dart';
 import 'package:xapptor_logic/check_metadata_app.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
 import 'form_field_validators.dart';
@@ -19,7 +19,6 @@ import 'package:xapptor_logic/is_portrait.dart';
 
 class UserInfoView extends StatefulWidget {
   const UserInfoView({
-    required this.uid,
     required this.text_list,
     required this.tc_and_pp_text,
     required this.first_button_action,
@@ -40,9 +39,9 @@ class UserInfoView extends StatefulWidget {
     required this.has_back_button,
     required this.text_field_background_color,
     this.edit_icon_use_text_field_background_color,
+    this.app_version,
   });
 
-  final String uid;
   final List<String> text_list;
   final RichText tc_and_pp_text;
   final Function? first_button_action;
@@ -63,6 +62,7 @@ class UserInfoView extends StatefulWidget {
   final bool has_back_button;
   final Color? text_field_background_color;
   final bool? edit_icon_use_text_field_background_color;
+  final String? app_version;
 
   @override
   _UserInfoViewState createState() => _UserInfoViewState();
@@ -162,6 +162,15 @@ class _UserInfoViewState extends State<UserInfoView> {
     setState(() {});
   }
 
+  check_login() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      print("User is logged in");
+      open_screen("home");
+    } else {
+      print("User is not sign");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -228,6 +237,7 @@ class _UserInfoViewState extends State<UserInfoView> {
       topbar_color: widget.topbar_color,
       text_color: widget.text_color,
       has_back_button: widget.has_back_button,
+      app_version: widget.app_version,
       child: FractionallySizedBox(
         widthFactor: portrait ? 0.75 : 0.25,
         child: Form(
@@ -1094,6 +1104,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                     email: email,
                     text_color: widget.text_color,
                     function: () {
+                      String uid = FirebaseAuth.instance.currentUser!.uid;
+
                       if (editing_name_and_info) {
                         List<TextEditingController> inputControllers = [
                           firstname_input_controller,
@@ -1109,7 +1121,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                           gender_value:
                               widget.gender_values.indexOf(gender_value),
                           country_value: country_value ?? "",
-                          user_id: widget.uid,
+                          user_id: uid,
                           editing_name_and_info: editing_name_and_info,
                           widget_parent: this,
                         );
@@ -1126,7 +1138,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                           scaffold_key: scaffold_key,
                           password_form_key: user_info_view_form_key,
                           input_controllers: inputControllers,
-                          user_id: widget.uid,
+                          user_id: uid,
                           email: email_input_controller.text,
                           editing_password: editing_password,
                           widget_parent: this,
@@ -1144,7 +1156,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                           scaffold_key: scaffold_key,
                           email_form_key: user_info_view_form_key,
                           input_controllers: inputControllers,
-                          user_id: widget.uid,
+                          user_id: uid,
                           editing_email: editing_email,
                           widget_parent: this,
                         );
@@ -1225,14 +1237,13 @@ class _UserInfoViewState extends State<UserInfoView> {
   }
 
   fetch_fields() async {
-    if (widget.uid.isNotEmpty) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      User auth_user = FirebaseAuth.instance.currentUser!;
       DocumentSnapshot user = await FirebaseFirestore.instance
           .collection("users")
-          .doc(widget.uid)
+          .doc(auth_user.uid)
           .get();
-
       print(user.data());
-      User auth_user = FirebaseAuth.instance.currentUser!;
 
       firstname = user.get("firstname");
       lastname = user.get("lastname");
