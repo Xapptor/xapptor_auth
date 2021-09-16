@@ -1244,8 +1244,6 @@ class _UserInfoViewState extends State<UserInfoView> {
           .collection("users")
           .doc(auth_user.uid)
           .get();
-      print(user.data());
-
       firstname = user.get("firstname");
       lastname = user.get("lastname");
       email = auth_user.email!;
