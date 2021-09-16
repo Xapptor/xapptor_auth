@@ -4,7 +4,7 @@ import 'package:xapptor_auth/user_info_form_type.dart';
 import 'package:xapptor_translation/translate.dart';
 import 'package:xapptor_ui/widgets/made_with_container.dart';
 import 'package:xapptor_ui/widgets/topbar.dart';
-import 'package:xapptor_ui/widgets/language_picker.dart';
+import 'package:xapptor_translation/language_picker.dart';
 import 'package:xapptor_logic/is_portrait.dart';
 
 class UserInfoViewContainer extends StatefulWidget {
