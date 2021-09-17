@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xapptor_router/app_screens.dart';
@@ -15,7 +16,6 @@ import 'user_info_form_type.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_logic/is_portrait.dart';
-
 import 'user_info_view_container.dart';
 
 class UserInfoView extends StatefulWidget {
@@ -164,12 +164,14 @@ class _UserInfoViewState extends State<UserInfoView> {
   }
 
   check_login() async {
-    if (FirebaseAuth.instance.currentUser != null) {
-      print("User is logged in");
-      open_screen("home");
-    } else {
-      print("User is not sign");
-    }
+    Timer(Duration(milliseconds: 300), () {
+      if (FirebaseAuth.instance.currentUser != null) {
+        print("User is logged in");
+        open_screen("home");
+      } else {
+        print("User is not sign");
+      }
+    });
   }
 
   @override
