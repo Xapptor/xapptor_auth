@@ -266,7 +266,6 @@ class _UserInfoViewState extends State<UserInfoView> {
                               child: Webview(
                                 id: "20",
                                 src: widget.logo_image_path,
-                                function: () {},
                               ),
                             )
                           : Container(
