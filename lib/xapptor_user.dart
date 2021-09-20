@@ -23,11 +23,14 @@ class XapptorUser {
     required this.owner,
   });
 
-  XapptorUser.from_snapshot(String id, Map<String, dynamic> snapshot)
-      : id = id,
+  XapptorUser.from_snapshot(
+    String id,
+    String email,
+    Map<String, dynamic> snapshot,
+  )   : id = id,
         firstname = snapshot['firstname'],
         lastname = snapshot['lastname'],
-        email = snapshot['email'],
+        email = email,
         birthday = timestamp_to_date(snapshot['birthday']),
         gender = snapshot['gender'],
         country = snapshot['country'],

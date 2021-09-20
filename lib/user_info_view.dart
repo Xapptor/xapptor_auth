@@ -40,7 +40,6 @@ class UserInfoView extends StatefulWidget {
     required this.has_back_button,
     required this.text_field_background_color,
     this.edit_icon_use_text_field_background_color,
-    this.app_version,
   });
 
   final List<String> text_list;
@@ -63,7 +62,6 @@ class UserInfoView extends StatefulWidget {
   final bool has_back_button;
   final Color? text_field_background_color;
   final bool? edit_icon_use_text_field_background_color;
-  final String? app_version;
 
   @override
   _UserInfoViewState createState() => _UserInfoViewState();
@@ -240,7 +238,6 @@ class _UserInfoViewState extends State<UserInfoView> {
       topbar_color: widget.topbar_color,
       text_color: widget.text_color,
       has_back_button: widget.has_back_button,
-      app_version: widget.app_version,
       child: FractionallySizedBox(
         widthFactor: portrait ? 0.75 : 0.25,
         child: Form(

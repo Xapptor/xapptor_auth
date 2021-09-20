@@ -17,7 +17,6 @@ class UserInfoViewContainer extends StatefulWidget {
     required this.has_back_button,
     required this.user_info_form_type,
     required this.translation_stream_list,
-    this.app_version,
   });
 
   final Widget child;
@@ -28,7 +27,6 @@ class UserInfoViewContainer extends StatefulWidget {
   final bool has_back_button;
   final UserInfoFormType user_info_form_type;
   final List<TranslationStream> translation_stream_list;
-  final String? app_version;
 
   @override
   _UserInfoViewContainerState createState() => _UserInfoViewContainerState();
@@ -110,11 +108,10 @@ class _UserInfoViewContainerState extends State<UserInfoViewContainer> {
                   },
                 ),
               ),
-              is_login(widget.user_info_form_type) && widget.app_version != null
+              is_login(widget.user_info_form_type)
                   ? MadeWithContainer(
                       text_color: Colors.white,
                       background_color: widget.topbar_color,
-                      app_version: widget.app_version!,
                     )
                   : Container(),
             ],
