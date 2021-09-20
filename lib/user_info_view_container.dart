@@ -45,76 +45,84 @@ class _UserInfoViewContainerState extends State<UserInfoViewContainer> {
   Widget build(BuildContext context) {
     bool portrait = is_portrait(context);
 
-    return WillPopScope(
-      onWillPop: () async => widget.has_back_button,
-      child: Scaffold(
-        key: scaffold_key,
-        appBar: TopBar(
-          background_color: widget.topbar_color,
-          has_back_button: widget.has_back_button,
-          actions: <Widget>[
-            Container(
-              margin: EdgeInsets.only(right: 20),
-              width: portrait ? 100 : 200,
-              child: widget.has_language_picker
-                  ? LanguagePicker(
-                      translation_stream_list: widget.translation_stream_list,
-                      language_picker_items_text_color: widget.text_color,
-                    )
-                  : Container(),
-            ),
-          ],
-          custom_leading: null,
-          logo_path: null,
-        ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          color: Colors.white,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: LayoutBuilder(
-                  builder: (
-                    BuildContext context,
-                    BoxConstraints viewport_constraints,
-                  ) {
-                    return SingleChildScrollView(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: viewport_constraints.minHeight,
-                        ),
-                        child: IntrinsicHeight(
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              widget.custom_background ??
-                                  Container(
-                                    color: Colors.white,
-                                  ),
-                              PointerInterceptor(
-                                child: Container(
-                                  color: widget.custom_background != null
-                                      ? Colors.transparent
-                                      : Colors.white,
-                                  child: widget.child,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: WillPopScope(
+        onWillPop: () async => widget.has_back_button,
+        child: Scaffold(
+          key: scaffold_key,
+          appBar: TopBar(
+            background_color: widget.topbar_color,
+            has_back_button: widget.has_back_button,
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.only(right: 20),
+                width: 150,
+                child: widget.has_language_picker
+                    ? LanguagePicker(
+                        translation_stream_list: widget.translation_stream_list,
+                        language_picker_items_text_color: widget.text_color,
+                      )
+                    : Container(),
               ),
-              is_login(widget.user_info_form_type)
-                  ? MadeWithContainer(
-                      text_color: Colors.white,
-                      background_color: widget.topbar_color,
-                    )
-                  : Container(),
             ],
+            custom_leading: null,
+            logo_path: null,
+          ),
+          body: Container(
+            height: MediaQuery.of(context).size.height,
+            color: Colors.white,
+            child: LayoutBuilder(
+              builder: (
+                BuildContext context,
+                BoxConstraints viewport_constraints,
+              ) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: viewport_constraints.minHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 10,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                widget.custom_background ??
+                                    Container(
+                                      color: Colors.white,
+                                    ),
+                                PointerInterceptor(
+                                  child: Container(
+                                    color: widget.custom_background != null
+                                        ? Colors.transparent
+                                        : Colors.white,
+                                    child: widget.child,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: is_login(widget.user_info_form_type)
+                                ? MadeWithContainer(
+                                    text_color: widget.topbar_color,
+                                    background_color: Colors.white,
+                                  )
+                                : Container(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

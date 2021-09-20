@@ -823,7 +823,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SizedBox(
-                                height: sized_box_space,
+                                height: portrait ? 0 : (sized_box_space),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -880,12 +880,17 @@ class _UserInfoViewState extends State<UserInfoView> {
                                   ),
                                 ],
                               ),
+                              SizedBox(
+                                height: portrait ? 0 : (sized_box_space),
+                              ),
                             ],
                           )
                         : Container(),
-                    SizedBox(
-                      height: sized_box_space,
-                    ),
+                    !is_login(widget.user_info_form_type)
+                        ? SizedBox(
+                            height: sized_box_space,
+                          )
+                        : Container(),
                     Container(
                       height: 50,
                       width: screen_width / (portrait ? 2 : 8),
@@ -914,7 +919,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                           Colors.transparent)
                                   ? widget.second_button_color
                                   : Colors.white,
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -922,7 +927,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                       ),
                     ),
                     SizedBox(
-                      height: sized_box_space * 2,
+                      height: sized_box_space,
                     ),
                   ],
                 ),
