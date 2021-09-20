@@ -239,7 +239,7 @@ class _UserInfoViewState extends State<UserInfoView> {
       text_color: widget.text_color,
       has_back_button: widget.has_back_button,
       child: FractionallySizedBox(
-        widthFactor: portrait ? 0.75 : 0.25,
+        widthFactor: portrait ? 0.85 : 0.25,
         child: Form(
           key: user_info_view_form_key,
           child: Row(
