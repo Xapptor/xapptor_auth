@@ -1,5 +1,7 @@
 import 'package:xapptor_logic/timestamp_to_date.dart';
 
+// User Model.
+
 class XapptorUser {
   String id;
   String firstname;

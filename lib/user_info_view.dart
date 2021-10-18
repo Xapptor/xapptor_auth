@@ -6,7 +6,7 @@ import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:xapptor_ui/widgets/webview/webview.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
-import 'check_metadata_app.dart';
+import 'check_if_app_enabled.dart';
 import 'form_field_validators.dart';
 import 'user_info_form_functions.dart';
 import 'package:xapptor_translation/translate.dart';
@@ -17,6 +17,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_logic/is_portrait.dart';
 import 'user_info_view_container.dart';
+
+// Dynamic User Info View.
 
 class UserInfoView extends StatefulWidget {
   const UserInfoView({
@@ -175,7 +177,7 @@ class _UserInfoViewState extends State<UserInfoView> {
   @override
   void initState() {
     super.initState();
-    check_metadata_app();
+    check_if_app_enabled();
     if (widget.user_info_form_type == UserInfoFormType.login) check_login();
 
     init_prefs(is_login);
@@ -192,7 +194,6 @@ class _UserInfoViewState extends State<UserInfoView> {
       update_text_list_function: update_text_list,
       list_index: 1,
       active_translation: widget.has_language_picker,
-      //active_translation: false,
     );
 
     translation_stream_list = [
@@ -1240,6 +1241,8 @@ class _UserInfoViewState extends State<UserInfoView> {
     );
   }
 
+  // Get user info.
+
   fetch_fields() async {
     if (FirebaseAuth.instance.currentUser != null) {
       User auth_user = FirebaseAuth.instance.currentUser!;
@@ -1258,6 +1261,8 @@ class _UserInfoViewState extends State<UserInfoView> {
       fill_fields();
     }
   }
+
+  // Fill User Text Fields.
 
   fill_fields() async {
     firstname_input_controller.text = firstname;

@@ -7,6 +7,8 @@ import 'package:xapptor_ui/widgets/topbar.dart';
 import 'package:xapptor_translation/language_picker.dart';
 import 'package:xapptor_logic/is_portrait.dart';
 
+// Contains User Info Forms.
+
 class UserInfoViewContainer extends StatefulWidget {
   const UserInfoViewContainer({
     required this.child,
@@ -110,7 +112,7 @@ class _UserInfoViewContainerState extends State<UserInfoViewContainer> {
                           Expanded(
                             flex: 1,
                             child: is_login(widget.user_info_form_type)
-                                ? MadeWithContainer(
+                                ? AppVersionContainer(
                                     text_color: widget.topbar_color,
                                     background_color: Colors.white,
                                   )

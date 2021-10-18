@@ -6,7 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
 
+// Functions executed in Auth Screens.
+
 class UserInfoFormFunctions {
+  // Login
+
   login({
     required BuildContext context,
     required bool remember_me,
@@ -19,6 +23,8 @@ class UserInfoFormFunctions {
     TextEditingController password_input_controller = input_controllers[1];
 
     if (login_form_key.currentState!.validate()) {
+      // Set persistence in Web.
+
       if (UniversalPlatform.isWeb)
         await FirebaseAuth.instance.setPersistence(persistence);
 
@@ -59,6 +65,8 @@ class UserInfoFormFunctions {
     }
   }
 
+  // The user has not verified his email.
+
   show_email_verification_alert_dialog({
     required BuildContext context,
     required User user,
@@ -89,6 +97,8 @@ class UserInfoFormFunctions {
       },
     );
   }
+
+  // Register
 
   register({
     required BuildContext context,
@@ -196,6 +206,8 @@ class UserInfoFormFunctions {
     }
   }
 
+  // Restore Password
+
   forgot_password({
     required BuildContext context,
     required GlobalKey<FormState> forgot_password_form_key,
@@ -214,6 +226,8 @@ class UserInfoFormFunctions {
       }
     }
   }
+
+  // Update User Email
 
   update_user_email({
     required BuildContext context,
@@ -261,6 +275,8 @@ class UserInfoFormFunctions {
     }
   }
 
+  // Update User Password
+
   Future update_user_password({
     required BuildContext context,
     required GlobalKey<ScaffoldState> scaffold_key,
@@ -299,6 +315,8 @@ class UserInfoFormFunctions {
       }
     }
   }
+
+  // Update User Info
 
   update_user_name_and_info({
     required BuildContext context,

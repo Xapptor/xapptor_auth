@@ -2,7 +2,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:universal_platform/universal_platform.dart';
 
-check_metadata_app() async {
+// Check if the app is enabled in the current platform.
+// Search param in metadata collection of Firebase Firestore.
+
+check_if_app_enabled() async {
   bool app_enabled = false;
   DocumentSnapshot metadata_app =
       await FirebaseFirestore.instance.collection('metadata').doc('app').get();

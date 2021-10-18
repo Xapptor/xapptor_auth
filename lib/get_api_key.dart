@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:universal_platform/universal_platform.dart';
 
+// GCP API key search in metadata collection of Firebase Firestore.
+
 Future<String> get_api_key({required String name}) async {
   DocumentSnapshot gcp =
       await FirebaseFirestore.instance.collection("metadata").doc("gcp").get();

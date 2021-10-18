@@ -1,9 +1,13 @@
+// Types of Form Field Validators.
+
 enum FormFieldValidatorsType {
   email,
   password,
   name,
   custom,
 }
+
+// Check if the Field Value has a good structure for each type.
 
 class FormFieldValidators {
   const FormFieldValidators({
@@ -22,6 +26,8 @@ class FormFieldValidators {
     Pattern? pattern;
     String? message;
 
+    // Email must have a valid structure.
+
     switch (type) {
       case FormFieldValidatorsType.email:
         {
@@ -34,6 +40,8 @@ class FormFieldValidators {
       case FormFieldValidatorsType.password:
         {}
         break;
+
+      // Name length must be longer than 1 and shorter than 26.
 
       case FormFieldValidatorsType.name:
         {
@@ -58,6 +66,8 @@ class FormFieldValidators {
         }
         break;
     }
+
+    // Password length must be longer than 7, has a number, has a letter, contain upper and lowercase characters.
 
     if (type == FormFieldValidatorsType.password) {
       if (value.length > 7) {
