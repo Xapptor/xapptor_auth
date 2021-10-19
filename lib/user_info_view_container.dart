@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:xapptor_auth/user_info_form_type.dart';
 import 'package:xapptor_translation/translate.dart';
-import 'package:xapptor_ui/widgets/made_with_container.dart';
+import 'package:xapptor_ui/widgets/app_version_container.dart';
 import 'package:xapptor_ui/widgets/topbar.dart';
 import 'package:xapptor_translation/language_picker.dart';
 import 'package:xapptor_logic/is_portrait.dart';
