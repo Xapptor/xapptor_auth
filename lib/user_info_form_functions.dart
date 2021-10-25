@@ -170,6 +170,19 @@ class UserInfoFormFunctions {
                   print(e);
                 }
                 return current_user;
+              }).onError((error, stackTrace) {
+                if (error.toString().contains("email") &&
+                    error.toString().contains("already") &&
+                    error.toString().contains("use")) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("The email address is already registered."),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
+
+                return error.toString();
               });
             } else {
               show_custom_dialog(
