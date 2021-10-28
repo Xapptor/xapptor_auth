@@ -1,10 +1,10 @@
-# XapptorAuth
+# **Xapptor Auth**
 
 ### Authentication Module to develop fast and easy Login, Register, Restore Password, and Edit Account Screens. Using Firebase Auth and Firestore.
 
-## Let's get started
+## **Let's get started**
 
-### 1 - Depend on it
+### **1 - Depend on it**
 
 ##### Add it to your package's pubspec.yaml file
 
@@ -16,16 +16,16 @@ dependencies:
         ref: main
 ```
 
-### 2 - Install it
+### **2 - Install it**
 
 ##### Install packages from the command line
 ```sh
 flutter packages get
 ```
 
-### 3 - Learn it like a charm
+### **3 - Learn it like a charm**
 
-#### **Login Example**
+### **Login Example**
 
 ```dart
 UserInfoView(
@@ -58,7 +58,7 @@ UserInfoView(
 );
 ```
 
-#### **Register Example**
+### **Register Example**
 
 ```dart
 UserInfoView(
@@ -125,7 +125,7 @@ UserInfoView(
 );
 ```
 
-#### **Restore Password Example**
+### **Restore Password Example**
 
 ```dart
 UserInfoView(
@@ -155,7 +155,7 @@ UserInfoView(
 );
 ```
 
-#### **Edit Account Example**
+### **Edit Account Example**
 
 ```dart
 UserInfoView(
@@ -200,21 +200,21 @@ UserInfoView(
 );
 ```
 
-### 4 - Live Examples
+### **4 - Live Examples**
 
-#### Login
+### **Login**
 
 [Abeinstitute Login](https://www.abeinstitute.com/#/login)
 
 [Lum Login](https://app.franquiciaslum.com/#/login)
 
-#### Register
+### **Register**
 
 [Abeinstitute Register](https://www.abeinstitute.com/#/register)
 
 [Lum Register](https://app.franquiciaslum.com/#/register)
 
-#### Restore Password
+### **Restore Password**
 
 [Abeinstitute Restore Password](https://www.abeinstitute.com/#/forgot_password)
 
