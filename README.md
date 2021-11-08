@@ -1,4 +1,5 @@
 # **Xapptor Auth**
+[![pub package](https://img.shields.io/pub/v/xapptor_auth?color=blue)](https://pub.dartlang.org/packages/xapptor_auth)
 ### Authentication Module to develop fast and easy Login, Register, Restore Password, and Edit Account Screens. Using Firebase Auth and Firestore.
 
 ## **Let's get started**
@@ -7,7 +8,7 @@
 ##### Add it to your package's pubspec.yaml file
 ```yml
 dependencies:
-    xapptor_auth: ^0.0.1
+    xapptor_auth: ^0.0.2
 ```
 
 ### **2 - Install it**
