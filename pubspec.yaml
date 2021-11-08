@@ -1,6 +1,6 @@
 name: xapptor_auth
-description: A new Flutter package project.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+description: Authentication Module to develop fast and easy Login, Register, Restore Password, and Edit Account Screens. Using Firebase Auth and Firestore.
+repository: https://github.com/Xapptor/xapptor_auth
 version: 0.0.1
 
 environment:
@@ -14,14 +14,13 @@ dependencies:
   cloud_firestore: ^2.5.1
   universal_platform: ^1.0.0+1
   shared_preferences: ^2.0.7
-  xapptor_logic:
-    path: ../xapptor_logic
-  xapptor_router:
-    path: ../xapptor_router
-  xapptor_translation:
-    path: ../xapptor_translation
-  xapptor_ui:
-    path: ../xapptor_ui
+  pointer_interceptor: ^0.9.0+1
+  intl: ^0.17.0
+
+  xapptor_logic: ^0.0.1
+  xapptor_router: ^0.0.1
+  xapptor_translation: ^0.0.1
+  xapptor_ui: ^0.0.1
 
 dev_dependencies:
   flutter_test:

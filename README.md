@@ -1,32 +1,24 @@
 # **Xapptor Auth**
-
 ### Authentication Module to develop fast and easy Login, Register, Restore Password, and Edit Account Screens. Using Firebase Auth and Firestore.
 
 ## **Let's get started**
 
 ### **1 - Depend on it**
-
 ##### Add it to your package's pubspec.yaml file
-
 ```yml
 dependencies:
-    xapptor_auth: 
-        git: 
-        url: git://github.com/Xapptor/xapptor_auth.git 
-        ref: main
+    xapptor_auth: ^0.0.1
 ```
 
 ### **2 - Install it**
-
 ##### Install packages from the command line
 ```sh
-flutter packages get
+flutter pub get
 ```
 
 ### **3 - Learn it like a charm**
 
 ### **Login Example**
-
 ```dart
 UserInfoView(
     text_list: [
@@ -59,7 +51,6 @@ UserInfoView(
 ```
 
 ### **Register Example**
-
 ```dart
 UserInfoView(
     text_list: [
@@ -126,7 +117,6 @@ UserInfoView(
 ```
 
 ### **Restore Password Example**
-
 ```dart
 UserInfoView(
     text_list: [
@@ -156,7 +146,6 @@ UserInfoView(
 ```
 
 ### **Edit Account Example**
-
 ```dart
 UserInfoView(
     text_list: [
@@ -199,6 +188,7 @@ UserInfoView(
     text_field_background_color: null,
 );
 ```
+
 ### **4 - Check Abeinstitute Repo for more examples**
 [Abeinstitute Repo](https://github.com/Xapptor/abeinstitute)
 
