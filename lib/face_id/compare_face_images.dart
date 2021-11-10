@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'get_api_key.dart';
+import '../get_api_key.dart';
 
 // AWS Rekognition Compare Faces
 
