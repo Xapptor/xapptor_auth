@@ -6,6 +6,7 @@ import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:xapptor_ui/widgets/webview/webview.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
+import 'package:xapptor_logic/get_image_size.dart';
 import 'check_if_app_enabled.dart';
 import 'form_field_validators.dart';
 import 'user_info_form_functions.dart';
@@ -34,6 +35,7 @@ class UserInfoView extends StatefulWidget {
     required this.second_button_color,
     required this.third_button_color,
     required this.logo_image_path,
+    this.image_border_radius = 0,
     required this.topbar_color,
     required this.has_language_picker,
     required this.custom_background,
@@ -56,6 +58,7 @@ class UserInfoView extends StatefulWidget {
   final Color second_button_color;
   final Color third_button_color;
   final String logo_image_path;
+  final double image_border_radius;
   final Color topbar_color;
   final bool has_language_picker;
   final Widget? custom_background;
@@ -174,6 +177,17 @@ class _UserInfoViewState extends State<UserInfoView> {
     });
   }
 
+  double logo_image_width = 0;
+
+  check_logo_image_width() async {
+    logo_image_width = await check_if_image_is_square(
+            image: Image.asset(widget.logo_image_path))
+        ? logo_height(context)
+        : logo_width(context);
+
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -181,6 +195,8 @@ class _UserInfoViewState extends State<UserInfoView> {
     if (widget.user_info_form_type == UserInfoFormType.login) check_login();
 
     init_prefs(is_login);
+
+    check_logo_image_width();
 
     translation_stream = TranslationStream(
       text_list: widget.text_list,
@@ -257,10 +273,16 @@ class _UserInfoViewState extends State<UserInfoView> {
                       height: sized_box_space,
                     ),
                     Container(
+                      //color: Colors.lightGreen,
                       child: widget.logo_image_path.contains("http")
                           ? Container(
                               height: logo_height(context),
-                              width: logo_width(context),
+                              width: logo_image_width,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  widget.image_border_radius,
+                                ),
+                              ),
                               child: Webview(
                                 id: "20",
                                 src: widget.logo_image_path,
@@ -268,8 +290,11 @@ class _UserInfoViewState extends State<UserInfoView> {
                             )
                           : Container(
                               height: logo_height(context),
-                              width: logo_width(context),
+                              width: logo_image_width,
                               decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  widget.image_border_radius,
+                                ),
                                 image: DecorationImage(
                                   fit: BoxFit.contain,
                                   image: AssetImage(
