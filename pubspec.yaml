@@ -20,10 +20,10 @@ dependencies:
   intl: ^0.17.0
   http: ^0.13.4
 
-  xapptor_logic: ^0.0.2
+  xapptor_logic: ^0.0.3
   xapptor_router: ^0.0.2
-  xapptor_translation: ^0.0.2
-  xapptor_ui: ^0.0.2
+  xapptor_translation: ^0.0.3
+  xapptor_ui: ^0.0.3
 
 dependency_overrides:
   xapptor_logic:
