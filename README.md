@@ -8,7 +8,7 @@
 ##### Add it to your package's pubspec.yaml file
 ```yml
 dependencies:
-    xapptor_auth: ^0.0.2
+    xapptor_auth: ^0.0.3
 ```
 
 ### **2 - Install it**
