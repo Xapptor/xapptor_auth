@@ -2,14 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:camera/camera.dart';
+import 'package:xapptor_auth/face_id/liveness_check/feedback_layer.dart';
+import 'package:xapptor_logic/get_image_size.dart';
+import 'package:xapptor_ui/values/ui.dart';
 import 'face_frame_painter.dart';
 
 class LivenessCheck extends StatefulWidget {
   const LivenessCheck({
-    required this.border_color,
+    required this.main_color,
+    required this.logo_image_path,
   });
 
-  final Color border_color;
+  final Color main_color;
+  final String logo_image_path;
 
   @override
   _LivenessCheckState createState() => _LivenessCheckState();
@@ -30,6 +35,25 @@ class _LivenessCheckState extends State<LivenessCheck>
   Tween<double> _rotationTween = Tween(begin: 23, end: 23);
 
   List<Widget> ui_layers = [];
+
+  bool undetected_face_feedback = false;
+  List<String> feedback_texts = [];
+
+  on_feedback_button_pressed() {
+    //
+  }
+
+  fill_ui_layers() {
+    ui_layers = [
+      FeedbackLayer(
+        main_color: widget.main_color,
+        texts: feedback_texts,
+        on_button_pressed: on_feedback_button_pressed,
+        undetected_face_feedback: undetected_face_feedback,
+      ),
+    ];
+    setState(() {});
+  }
 
   init_animation() {
     controller = AnimationController(
@@ -105,6 +129,7 @@ class _LivenessCheckState extends State<LivenessCheck>
         process_image(input_image);
       });
     });
+    check_logo_image_width();
   }
 
   Future process_image(InputImage input_image) async {
@@ -114,6 +139,17 @@ class _LivenessCheckState extends State<LivenessCheck>
     print('Found ${faces.length} faces');
 
     is_busy = false;
+  }
+
+  double logo_image_width = 0;
+
+  check_logo_image_width() async {
+    logo_image_width = await check_if_image_is_square(
+            image: Image.asset(widget.logo_image_path))
+        ? logo_height(context)
+        : logo_width(context);
+
+    setState(() {});
   }
 
   @override
@@ -143,22 +179,51 @@ class _LivenessCheckState extends State<LivenessCheck>
     return Scaffold(
       body: Container(
         color: Colors.white,
-        child: Center(
-          child: Container(
-            color: Colors.orange,
-            height: camera_preview_height,
-            width: camera_preview_width,
-            child: CameraPreview(
-              camera_controller!,
-              child: CustomPaint(
-                painter: FaceFramePainter(
-                  border_color: widget.border_color,
-                  frame_height: camera_preview_height,
-                  frame_width: camera_preview_width,
+        child: Column(
+          children: [
+            Expanded(
+              flex: 9,
+              child: Container(
+                height: camera_preview_height,
+                width: camera_preview_width,
+                decoration: BoxDecoration(
+                  color: Colors.orange,
+                  border: Border.all(
+                    width: 4,
+                    color: widget.main_color,
+                  ),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(outline_border_radius),
+                  ),
+                ),
+                child: CameraPreview(
+                  camera_controller!,
+                  child: CustomPaint(
+                    painter: FaceFramePainter(
+                      border_color: widget.main_color,
+                      frame_height: camera_preview_height,
+                      frame_width: camera_preview_width,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                height: logo_height(context),
+                width: logo_image_width,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.contain,
+                    image: AssetImage(
+                      widget.logo_image_path,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
