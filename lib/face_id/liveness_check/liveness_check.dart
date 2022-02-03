@@ -24,56 +24,79 @@ class _LivenessCheckState extends State<LivenessCheck>
     with SingleTickerProviderStateMixin {
   late List<CameraDescription> cameras;
   CameraController? camera_controller = null;
-
-  final face_detector = GoogleMlKit.vision.faceDetector();
+  FaceDetector face_detector = GoogleMlKit.vision.faceDetector(
+    FaceDetectorOptions(
+      mode: FaceDetectorMode.accurate,
+      enableLandmarks: true,
+      enableContours: false,
+      enableClassification: true,
+    ),
+  );
   bool is_busy = false;
-  bool camera_preview_full_size = true;
 
-  late Animation<double> animation;
-  late AnimationController controller;
-
-  Tween<double> _rotationTween = Tween(begin: 23, end: 23);
-
-  List<Widget> ui_layers = [];
-
+  bool minimize_frame = true;
   bool undetected_face_feedback = false;
-  List<String> feedback_texts = [];
+  bool show_frame_toast = false;
+  String frame_toast_text = "Frame Your Face";
 
-  on_feedback_button_pressed() {
-    //
+  bool face_is_ready_to_init_scan = false;
+  bool face_is_close_enough = false;
+  bool pass_first_face_detection = false;
+
+  late Animation<double>? animation;
+  late AnimationController animation_controller;
+  Tween<double> oval_size_multiplier = Tween(begin: 0.45, end: 0.8);
+
+  int face_validation_time = 15;
+
+  List<String> feedback_texts = [
+    "Get Ready For\nYour Video Selfie",
+    "Frame Your Face In The Oval,\nPress I'm Ready & Move Closer",
+    "I'm Ready",
+  ];
+
+  List<String> failed_feedback_texts = [
+    "We need a clearer video selfie",
+    "No Glare or Extreme Lightning",
+    "Try Again",
+    "Your Selfie",
+    "Ideal Pose",
+  ];
+
+  bool open_camera = true;
+
+  double logo_image_width = 0;
+
+  on_main_feedback_button_pressed() {
+    minimize_frame = false;
+    pass_first_face_detection = true;
+    setState(() {});
+    animation_controller.forward();
   }
 
-  fill_ui_layers() {
-    ui_layers = [
-      FeedbackLayer(
-        main_color: widget.main_color,
-        texts: feedback_texts,
-        on_button_pressed: on_feedback_button_pressed,
-        undetected_face_feedback: undetected_face_feedback,
-      ),
-    ];
-    setState(() {});
+  on_close_feedback_button_pressed() {
+    Navigator.pop(context);
   }
 
   init_animation() {
-    controller = AnimationController(
+    animation_controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 4),
+      duration: Duration(milliseconds: 1400),
     );
 
-    animation = _rotationTween.animate(controller)
+    Animation<double> animation_curve = CurvedAnimation(
+      parent: animation_controller,
+      curve: Curves.elasticOut,
+    );
+
+    animation = oval_size_multiplier.animate(animation_curve)
       ..addListener(() {
         setState(() {});
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          controller.repeat();
-        } else if (status == AnimationStatus.dismissed) {
-          controller.forward();
-        }
       });
+  }
 
-    controller.forward();
+  change_frame_toast_text() {
+    frame_toast_text = "";
   }
 
   init_camera() async {
@@ -129,19 +152,74 @@ class _LivenessCheckState extends State<LivenessCheck>
         process_image(input_image);
       });
     });
-    check_logo_image_width();
   }
 
   Future process_image(InputImage input_image) async {
     if (is_busy) return;
     is_busy = true;
-    final faces = await face_detector.processImage(input_image);
-    print('Found ${faces.length} faces');
 
+    final faces = await face_detector.processImage(input_image);
+    //print('Found ${faces.length} faces');
+    if (faces.length > 0) {
+      Face first_face = faces.first;
+
+      FaceLandmark? left_cheek =
+          first_face.getLandmark(FaceLandmarkType.leftCheek);
+      FaceLandmark? right_cheek =
+          first_face.getLandmark(FaceLandmarkType.rightCheek);
+      FaceLandmark? left_eye = first_face.getLandmark(FaceLandmarkType.leftEye);
+      FaceLandmark? bottom_mouth =
+          first_face.getLandmark(FaceLandmarkType.bottomMouth);
+
+      Offset left_cheek_position = left_cheek?.position ?? Offset.zero;
+      Offset right_cheek_position = right_cheek?.position ?? Offset.zero;
+      Offset left_eye_position = left_eye?.position ?? Offset.zero;
+      Offset bottom_mouth_position = bottom_mouth?.position ?? Offset.zero;
+
+      double distance_between_cheeks =
+          (right_cheek_position.dx - left_cheek_position.dx).abs();
+
+      double distance_between_mouth_and_eye =
+          (bottom_mouth_position.dy - left_eye_position.dy).abs();
+
+      double face_distance =
+          (distance_between_cheeks - distance_between_mouth_and_eye).abs();
+
+      if (!pass_first_face_detection) {
+        if (face_distance >= 10 && face_distance <= 30) {
+          face_is_ready_to_init_scan = true;
+          show_frame_toast = false;
+        } else {
+          face_is_ready_to_init_scan = false;
+          face_is_close_enough = false;
+
+          frame_toast_text = "Frame Your Face";
+          show_frame_toast = true;
+        }
+        setState(() {});
+      } else {
+        if (face_distance >= 1 &&
+            face_distance <= 6 &&
+            pass_first_face_detection) {
+          face_is_close_enough = true;
+          show_frame_toast = false;
+        } else {
+          if (face_distance < 1) {
+            frame_toast_text = "Move Further";
+          } else if (face_distance > 6) {
+            frame_toast_text = "Move Closer";
+          }
+          face_is_ready_to_init_scan = false;
+          face_is_close_enough = false;
+          show_frame_toast = true;
+        }
+        setState(() {});
+      }
+
+      print('face_distance: ${face_distance}');
+    }
     is_busy = false;
   }
-
-  double logo_image_width = 0;
 
   check_logo_image_width() async {
     logo_image_width = await check_if_image_is_square(
@@ -155,13 +233,19 @@ class _LivenessCheckState extends State<LivenessCheck>
   @override
   void initState() {
     super.initState();
-    init_camera();
+    init_animation();
+    check_logo_image_width();
+    if (open_camera) {
+      init_camera();
+    }
   }
 
   @override
   void dispose() {
-    face_detector.close();
-    camera_controller!.dispose();
+    if (face_detector != null && camera_controller != null) {
+      face_detector.close();
+      camera_controller!.dispose();
+    }
     super.dispose();
   }
 
@@ -170,60 +254,118 @@ class _LivenessCheckState extends State<LivenessCheck>
     double screen_height = MediaQuery.of(context).size.height;
     double screen_width = MediaQuery.of(context).size.width;
 
-    double camera_preview_height = (screen_width * 1.4) * 0.9;
-    double camera_preview_width = (screen_width * 0.8) * 0.9;
-
-    if (camera_controller == null) {
-      return Container();
-    }
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Column(
-          children: [
-            Expanded(
-              flex: 9,
-              child: Container(
-                height: camera_preview_height,
-                width: camera_preview_width,
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  border: Border.all(
-                    width: 4,
-                    color: widget.main_color,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(outline_border_radius),
-                  ),
-                ),
-                child: CameraPreview(
-                  camera_controller!,
-                  child: CustomPaint(
-                    painter: FaceFramePainter(
-                      border_color: widget.main_color,
-                      frame_height: camera_preview_height,
-                      frame_width: camera_preview_width,
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: Scaffold(
+          body: Container(
+            alignment: Alignment.center,
+            color: Colors.white,
+            child: Column(
+              children: [
+                Spacer(flex: 1),
+                Expanded(
+                  flex: 26,
+                  child: FractionallySizedBox(
+                    widthFactor: 0.85,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        border: Border.all(
+                          width: 4,
+                          color: widget.main_color,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(outline_border_radius),
+                        ),
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(outline_border_radius),
+                            child: camera_controller == null
+                                ? Container(
+                                    color: Colors.blueGrey,
+                                  )
+                                : CameraPreview(
+                                    camera_controller!,
+                                  ),
+                          ),
+                          CustomPaint(
+                            size: Size(
+                              double.infinity,
+                              double.infinity,
+                            ),
+                            painter: FaceFramePainter(
+                              main_color: widget.main_color,
+                              oval_size_multiplier: animation?.value ?? 1,
+                            ),
+                          ),
+                          minimize_frame
+                              ? FeedbackLayer(
+                                  main_color: widget.main_color,
+                                  texts: feedback_texts,
+                                  on_main_button_pressed:
+                                      on_main_feedback_button_pressed,
+                                  main_button_enabled:
+                                      face_is_ready_to_init_scan,
+                                  on_close_button_pressed:
+                                      on_close_feedback_button_pressed,
+                                  undetected_face_feedback:
+                                      undetected_face_feedback,
+                                )
+                              : Container(),
+                          show_frame_toast
+                              ? Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.only(
+                                      bottom: screen_height / 2),
+                                  constraints: BoxConstraints(
+                                    maxHeight: 50,
+                                    maxWidth: screen_width * 0.65,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: widget.main_color.withOpacity(0.85),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(outline_border_radius),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    frame_toast_text,
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : Container(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                height: logo_height(context),
-                width: logo_image_width,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.contain,
-                    image: AssetImage(
-                      widget.logo_image_path,
+                Spacer(flex: 1),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    height: logo_height(context),
+                    width: logo_image_width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.contain,
+                        image: AssetImage(
+                          widget.logo_image_path,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                Spacer(flex: 1),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:xapptor_ui/values/ui.dart';
 
 class FaceFramePainter extends CustomPainter {
   const FaceFramePainter({
-    required this.border_color,
-    required this.frame_height,
-    required this.frame_width,
+    required this.main_color,
+    required this.oval_size_multiplier,
   });
 
-  final Color border_color;
-  final double frame_height;
-  final double frame_width;
+  final Color main_color;
+  final double oval_size_multiplier;
 
   @override
   void paint(Canvas canvas, Size size) {
+    double oval_height = size.height * oval_size_multiplier;
+    double oval_width = (size.width * oval_size_multiplier) * 1.1;
+
     Paint hole_paint = Paint()..color = Colors.white;
 
     canvas.drawPath(
@@ -23,20 +25,20 @@ class FaceFramePainter extends CustomPainter {
             RRect.fromLTRBR(
               0,
               0,
-              frame_width,
-              frame_height,
-              Radius.circular(0),
+              size.width,
+              size.height,
+              Radius.circular(outline_border_radius),
             ),
           ),
         Path()
           ..addOval(
             Rect.fromCenter(
               center: Offset(
-                frame_width / 2,
-                frame_height / 2,
+                size.width / 2,
+                size.height / 2,
               ),
-              width: frame_width,
-              height: frame_height,
+              width: oval_width,
+              height: oval_height,
             ),
           )
           ..close(),
@@ -45,18 +47,18 @@ class FaceFramePainter extends CustomPainter {
     );
 
     Paint border_paint = Paint()
-      ..color = border_color
+      ..color = main_color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width / 40;
+      ..strokeWidth = size.width / 50;
 
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(
-          frame_width / 2,
-          frame_height / 2,
+          size.width / 2,
+          size.height / 2,
         ),
-        width: frame_width,
-        height: frame_height,
+        width: oval_width,
+        height: oval_height,
       ),
       border_paint,
     );
