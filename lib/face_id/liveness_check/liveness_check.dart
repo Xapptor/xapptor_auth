@@ -67,17 +67,20 @@ class _LivenessCheckState extends State<LivenessCheck>
 
   double logo_image_width = 0;
 
-  int min_distance_1 = 400;
-  int max_distance_1 = 500;
+  int min_face_distance_1 = 400;
+  int max_face_distance_1 = 500;
 
-  int min_distance_2 = 800;
-  int max_distance_2 = 1000;
+  int min_face_distance_2 = 800;
+  int max_face_distance_2 = 1000;
 
   int nose_min_x = 300;
   int nose_max_x = 400;
 
-  int nose_min_y = 630;
-  int nose_max_y = 730;
+  int nose_min_y_1 = 620;
+  int nose_max_y_1 = 720;
+
+  int nose_min_y_2 = 600;
+  int nose_max_y_2 = 800;
 
   on_main_feedback_button_pressed() {
     minimize_frame = false;
@@ -201,55 +204,65 @@ class _LivenessCheckState extends State<LivenessCheck>
       double face_distance =
           (distance_between_cheeks + distance_between_mouth_and_eye).abs();
 
-      if (nose_base_position.dx >= nose_min_x &&
-          nose_base_position.dx <= nose_max_x &&
-          nose_base_position.dy >= nose_min_y &&
-          nose_base_position.dy <= nose_max_y) {
-        if (!pass_first_face_detection) {
-          if (face_distance >= min_distance_1 &&
-              face_distance <= max_distance_1) {
-            face_is_ready_to_init_scan = true;
-            show_frame_toast = false;
-          } else {
-            face_is_ready_to_init_scan = false;
-            face_is_close_enough = false;
+      bool face_distance_result_1 = face_distance >= min_face_distance_1 &&
+          face_distance <= max_face_distance_1;
 
-            frame_toast_text = "Frame Your Face";
-            show_frame_toast = true;
-          }
-          setState(() {});
+      bool face_distance_result_2 = face_distance >= min_face_distance_2 &&
+          face_distance <= max_face_distance_2;
+
+      bool nose_base_y_position_result_1 =
+          nose_base_position.dy >= nose_min_y_1 &&
+              nose_base_position.dy <= nose_max_y_1;
+
+      bool nose_base_y_position_result_2 =
+          nose_base_position.dy >= nose_min_y_2 &&
+              nose_base_position.dy <= nose_max_y_2;
+
+      // Future.delayed(Duration(seconds: face_validation_time), () {
+      //   if (face_distance >= 1 &&
+      //       face_distance <= 6 &&
+      //       pass_first_face_detection) {
+      //     //
+      //   } else {
+      //     //
+      //   }
+      // });
+
+      if (!pass_first_face_detection) {
+        if (face_distance_result_1 && nose_base_y_position_result_1) {
+          face_is_ready_to_init_scan = true;
+          show_frame_toast = false;
         } else {
-          // Future.delayed(Duration(seconds: face_validation_time), () {
-          //   if (face_distance >= 1 &&
-          //       face_distance <= 6 &&
-          //       pass_first_face_detection) {
-          //     //
-          //   } else {
-          //     //
-          //   }
-          // });
-          if (face_distance >= min_distance_2 &&
-              face_distance <= max_distance_2 &&
-              pass_first_face_detection) {
+          face_is_ready_to_init_scan = false;
+          face_is_close_enough = false;
+
+          frame_toast_text = "Frame Your Face";
+          show_frame_toast = true;
+        }
+      } else {
+        if (nose_base_y_position_result_2) {
+          if (face_distance_result_2 && pass_first_face_detection) {
             face_is_close_enough = true;
             show_frame_toast = false;
           } else {
-            if (face_distance < min_distance_2) {
+            if (face_distance < min_face_distance_2) {
               frame_toast_text = "Move Closer";
-            } else if (face_distance > max_distance_2) {
+            } else if (face_distance > max_face_distance_2) {
               frame_toast_text = "Move Further";
             }
             face_is_ready_to_init_scan = false;
             face_is_close_enough = false;
             show_frame_toast = true;
           }
-          setState(() {});
+        } else {
+          face_is_ready_to_init_scan = false;
+          face_is_close_enough = false;
+          frame_toast_text = "Frame Your Face";
+          show_frame_toast = true;
         }
-      } else {
-        frame_toast_text = "Frame Your Face";
-        show_frame_toast = true;
-        setState(() {});
       }
+
+      setState(() {});
 
       //print('face_distance: ${face_distance}');
       print('nose_base_position: ${nose_base_position}');
@@ -357,7 +370,9 @@ class _LivenessCheckState extends State<LivenessCheck>
                               ? Container(
                                   alignment: Alignment.center,
                                   margin: EdgeInsets.only(
-                                      bottom: screen_height / 2),
+                                    bottom: screen_height *
+                                        (animation!.value <= 0.46 ? 0.4 : 0.5),
+                                  ),
                                   constraints: BoxConstraints(
                                     maxHeight: 50,
                                     maxWidth: screen_width * 0.65,
