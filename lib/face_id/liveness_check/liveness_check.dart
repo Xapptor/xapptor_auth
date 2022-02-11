@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:camera/camera.dart';
+import 'package:universal_platform/universal_platform.dart';
 import 'package:xapptor_auth/face_id/liveness_check/feedback_layer.dart';
 import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_ui/values/ui.dart';
@@ -11,10 +13,14 @@ class LivenessCheck extends StatefulWidget {
   const LivenessCheck({
     required this.main_color,
     required this.logo_image_path,
+    required this.session_life_time,
+    required this.callback,
   });
 
   final Color main_color;
   final String logo_image_path;
+  final int session_life_time;
+  final Function(bool liveness_check_result) callback;
 
   @override
   _LivenessCheckState createState() => _LivenessCheckState();
@@ -82,6 +88,8 @@ class _LivenessCheckState extends State<LivenessCheck>
   int nose_min_y_2 = 600;
   int nose_max_y_2 = 800;
 
+  late Timer timer;
+
   on_main_feedback_button_pressed() {
     minimize_frame = false;
     pass_first_face_detection = true;
@@ -93,7 +101,7 @@ class _LivenessCheckState extends State<LivenessCheck>
     Navigator.pop(context);
   }
 
-  init_animation() {
+  init_animation() async {
     animation_controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1400),
@@ -110,10 +118,6 @@ class _LivenessCheckState extends State<LivenessCheck>
       });
   }
 
-  change_frame_toast_text() {
-    frame_toast_text = "";
-  }
-
   init_camera() async {
     cameras = await availableCameras();
 
@@ -124,54 +128,121 @@ class _LivenessCheckState extends State<LivenessCheck>
       }
       setState(() {});
 
-      camera_controller!.startImageStream((CameraImage camera_image) {
-        final WriteBuffer allBytes = WriteBuffer();
-        for (Plane plane in camera_image.planes) {
-          allBytes.putUint8List(plane.bytes);
-        }
-        final bytes = allBytes.done().buffer.asUint8List();
-
-        final Size imageSize =
-            Size(camera_image.width.toDouble(), camera_image.height.toDouble());
-
-        final InputImageRotation imageRotation =
-            InputImageRotationMethods.fromRawValue(
-                    cameras[1].sensorOrientation) ??
-                InputImageRotation.Rotation_0deg;
-
-        final InputImageFormat inputImageFormat =
-            InputImageFormatMethods.fromRawValue(camera_image.format.raw) ??
-                InputImageFormat.NV21;
-
-        final planeData = camera_image.planes.map(
-          (Plane plane) {
-            return InputImagePlaneMetadata(
-              bytesPerRow: plane.bytesPerRow,
-              height: plane.height,
-              width: plane.width,
-            );
-          },
-        ).toList();
-
-        final inputImageData = InputImageData(
-          size: imageSize,
-          imageRotation: imageRotation,
-          inputImageFormat: inputImageFormat,
-          planeData: planeData,
-        );
-
-        InputImage input_image = InputImage.fromBytes(
-            bytes: camera_image.planes.first.bytes,
-            inputImageData: inputImageData);
-
-        process_image(input_image);
+      timer = Timer.periodic(Duration(seconds: widget.session_life_time),
+          (Timer timer) {
+        Navigator.pop(context);
       });
+
+      if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS)
+        start_image_stream();
     });
+  }
+
+  start_image_stream() {
+    camera_controller!.startImageStream((CameraImage camera_image) {
+      final WriteBuffer allBytes = WriteBuffer();
+      for (Plane plane in camera_image.planes) {
+        allBytes.putUint8List(plane.bytes);
+      }
+      final bytes = allBytes.done().buffer.asUint8List();
+
+      final Size imageSize =
+          Size(camera_image.width.toDouble(), camera_image.height.toDouble());
+
+      final InputImageRotation imageRotation =
+          InputImageRotationMethods.fromRawValue(
+                  cameras[1].sensorOrientation) ??
+              InputImageRotation.Rotation_0deg;
+
+      final InputImageFormat inputImageFormat =
+          InputImageFormatMethods.fromRawValue(camera_image.format.raw) ??
+              InputImageFormat.NV21;
+
+      final planeData = camera_image.planes.map(
+        (Plane plane) {
+          return InputImagePlaneMetadata(
+            bytesPerRow: plane.bytesPerRow,
+            height: plane.height,
+            width: plane.width,
+          );
+        },
+      ).toList();
+
+      final inputImageData = InputImageData(
+        size: imageSize,
+        imageRotation: imageRotation,
+        inputImageFormat: inputImageFormat,
+        planeData: planeData,
+      );
+
+      InputImage input_image = InputImage.fromBytes(
+          bytes: camera_image.planes.first.bytes,
+          inputImageData: inputImageData);
+
+      process_image(input_image);
+    });
+  }
+
+  int process_image_counter = 0;
+  List<double> smiling_probability_list = [];
+  List<double> left_eye_open_probability_list = [];
+  List<double> right_eye_open_probability_list = [];
+
+  bool smiling_probability_test_passed = false;
+  bool left_eye_open_probability_test_passed = false;
+  bool right_eye_open_probability_test_passed = false;
+
+  bool face_distance_result_2 = false;
+  bool liveness_test_passed = false;
+
+  check_liveness(Face face) {
+    // Adding probabilities
+
+    if (face.smilingProbability != null)
+      smiling_probability_list.add(face.smilingProbability!);
+
+    if (face.leftEyeOpenProbability != null)
+      left_eye_open_probability_list.add(face.leftEyeOpenProbability!);
+
+    if (face.rightEyeOpenProbability != null)
+      right_eye_open_probability_list.add(face.rightEyeOpenProbability!);
+
+    // Check list length
+
+    if (smiling_probability_list.length > 20)
+      smiling_probability_list.removeAt(0);
+
+    if (left_eye_open_probability_list.length > 20)
+      left_eye_open_probability_list.removeAt(0);
+
+    if (right_eye_open_probability_list.length > 20)
+      right_eye_open_probability_list.removeAt(0);
+
+    //Analize for changes
+
+    smiling_probability_test_passed =
+        analize_for_changes(smiling_probability_list);
+
+    left_eye_open_probability_test_passed =
+        analize_for_changes(left_eye_open_probability_list);
+
+    right_eye_open_probability_test_passed =
+        analize_for_changes(right_eye_open_probability_list);
+
+    if (left_eye_open_probability_test_passed &&
+        right_eye_open_probability_test_passed) liveness_test_passed = true;
+  }
+
+  bool analize_for_changes(List<double> list) {
+    list.sort((a, b) => a.compareTo(b));
+    double difference = list.last - list.first;
+    return difference > 0.5;
   }
 
   Future process_image(InputImage input_image) async {
     if (is_busy) return;
     is_busy = true;
+    process_image_counter++;
 
     final faces = await face_detector.processImage(input_image);
     //print('Found ${faces.length} faces');
@@ -179,93 +250,95 @@ class _LivenessCheckState extends State<LivenessCheck>
     if (faces.length > 0) {
       Face first_face = faces.first;
 
-      FaceLandmark? left_eye = first_face.getLandmark(FaceLandmarkType.leftEye);
-      FaceLandmark? nose_base =
-          first_face.getLandmark(FaceLandmarkType.noseBase);
-      FaceLandmark? left_cheek =
-          first_face.getLandmark(FaceLandmarkType.leftCheek);
-      FaceLandmark? right_cheek =
-          first_face.getLandmark(FaceLandmarkType.rightCheek);
-      FaceLandmark? bottom_mouth =
-          first_face.getLandmark(FaceLandmarkType.bottomMouth);
-
-      Offset left_eye_position = left_eye?.position ?? Offset.zero;
-      Offset nose_base_position = nose_base?.position ?? Offset.zero;
-      Offset left_cheek_position = left_cheek?.position ?? Offset.zero;
-      Offset right_cheek_position = right_cheek?.position ?? Offset.zero;
-      Offset bottom_mouth_position = bottom_mouth?.position ?? Offset.zero;
-
-      double distance_between_cheeks =
-          (right_cheek_position.dx - left_cheek_position.dx).abs();
-
-      double distance_between_mouth_and_eye =
-          (bottom_mouth_position.dy - left_eye_position.dy).abs();
-
-      double face_distance =
-          (distance_between_cheeks + distance_between_mouth_and_eye).abs();
-
-      bool face_distance_result_1 = face_distance >= min_face_distance_1 &&
-          face_distance <= max_face_distance_1;
-
-      bool face_distance_result_2 = face_distance >= min_face_distance_2 &&
-          face_distance <= max_face_distance_2;
-
-      bool nose_base_y_position_result_1 =
-          nose_base_position.dy >= nose_min_y_1 &&
-              nose_base_position.dy <= nose_max_y_1;
-
-      bool nose_base_y_position_result_2 =
-          nose_base_position.dy >= nose_min_y_2 &&
-              nose_base_position.dy <= nose_max_y_2;
-
-      // Future.delayed(Duration(seconds: face_validation_time), () {
-      //   if (face_distance >= 1 &&
-      //       face_distance <= 6 &&
-      //       pass_first_face_detection) {
-      //     //
-      //   } else {
-      //     //
-      //   }
-      // });
-
-      if (!pass_first_face_detection) {
-        if (face_distance_result_1 && nose_base_y_position_result_1) {
-          face_is_ready_to_init_scan = true;
-          show_frame_toast = false;
-        } else {
-          face_is_ready_to_init_scan = false;
-          face_is_close_enough = false;
-
-          frame_toast_text = "Frame Your Face";
-          show_frame_toast = true;
-        }
+      if (liveness_test_passed) {
+        print("-------------------------PASSED!-------------------------");
       } else {
-        if (nose_base_y_position_result_2) {
-          if (face_distance_result_2 && pass_first_face_detection) {
-            face_is_close_enough = true;
+        check_liveness(first_face);
+      }
+
+      if (process_image_counter % 7 == 0) {
+        process_image_counter = 0;
+
+        FaceLandmark? left_eye =
+            first_face.getLandmark(FaceLandmarkType.leftEye);
+        FaceLandmark? nose_base =
+            first_face.getLandmark(FaceLandmarkType.noseBase);
+        FaceLandmark? left_cheek =
+            first_face.getLandmark(FaceLandmarkType.leftCheek);
+        FaceLandmark? right_cheek =
+            first_face.getLandmark(FaceLandmarkType.rightCheek);
+        FaceLandmark? bottom_mouth =
+            first_face.getLandmark(FaceLandmarkType.bottomMouth);
+
+        Offset left_eye_position = left_eye?.position ?? Offset.zero;
+        Offset nose_base_position = nose_base?.position ?? Offset.zero;
+        Offset left_cheek_position = left_cheek?.position ?? Offset.zero;
+        Offset right_cheek_position = right_cheek?.position ?? Offset.zero;
+        Offset bottom_mouth_position = bottom_mouth?.position ?? Offset.zero;
+
+        double distance_between_cheeks =
+            (right_cheek_position.dx - left_cheek_position.dx).abs();
+
+        double distance_between_mouth_and_eye =
+            (bottom_mouth_position.dy - left_eye_position.dy).abs();
+
+        double face_distance =
+            (distance_between_cheeks + distance_between_mouth_and_eye).abs();
+
+        bool face_distance_result_1 = face_distance >= min_face_distance_1 &&
+            face_distance <= max_face_distance_1;
+
+        face_distance_result_2 = face_distance >= min_face_distance_2 &&
+            face_distance <= max_face_distance_2;
+
+        bool nose_base_y_position_result_1 =
+            nose_base_position.dy >= nose_min_y_1 &&
+                nose_base_position.dy <= nose_max_y_1;
+
+        bool nose_base_y_position_result_2 =
+            nose_base_position.dy >= nose_min_y_2 &&
+                nose_base_position.dy <= nose_max_y_2;
+
+        if (!pass_first_face_detection) {
+          if (face_distance_result_1 && nose_base_y_position_result_1) {
+            face_is_ready_to_init_scan = true;
             show_frame_toast = false;
           } else {
-            if (face_distance < min_face_distance_2) {
-              frame_toast_text = "Move Closer";
-            } else if (face_distance > max_face_distance_2) {
-              frame_toast_text = "Move Further";
-            }
             face_is_ready_to_init_scan = false;
             face_is_close_enough = false;
+
+            frame_toast_text = "Frame Your Face";
             show_frame_toast = true;
           }
         } else {
-          face_is_ready_to_init_scan = false;
-          face_is_close_enough = false;
-          frame_toast_text = "Frame Your Face";
-          show_frame_toast = true;
+          if (nose_base_y_position_result_2) {
+            if (face_distance_result_2 && pass_first_face_detection) {
+              face_is_close_enough = true;
+              show_frame_toast = false;
+              Navigator.pop(context);
+            } else {
+              if (face_distance < min_face_distance_2) {
+                frame_toast_text = "Move Closer";
+              } else {
+                frame_toast_text = "Frame Your Face";
+              }
+              face_is_ready_to_init_scan = false;
+              face_is_close_enough = false;
+              show_frame_toast = true;
+            }
+          } else {
+            face_is_ready_to_init_scan = false;
+            face_is_close_enough = false;
+            frame_toast_text = "Frame Your Face";
+            show_frame_toast = true;
+          }
         }
+
+        setState(() {});
+
+        //print('face_distance: ${face_distance}');
+        //print('nose_base_position: ${nose_base_position}');
       }
-
-      setState(() {});
-
-      //print('face_distance: ${face_distance}');
-      print('nose_base_position: ${nose_base_position}');
     }
     is_busy = false;
   }
@@ -291,10 +364,13 @@ class _LivenessCheckState extends State<LivenessCheck>
 
   @override
   void dispose() {
+    timer.cancel();
     if (face_detector != null && camera_controller != null) {
       face_detector.close();
       camera_controller!.dispose();
     }
+
+    widget.callback(face_distance_result_2 && pass_first_face_detection);
     super.dispose();
   }
 
@@ -319,7 +395,7 @@ class _LivenessCheckState extends State<LivenessCheck>
                     widthFactor: 0.85,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: Colors.red,
                         border: Border.all(
                           width: 4,
                           color: widget.main_color,
