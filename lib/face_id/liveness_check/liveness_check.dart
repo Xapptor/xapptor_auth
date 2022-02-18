@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:camera/camera.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:xapptor_auth/face_id/liveness_check/check_liveness.dart';
 import 'package:xapptor_auth/face_id/liveness_check/feedback_layer.dart';
 import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_ui/values/ui.dart';
+import 'analize_for_face_changes.dart';
+import 'check_face_framing.dart';
 import 'face_frame_painter.dart';
 
 class LivenessCheck extends StatefulWidget {
@@ -73,22 +76,19 @@ class _LivenessCheckState extends State<LivenessCheck>
 
   double logo_image_width = 0;
 
-  int min_face_distance_1 = 400;
-  int max_face_distance_1 = 500;
-
-  int min_face_distance_2 = 800;
-  int max_face_distance_2 = 1000;
-
-  int nose_min_x = 300;
-  int nose_max_x = 400;
-
-  int nose_min_y_1 = 620;
-  int nose_max_y_1 = 720;
-
-  int nose_min_y_2 = 600;
-  int nose_max_y_2 = 800;
-
   late Timer timer;
+
+  int process_image_counter = 0;
+  List<double> smiling_probability_list = [];
+  List<double> left_eye_open_probability_list = [];
+  List<double> right_eye_open_probability_list = [];
+
+  bool smiling_probability_test_passed = false;
+  bool left_eye_open_probability_test_passed = false;
+  bool right_eye_open_probability_test_passed = false;
+
+  bool face_distance_result_2 = false;
+  bool liveness_test_passed = false;
 
   on_main_feedback_button_pressed() {
     minimize_frame = false;
@@ -183,62 +183,6 @@ class _LivenessCheckState extends State<LivenessCheck>
     });
   }
 
-  int process_image_counter = 0;
-  List<double> smiling_probability_list = [];
-  List<double> left_eye_open_probability_list = [];
-  List<double> right_eye_open_probability_list = [];
-
-  bool smiling_probability_test_passed = false;
-  bool left_eye_open_probability_test_passed = false;
-  bool right_eye_open_probability_test_passed = false;
-
-  bool face_distance_result_2 = false;
-  bool liveness_test_passed = false;
-
-  check_liveness(Face face) {
-    // Adding probabilities
-
-    if (face.smilingProbability != null)
-      smiling_probability_list.add(face.smilingProbability!);
-
-    if (face.leftEyeOpenProbability != null)
-      left_eye_open_probability_list.add(face.leftEyeOpenProbability!);
-
-    if (face.rightEyeOpenProbability != null)
-      right_eye_open_probability_list.add(face.rightEyeOpenProbability!);
-
-    // Check list length
-
-    if (smiling_probability_list.length > 20)
-      smiling_probability_list.removeAt(0);
-
-    if (left_eye_open_probability_list.length > 20)
-      left_eye_open_probability_list.removeAt(0);
-
-    if (right_eye_open_probability_list.length > 20)
-      right_eye_open_probability_list.removeAt(0);
-
-    //Analize for changes
-
-    smiling_probability_test_passed =
-        analize_for_changes(smiling_probability_list);
-
-    left_eye_open_probability_test_passed =
-        analize_for_changes(left_eye_open_probability_list);
-
-    right_eye_open_probability_test_passed =
-        analize_for_changes(right_eye_open_probability_list);
-
-    if (left_eye_open_probability_test_passed &&
-        right_eye_open_probability_test_passed) liveness_test_passed = true;
-  }
-
-  bool analize_for_changes(List<double> list) {
-    list.sort((a, b) => a.compareTo(b));
-    double difference = list.last - list.first;
-    return difference > 0.5;
-  }
-
   Future process_image(InputImage input_image) async {
     if (is_busy) return;
     is_busy = true;
@@ -253,91 +197,65 @@ class _LivenessCheckState extends State<LivenessCheck>
       if (liveness_test_passed) {
         print("-------------------------PASSED!-------------------------");
       } else {
-        check_liveness(first_face);
+        check_liveness(
+            face: first_face,
+            update_function: (
+              new_smiling_probability_list,
+              new_left_eye_open_probability_list,
+              new_right_eye_open_probability_list,
+            ) {
+              smiling_probability_list = new_smiling_probability_list;
+              left_eye_open_probability_list =
+                  new_left_eye_open_probability_list;
+              right_eye_open_probability_list =
+                  new_right_eye_open_probability_list;
+
+              //Analize for changes
+
+              smiling_probability_test_passed =
+                  analize_for_face_changes(smiling_probability_list);
+
+              left_eye_open_probability_test_passed =
+                  analize_for_face_changes(left_eye_open_probability_list);
+
+              right_eye_open_probability_test_passed =
+                  analize_for_face_changes(right_eye_open_probability_list);
+
+              if (left_eye_open_probability_test_passed &&
+                  right_eye_open_probability_test_passed)
+                liveness_test_passed = true;
+            });
       }
 
       if (process_image_counter % 7 == 0) {
         process_image_counter = 0;
 
-        FaceLandmark? left_eye =
-            first_face.getLandmark(FaceLandmarkType.leftEye);
-        FaceLandmark? nose_base =
-            first_face.getLandmark(FaceLandmarkType.noseBase);
-        FaceLandmark? left_cheek =
-            first_face.getLandmark(FaceLandmarkType.leftCheek);
-        FaceLandmark? right_cheek =
-            first_face.getLandmark(FaceLandmarkType.rightCheek);
-        FaceLandmark? bottom_mouth =
-            first_face.getLandmark(FaceLandmarkType.bottomMouth);
+        check_face_framing(
+          face: first_face,
+          context: context,
+          update_face_distance_result_2: (
+            bool new_face_distance_result_2,
+          ) {
+            face_distance_result_2 = new_face_distance_result_2;
+          },
+          update_framing_values: (
+            bool new_face_is_ready_to_init_scan,
+            bool new_face_is_close_enough,
+            String new_frame_toast_text,
+            bool new_show_frame_toast,
+          ) {
+            face_is_ready_to_init_scan = new_face_is_ready_to_init_scan;
+            face_is_close_enough = new_face_is_close_enough;
+            frame_toast_text = new_frame_toast_text;
+            show_frame_toast = new_show_frame_toast;
+          },
+          callback: () {
+            setState(() {});
 
-        Offset left_eye_position = left_eye?.position ?? Offset.zero;
-        Offset nose_base_position = nose_base?.position ?? Offset.zero;
-        Offset left_cheek_position = left_cheek?.position ?? Offset.zero;
-        Offset right_cheek_position = right_cheek?.position ?? Offset.zero;
-        Offset bottom_mouth_position = bottom_mouth?.position ?? Offset.zero;
-
-        double distance_between_cheeks =
-            (right_cheek_position.dx - left_cheek_position.dx).abs();
-
-        double distance_between_mouth_and_eye =
-            (bottom_mouth_position.dy - left_eye_position.dy).abs();
-
-        double face_distance =
-            (distance_between_cheeks + distance_between_mouth_and_eye).abs();
-
-        bool face_distance_result_1 = face_distance >= min_face_distance_1 &&
-            face_distance <= max_face_distance_1;
-
-        face_distance_result_2 = face_distance >= min_face_distance_2 &&
-            face_distance <= max_face_distance_2;
-
-        bool nose_base_y_position_result_1 =
-            nose_base_position.dy >= nose_min_y_1 &&
-                nose_base_position.dy <= nose_max_y_1;
-
-        bool nose_base_y_position_result_2 =
-            nose_base_position.dy >= nose_min_y_2 &&
-                nose_base_position.dy <= nose_max_y_2;
-
-        if (!pass_first_face_detection) {
-          if (face_distance_result_1 && nose_base_y_position_result_1) {
-            face_is_ready_to_init_scan = true;
-            show_frame_toast = false;
-          } else {
-            face_is_ready_to_init_scan = false;
-            face_is_close_enough = false;
-
-            frame_toast_text = "Frame Your Face";
-            show_frame_toast = true;
-          }
-        } else {
-          if (nose_base_y_position_result_2) {
-            if (face_distance_result_2 && pass_first_face_detection) {
-              face_is_close_enough = true;
-              show_frame_toast = false;
-              Navigator.pop(context);
-            } else {
-              if (face_distance < min_face_distance_2) {
-                frame_toast_text = "Move Closer";
-              } else {
-                frame_toast_text = "Frame Your Face";
-              }
-              face_is_ready_to_init_scan = false;
-              face_is_close_enough = false;
-              show_frame_toast = true;
-            }
-          } else {
-            face_is_ready_to_init_scan = false;
-            face_is_close_enough = false;
-            frame_toast_text = "Frame Your Face";
-            show_frame_toast = true;
-          }
-        }
-
-        setState(() {});
-
-        //print('face_distance: ${face_distance}');
-        //print('nose_base_position: ${nose_base_position}');
+            //print('face_distance: ${face_distance}');
+            //print('nose_base_position: ${nose_base_position}');
+          },
+        );
       }
     }
     is_busy = false;
