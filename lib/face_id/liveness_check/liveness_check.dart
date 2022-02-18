@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:camera/camera.dart';
@@ -11,6 +10,7 @@ import 'package:xapptor_ui/values/ui.dart';
 import 'analize_for_face_changes.dart';
 import 'check_face_framing.dart';
 import 'face_frame_painter.dart';
+import 'start_image_stream.dart';
 
 class LivenessCheck extends StatefulWidget {
   const LivenessCheck({
@@ -134,52 +134,11 @@ class _LivenessCheckState extends State<LivenessCheck>
       });
 
       if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS)
-        start_image_stream();
-    });
-  }
-
-  start_image_stream() {
-    camera_controller!.startImageStream((CameraImage camera_image) {
-      final WriteBuffer allBytes = WriteBuffer();
-      for (Plane plane in camera_image.planes) {
-        allBytes.putUint8List(plane.bytes);
-      }
-      final bytes = allBytes.done().buffer.asUint8List();
-
-      final Size imageSize =
-          Size(camera_image.width.toDouble(), camera_image.height.toDouble());
-
-      final InputImageRotation imageRotation =
-          InputImageRotationMethods.fromRawValue(
-                  cameras[1].sensorOrientation) ??
-              InputImageRotation.Rotation_0deg;
-
-      final InputImageFormat inputImageFormat =
-          InputImageFormatMethods.fromRawValue(camera_image.format.raw) ??
-              InputImageFormat.NV21;
-
-      final planeData = camera_image.planes.map(
-        (Plane plane) {
-          return InputImagePlaneMetadata(
-            bytesPerRow: plane.bytesPerRow,
-            height: plane.height,
-            width: plane.width,
-          );
-        },
-      ).toList();
-
-      final inputImageData = InputImageData(
-        size: imageSize,
-        imageRotation: imageRotation,
-        inputImageFormat: inputImageFormat,
-        planeData: planeData,
-      );
-
-      InputImage input_image = InputImage.fromBytes(
-          bytes: camera_image.planes.first.bytes,
-          inputImageData: inputImageData);
-
-      process_image(input_image);
+        start_image_stream(
+          camera_controller: camera_controller!,
+          cameras: cameras,
+          process_image_function: process_image,
+        );
     });
   }
 
@@ -233,6 +192,7 @@ class _LivenessCheckState extends State<LivenessCheck>
         check_face_framing(
           face: first_face,
           context: context,
+          pass_first_face_detection: pass_first_face_detection,
           update_face_distance_result_2: (
             bool new_face_distance_result_2,
           ) {

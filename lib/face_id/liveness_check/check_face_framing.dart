@@ -4,6 +4,7 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 check_face_framing({
   required Face face,
   required BuildContext context,
+  required bool pass_first_face_detection,
   required Function update_face_distance_result_2,
   required Function update_framing_values,
   required Function callback,
@@ -58,7 +59,7 @@ check_face_framing({
   bool nose_base_y_position_result_2 = nose_base_position.dy >= nose_min_y_2 &&
       nose_base_position.dy <= nose_max_y_2;
 
-  if (!pass_face_detection) {
+  if (!pass_first_face_detection) {
     if (face_distance_result_1 && nose_base_y_position_result_1) {
       update_framing_values(
         true,
@@ -76,7 +77,7 @@ check_face_framing({
     }
   } else {
     if (nose_base_y_position_result_2) {
-      if (face_distance_result_2 && pass_face_detection) {
+      if (face_distance_result_2 && pass_first_face_detection) {
         update_framing_values(
           true,
           true,
