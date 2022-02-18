@@ -9,24 +9,24 @@ start_image_stream({
   required Function process_image_function,
 }) {
   camera_controller.startImageStream((CameraImage camera_image) {
-    final WriteBuffer allBytes = WriteBuffer();
+    final WriteBuffer all_bytes = WriteBuffer();
     for (Plane plane in camera_image.planes) {
-      allBytes.putUint8List(plane.bytes);
+      all_bytes.putUint8List(plane.bytes);
     }
-    final bytes = allBytes.done().buffer.asUint8List();
+    final bytes = all_bytes.done().buffer.asUint8List();
 
-    final Size imageSize =
+    final Size image_size =
         Size(camera_image.width.toDouble(), camera_image.height.toDouble());
 
-    final InputImageRotation imageRotation =
+    final InputImageRotation image_rotation =
         InputImageRotationMethods.fromRawValue(cameras[1].sensorOrientation) ??
             InputImageRotation.Rotation_0deg;
 
-    final InputImageFormat inputImageFormat =
+    final InputImageFormat input_image_format =
         InputImageFormatMethods.fromRawValue(camera_image.format.raw) ??
             InputImageFormat.NV21;
 
-    final planeData = camera_image.planes.map(
+    final plane_data = camera_image.planes.map(
       (Plane plane) {
         return InputImagePlaneMetadata(
           bytesPerRow: plane.bytesPerRow,
@@ -36,15 +36,16 @@ start_image_stream({
       },
     ).toList();
 
-    final inputImageData = InputImageData(
-      size: imageSize,
-      imageRotation: imageRotation,
-      inputImageFormat: inputImageFormat,
-      planeData: planeData,
+    final input_image_data = InputImageData(
+      size: image_size,
+      imageRotation: image_rotation,
+      inputImageFormat: input_image_format,
+      planeData: plane_data,
     );
 
     InputImage input_image = InputImage.fromBytes(
-        bytes: camera_image.planes.first.bytes, inputImageData: inputImageData);
+        bytes: camera_image.planes.first.bytes,
+        inputImageData: input_image_data);
 
     process_image_function(input_image);
   });

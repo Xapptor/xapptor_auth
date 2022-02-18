@@ -14,12 +14,14 @@ import 'start_image_stream.dart';
 
 class LivenessCheck extends StatefulWidget {
   const LivenessCheck({
+    this.front_camera = true,
     required this.main_color,
     required this.logo_image_path,
     required this.session_life_time,
     required this.callback,
   });
 
+  final bool front_camera;
   final Color main_color;
   final String logo_image_path;
   final int session_life_time;
@@ -95,6 +97,10 @@ class _LivenessCheckState extends State<LivenessCheck>
     pass_first_face_detection = true;
     setState(() {});
     animation_controller.forward();
+    if (face_is_ready_to_init_scan && !timer_was_restart) {
+      timer_was_restart = true;
+      init_timer();
+    }
   }
 
   on_close_feedback_button_pressed() {
@@ -121,17 +127,17 @@ class _LivenessCheckState extends State<LivenessCheck>
   init_camera() async {
     cameras = await availableCameras();
 
-    camera_controller = CameraController(cameras[1], ResolutionPreset.max);
+    camera_controller = CameraController(
+      cameras[widget.front_camera ? 1 : 0],
+      widget.front_camera ? ResolutionPreset.high : ResolutionPreset.medium,
+    );
     await camera_controller!.initialize().then((_) {
       if (!mounted) {
         return;
       }
       setState(() {});
 
-      timer = Timer.periodic(Duration(seconds: widget.session_life_time),
-          (Timer timer) {
-        Navigator.pop(context);
-      });
+      init_timer();
 
       if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS)
         start_image_stream(
@@ -139,6 +145,15 @@ class _LivenessCheckState extends State<LivenessCheck>
           cameras: cameras,
           process_image_function: process_image,
         );
+    });
+  }
+
+  bool timer_was_restart = false;
+
+  init_timer() {
+    timer = Timer.periodic(Duration(seconds: widget.session_life_time),
+        (Timer timer) {
+      Navigator.pop(context);
     });
   }
 

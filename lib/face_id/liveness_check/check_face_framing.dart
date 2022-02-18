@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 
+import 'get_face_id.dart';
+
 check_face_framing({
   required Face face,
   required BuildContext context,
@@ -84,6 +86,7 @@ check_face_framing({
           "",
           false,
         );
+        get_face_id(face: face);
         Navigator.pop(context);
       } else {
         update_framing_values(
