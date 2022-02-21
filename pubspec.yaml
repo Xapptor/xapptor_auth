@@ -13,6 +13,7 @@ dependencies:
 
   firebase_auth: ^3.3.7
   cloud_firestore: ^3.1.8
+  firebase_storage: ^10.2.7
 
   universal_platform: ^1.0.0+1
   shared_preferences: ^2.0.13
@@ -21,9 +22,11 @@ dependencies:
   http: ^0.13.4
   crypto: ^3.0.1
   google_ml_kit: ^0.7.3
-  camera: ^0.9.4+11
+  camera: ^0.9.4+14
   camera_web: ^0.2.1+2
 
+  xapptor_me:
+    path: ../xapptor_me/xapptor_me
   xapptor_logic: ^0.0.3
   xapptor_router: ^0.0.2
   xapptor_translation: ^0.0.3

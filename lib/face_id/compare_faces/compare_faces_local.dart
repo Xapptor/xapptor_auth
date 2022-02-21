@@ -1,12 +1,13 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:xapptor_auth/face_id/face_recognition/convert_image_to_input_image.dart';
-import 'package:xapptor_logic/get_temporary_file_from_remote_image.dart';
+import 'package:xapptor_logic/get_temporary_file_from_local.dart';
 
 Future<bool> compare_faces_with_local_service({
-  required String source_image_base64,
-  required String target_image_base64,
+  required Uint8List source_image_bytes,
+  required Uint8List target_image_bytes,
 }) async {
   FaceDetector face_detector = GoogleMlKit.vision.faceDetector(
     FaceDetectorOptions(
@@ -17,19 +18,48 @@ Future<bool> compare_faces_with_local_service({
     ),
   );
 
-  File file = await get_temporary_file_from_remote_image(
-      "https://firebasestorage.googleapis.com/v0/b/xapptor.appspot.com/o/face_id_test%2Fface_id_test_2.jpeg?alt=media&token=88006dc3-69af-48e4-b3d9-b9c0c44786bd");
-  InputImage input_image = await convert_image_file_to_input_image(
-    file: file,
+  File source_file = await get_temporary_file_from_local(
+    bytes: source_image_bytes,
+    name: "temp_image_1.jpeg",
   );
 
-  final faces = await face_detector.processImage(input_image);
+  File target_file = await get_temporary_file_from_local(
+    bytes: target_image_bytes,
+    name: "temp_image_2.jpeg",
+  );
+
+  InputImage source_input_image = await convert_image_file_to_input_image(
+    file: source_file,
+  );
+
+  InputImage target_input_image = await convert_image_file_to_input_image(
+    file: target_file,
+  );
+
+  final source_faces = await face_detector.processImage(source_input_image);
+  final target_faces = await face_detector.processImage(target_input_image);
+
+  List<int> source_face_offset_distances = [];
+  List<int> target_face_offset_distances = [];
 
   bool face_match = false;
 
-  if (faces.length > 0) {
-    List<int> face_offset_distances =
-        get_face_offset_distances(face: faces.first);
+  if (source_faces.length > 0) {
+    source_face_offset_distances =
+        get_face_offset_distances(face: source_faces.first);
+  }
+
+  if (target_faces.length > 0) {
+    target_face_offset_distances =
+        get_face_offset_distances(face: target_faces.first);
+  }
+
+  if (source_face_offset_distances.isNotEmpty &&
+      target_face_offset_distances.isNotEmpty) {
+    face_match = validate_face_id(
+      offset_distances_source: source_face_offset_distances,
+      offset_distances_target: target_face_offset_distances,
+    );
   }
   return face_match;
 }
@@ -117,19 +147,19 @@ List<int> get_offset_distances({
 }
 
 bool validate_face_id({
-  required List<int> offset_distances_original,
-  required List<int> offset_distances_new,
+  required List<int> offset_distances_source,
+  required List<int> offset_distances_target,
 }) {
   List<bool> similarity_list = [];
 
-  for (var i = 0; i < offset_distances_original.length; i++) {
+  for (var i = 0; i < offset_distances_source.length; i++) {
     similarity_list.add(
-        (offset_distances_original[i] - offset_distances_new[i]).abs() < 21);
+        (offset_distances_source[i] - offset_distances_target[i]).abs() < 25);
   }
 
   double valid_face_percentage =
       (100 * similarity_list.where((item) => item == true).length) /
-          offset_distances_original.length;
+          offset_distances_source.length;
 
   print(valid_face_percentage);
 

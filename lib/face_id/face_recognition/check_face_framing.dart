@@ -4,7 +4,6 @@ import 'package:xapptor_auth/face_id/compare_faces/compare_faces_local.dart';
 
 check_face_framing({
   required Face face,
-  required BuildContext context,
   required bool pass_first_face_detection,
   required Function update_face_distance_result_2,
   required Function update_framing_values,
@@ -85,8 +84,6 @@ check_face_framing({
           "",
           false,
         );
-        get_face_offset_distances(face: face);
-        Navigator.pop(context);
       } else {
         update_framing_values(
           false,
