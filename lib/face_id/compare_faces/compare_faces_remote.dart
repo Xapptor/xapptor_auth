@@ -1,27 +1,14 @@
-import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 // AWS Rekognition Compare Faces
 
-Future<String> get_base64_image(String src) async {
-  http.Response response = await http.get(
-    Uri.parse(src),
-  );
-
-  Uint8List? bytes = response.bodyBytes;
-  return base64.encode(bytes);
-}
-
-Future<bool> compare_faces({
-  required String source_image,
-  required String target_image,
-  required double similarity_threshold,
-  required String region,
+Future<bool> compare_faces_with_remote_service({
+  required String source_image_base64,
+  required String target_image_base64,
+  double similarity_threshold = 80.0,
+  String region = "us-east-1",
 }) async {
-  String source_bytes = await get_base64_image(source_image);
-  String target_bytes = await get_base64_image(target_image);
-
   String endpoint =
       'https://bfzxipfgn5.execute-api.us-east-1.amazonaws.com/default/compare_faces';
 
@@ -30,8 +17,8 @@ Future<bool> compare_faces({
   };
 
   Map body = {
-    "source_bytes": source_bytes,
-    "target_bytes": target_bytes,
+    "source_bytes": source_image_base64,
+    "target_bytes": target_image_base64,
     "similarity_threshold": similarity_threshold,
     "aws_region": region,
   };

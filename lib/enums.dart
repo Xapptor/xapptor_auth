@@ -1,8 +1,8 @@
 enum FaceEthnicity {
-  Africa,
-  Asia,
-  Europe,
-  LatinAmerica,
+  africa,
+  asia,
+  europe,
+  latin_america,
 }
 
 extension FaceEthnicityExt on FaceEthnicity {
@@ -13,8 +13,8 @@ extension FaceEthnicityExt on FaceEthnicity {
 }
 
 enum FaceGender {
-  Female,
-  Male,
+  female,
+  male,
 }
 
 extension FaceGenderExt on FaceGender {

@@ -1,9 +1,40 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:xapptor_auth/face_id/face_recognition/convert_image_to_input_image.dart';
+import 'package:xapptor_logic/get_temporary_file_from_remote_image.dart';
 
-String get_face_id({
+Future<bool> compare_faces_with_local_service({
+  required String source_image_base64,
+  required String target_image_base64,
+}) async {
+  FaceDetector face_detector = GoogleMlKit.vision.faceDetector(
+    FaceDetectorOptions(
+      mode: FaceDetectorMode.accurate,
+      enableLandmarks: true,
+      enableContours: false,
+      enableClassification: true,
+    ),
+  );
+
+  File file = await get_temporary_file_from_remote_image(
+      "https://firebasestorage.googleapis.com/v0/b/xapptor.appspot.com/o/face_id_test%2Fface_id_test_2.jpeg?alt=media&token=88006dc3-69af-48e4-b3d9-b9c0c44786bd");
+  InputImage input_image = await convert_image_file_to_input_image(
+    file: file,
+  );
+
+  final faces = await face_detector.processImage(input_image);
+
+  bool face_match = false;
+
+  if (faces.length > 0) {
+    List<int> face_offset_distances =
+        get_face_offset_distances(face: faces.first);
+  }
+  return face_match;
+}
+
+List<int> get_face_offset_distances({
   required Face face,
 }) {
   FaceLandmark? left_eye = face.getLandmark(FaceLandmarkType.leftEye);
@@ -60,60 +91,29 @@ String get_face_id({
   ];
 
   List<int> offset_distances_1 =
-      get_offset_distances_from_nose_base(offset_list: offset_list_1);
+      get_offset_distances(offset_list: offset_list_1);
 
   List<int> offset_distances_2 =
-      get_offset_distances_from_nose_base(offset_list: offset_list_2);
+      get_offset_distances(offset_list: offset_list_2);
 
   List<int> offset_distances_3 =
-      get_offset_distances_from_nose_base(offset_list: offset_list_3);
+      get_offset_distances(offset_list: offset_list_3);
 
   List<int> offset_distances =
       offset_distances_1 + offset_distances_2 + offset_distances_3;
 
-  int offset_distances_sum_1 =
-      offset_distances_1.reduce((value, element) => value + element);
-
-  int offset_distances_sum_2 =
-      offset_distances_2.reduce((value, element) => value + element);
-
-  int offset_distances_sum_3 =
-      offset_distances_3.reduce((value, element) => value + element);
-
-  List<int> offset_distances_example_1 = [310, 440, 280];
-  List<int> offset_distances_example_2 = [245, 240, 250];
-  List<int> offset_distances_example_3 = [440, 440, 465, 465];
-
-  //List<int> offset_distances_example = [310, 440, 280] + [245, 240, 250] + [440, 440, 465, 465];
-  List<int> offset_distances_example = offset_distances_example_1 +
-      offset_distances_example_2 +
-      offset_distances_example_3;
-
-  print("------------offset_distances------------");
-  print(offset_distances_example);
-  print(offset_distances);
-
-  bool valid_face = validate_face_id(
-    offset_distances_original: offset_distances_example,
-    offset_distances_new: offset_distances,
-  );
-
-  print(valid_face);
-
-  set_face_keys_to_current_user(offset_distances_new: offset_distances_example);
-
-  return "test";
+  return offset_distances;
 }
 
-set_face_keys_to_current_user({
-  required List<int> offset_distances_new,
-}) async {
-  await FirebaseFirestore.instance
-      .collection("users")
-      .doc("FcqQqDVf8FNmF9tw1TsmZhykr8G3")
-      .update({
-    "face_keys": offset_distances_new,
-  });
+List<int> get_offset_distances({
+  required List<Offset> offset_list,
+}) {
+  List<int> offset_distances = [];
+  for (var i = 0; i < offset_list.length; i += 2) {
+    offset_distances
+        .add((offset_list[i] - offset_list[i + 1]).distance.round());
+  }
+  return offset_distances;
 }
 
 bool validate_face_id({
@@ -135,15 +135,4 @@ bool validate_face_id({
 
   bool valid_face = valid_face_percentage == 100;
   return valid_face;
-}
-
-List<int> get_offset_distances_from_nose_base({
-  required List<Offset> offset_list,
-}) {
-  List<int> offset_distances = [];
-  for (var i = 0; i < offset_list.length; i += 2) {
-    offset_distances
-        .add((offset_list[i] - offset_list[i + 1]).distance.round());
-  }
-  return offset_distances;
 }

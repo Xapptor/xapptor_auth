@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:camera/camera.dart';
 import 'package:universal_platform/universal_platform.dart';
-import 'package:xapptor_auth/face_id/liveness_check/check_liveness.dart';
-import 'package:xapptor_auth/face_id/liveness_check/feedback_layer.dart';
+import 'package:xapptor_auth/face_id/face_recognition/check_liveness.dart';
+import 'package:xapptor_auth/face_id/face_recognition/feedback_layer.dart';
 import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'analize_for_face_changes.dart';
@@ -58,8 +58,6 @@ class _LivenessCheckState extends State<LivenessCheck>
   late AnimationController animation_controller;
   Tween<double> oval_size_multiplier = Tween(begin: 0.45, end: 0.8);
 
-  int face_validation_time = 15;
-
   List<String> feedback_texts = [
     "Get Ready For\nYour Video Selfie",
     "Frame Your Face In The Oval,\nPress I'm Ready & Move Closer",
@@ -97,7 +95,7 @@ class _LivenessCheckState extends State<LivenessCheck>
     pass_first_face_detection = true;
     setState(() {});
     animation_controller.forward();
-    if (face_is_ready_to_init_scan && !timer_was_restart) {
+    if (!timer_was_restart) {
       timer_was_restart = true;
       init_timer();
     }
@@ -142,7 +140,7 @@ class _LivenessCheckState extends State<LivenessCheck>
       if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS)
         start_image_stream(
           camera_controller: camera_controller!,
-          cameras: cameras,
+          camera: cameras[widget.front_camera ? 1 : 0],
           process_image_function: process_image,
         );
     });
@@ -201,7 +199,7 @@ class _LivenessCheckState extends State<LivenessCheck>
             });
       }
 
-      if (process_image_counter % 7 == 0) {
+      if (process_image_counter % 3 == 0) {
         process_image_counter = 0;
 
         check_face_framing(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
-
-import 'get_face_id.dart';
+import 'package:xapptor_auth/face_id/compare_faces/compare_faces_local.dart';
 
 check_face_framing({
   required Face face,
@@ -86,7 +85,7 @@ check_face_framing({
           "",
           false,
         );
-        get_face_id(face: face);
+        get_face_offset_distances(face: face);
         Navigator.pop(context);
       } else {
         update_framing_values(
