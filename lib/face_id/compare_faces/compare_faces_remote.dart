@@ -7,14 +7,14 @@ import 'dart:convert';
 Future<bool> compare_faces_with_remote_service({
   required Uint8List source_image_bytes,
   required Uint8List target_image_bytes,
-  double similarity_threshold = 80.0,
-  String region = "us-east-1",
+  double similarity_threshold = 95.0,
+  required String endpoint,
+  required String endpoint_api_key,
+  required String endpoint_region,
 }) async {
-  String endpoint =
-      'https://bfzxipfgn5.execute-api.us-east-1.amazonaws.com/default/compare_faces';
-
   Map<String, String> headers = {
     'Content-Type': "application/json",
+    'x-api-key': endpoint_api_key,
   };
 
   String source_image_base64 = base64.encode(source_image_bytes);
@@ -24,7 +24,7 @@ Future<bool> compare_faces_with_remote_service({
     "source_bytes": source_image_base64,
     "target_bytes": target_image_base64,
     "similarity_threshold": similarity_threshold,
-    "aws_region": region,
+    "aws_region": endpoint_region,
   };
 
   http.Response response = await http.post(

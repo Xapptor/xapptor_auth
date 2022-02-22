@@ -32,6 +32,9 @@ class FaceID extends StatefulWidget {
     required this.session_life_time,
     required this.callback,
     required this.service_location,
+    required this.remote_service_endpoint,
+    required this.remote_service_endpoint_api_key,
+    required this.remote_service_endpoint_region,
   });
 
   final FaceIDProcess face_id_process;
@@ -41,6 +44,9 @@ class FaceID extends StatefulWidget {
   final int session_life_time;
   final Function(bool liveness_check_result) callback;
   final ServiceLocation service_location;
+  final String remote_service_endpoint;
+  final String remote_service_endpoint_api_key;
+  final String remote_service_endpoint_region;
 
   @override
   _FaceIDState createState() => _FaceIDState();
@@ -260,7 +266,11 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
   }
 
   comparison_result_callback() {
-    Timer(Duration(milliseconds: 2000), () {
+    Timer(
+        Duration(
+            milliseconds: widget.service_location == ServiceLocation.local
+                ? 2000
+                : 0), () {
       show_loader = false;
       show_comparison_result = true;
       setState(() {});
@@ -306,6 +316,11 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
             service_location: widget.service_location,
             source_image_bytes: source_bytes,
             target_image_bytes: decrypted_target_bytes,
+            remote_service_endpoint: widget.remote_service_endpoint,
+            remote_service_endpoint_api_key:
+                widget.remote_service_endpoint_api_key,
+            remote_service_endpoint_region:
+                widget.remote_service_endpoint_region,
           );
 
           if (comparison_result) {
@@ -351,7 +366,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
       camera_controller!.dispose();
     }
 
-    widget.callback(face_distance_result_2 && pass_first_face_detection);
+    widget.callback(comparison_result);
     super.dispose();
   }
 
