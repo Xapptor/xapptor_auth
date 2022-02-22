@@ -161,8 +161,7 @@ bool validate_face_id({
       (100 * similarity_list.where((item) => item == true).length) /
           offset_distances_source.length;
 
-  print(valid_face_percentage);
-
+  print("Similarity: " + valid_face_percentage.toString());
   bool valid_face = valid_face_percentage == 100;
   return valid_face;
 }

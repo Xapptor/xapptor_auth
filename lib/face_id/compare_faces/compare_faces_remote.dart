@@ -42,11 +42,8 @@ Future<bool> compare_faces_with_remote_service({
 
   if (face_matches.length > 0) {
     similarity = face_matches[0]["Similarity"];
-    face_match = similarity > 92;
+    face_match = similarity > 98;
   }
-
-  print("similarity: " + similarity.toString());
-  print("face_match: " + face_match.toString());
-
+  print("Similarity: " + similarity.toString());
   return face_match;
 }
