@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:camera/camera.dart';
@@ -12,13 +10,13 @@ import 'package:xapptor_auth/face_id/face_recognition/check_liveness.dart';
 import 'package:xapptor_auth/face_id/face_recognition/feedback_layer.dart';
 import 'package:xapptor_logic/get_base64_from_remote_image.dart';
 import 'package:xapptor_logic/get_image_size.dart';
-import 'package:xapptor_logic/get_temporary_file_from_local.dart';
 import 'package:xapptor_me/fe.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'analize_for_face_changes.dart';
 import 'check_face_framing.dart';
+import 'convert_image_to_input_image.dart';
 import 'face_frame_painter.dart';
-import 'start_image_stream.dart';
+import 'upload_new_face_id_file.dart';
 
 enum FaceIDProcess {
   register,
@@ -93,7 +91,6 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
   double logo_image_width = 0;
 
   late Timer session_life_time_timer;
-  Timer show_loader_timer = Timer(Duration(seconds: 9999), () {});
 
   int process_image_counter = 0;
   List<double> smiling_probability_list = [];
@@ -107,6 +104,9 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
   bool face_distance_result_2 = false;
   bool liveness_test_passed = false;
   bool show_loader = false;
+  bool show_comparison_result = false;
+  bool comparison_result = false;
+  bool comparison_result_animate = false;
 
   on_main_feedback_button_pressed() {
     minimize_frame = false;
@@ -157,11 +157,13 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
       init_timer();
 
       if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS)
-        start_image_stream(
-          camera_controller: camera_controller!,
-          camera: cameras[widget.front_camera ? 1 : 0],
-          process_image_function: process_image,
-        );
+        camera_controller!.startImageStream((CameraImage camera_image) async {
+          InputImage input_image = convert_camera_image_to_input_image(
+            image: camera_image,
+            camera: cameras[widget.front_camera ? 1 : 0],
+          );
+          process_image(input_image);
+        });
     });
   }
 
@@ -180,7 +182,6 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
     process_image_counter++;
 
     final faces = await face_detector.processImage(input_image);
-    //print('Found ${faces.length} faces');
 
     if (faces.length > 0) {
       Face first_face = faces.first;
@@ -241,110 +242,59 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
             show_frame_toast = new_show_frame_toast;
           },
           callback: () {
+            setState(() {});
             if (face_distance_result_2 && pass_first_face_detection) {
               face_id_process();
-            } else {
-              setState(() {});
             }
-
-            //print('face_distance: ${face_distance}');
-            //print('nose_base_position: ${nose_base_position}');
           },
         );
       }
+    } else {
+      face_is_ready_to_init_scan = false;
+      face_is_close_enough = false;
+      frame_toast_text = "Frame Your Face";
+      show_frame_toast = true;
+      setState(() {});
     }
     is_busy = false;
   }
 
-  upload_new_face_id_file(Uint8List source_bytes, User current_user) async {
-    FE fe = FE();
-    Uint8List encrypted_bytes = fe.encrypt_bytes(
-      b: source_bytes,
-      k: current_user.uid,
-      inverse: false,
-    );
-
-    File source_file = await get_temporary_file_from_local(
-      bytes: encrypted_bytes,
-      name: "temp_image_1.jpeg",
-    );
-
-    String timeStamp = DateTime.now().toIso8601String();
-
-    Reference face_id_ref = FirebaseStorage.instance
-        .ref()
-        .child('face_id')
-        .child('/' + current_user.uid)
-        .child('/${timeStamp}.jpg');
-
-    final metadata = SettableMetadata(
-      contentType: 'image/jpeg',
-      customMetadata: {'picked-file-path': source_file.path},
-    );
-
-    face_id_ref.putFile(source_file, metadata).then((p0) {
-      source_file.delete();
-    });
-
-    check_user_face_id_files_length(current_user);
-  }
-
-  check_user_face_id_files_length(User current_user) async {
-    ListResult result = await FirebaseStorage.instance
-        .ref()
-        .child('face_id')
-        .child('/' + current_user.uid)
-        .listAll();
-
-    if (result.items.length > 3) {
-      result.items.sort((a, b) => a.name.compareTo(b.name));
-      result.items.forEach((element) {
-        print(element.name);
-      });
-
-      for (var i = 0; i <= (result.items.length - 3); i++) {
-        await result.items[i].delete();
-        if (i <= (result.items.length - 3)) {
+  comparison_result_callback() {
+    Timer(Duration(milliseconds: 2000), () {
+      show_loader = false;
+      show_comparison_result = true;
+      setState(() {});
+      Timer(Duration(milliseconds: 300), () {
+        comparison_result_animate = true;
+        setState(() {});
+        Timer(Duration(milliseconds: 3500), () {
           Navigator.pop(context);
-        }
-      }
-    } else {
-      Navigator.pop(context);
-    }
-  }
-
-  Future<String> get_random_face_id_file_url(User current_user) async {
-    ListResult result = await FirebaseStorage.instance
-        .ref()
-        .child('face_id')
-        .child('/' + current_user.uid)
-        .listAll();
-
-    result.items.shuffle();
-
-    return await result.items.first.getDownloadURL();
+        });
+      });
+    });
   }
 
   face_id_process() async {
-    setState(() {});
     await camera_controller!.stopImageStream();
 
     Timer(Duration(milliseconds: 500), () {
       camera_controller!.takePicture().then((file) async {
-        // show_loader_timer = Timer(Duration(milliseconds: 800), () {
-        //   show_loader = true;
-        //   setState(() {});
-        // });
-
         User current_user = FirebaseAuth.instance.currentUser!;
         Uint8List source_bytes = await file.readAsBytes();
 
+        show_loader = true;
+        setState(() {});
+
         if (widget.face_id_process == FaceIDProcess.register) {
-          upload_new_face_id_file(source_bytes, current_user);
+          upload_new_face_id_file(
+            source_bytes: source_bytes,
+            current_user: current_user,
+            callback: comparison_result_callback,
+          );
         } else {
           FE fe = FE();
           Uint8List target_bytes = await get_bytes_from_remote_image(
-              await get_random_face_id_file_url(current_user));
+              await get_random_face_id_file_url(current_user: current_user));
 
           Uint8List decrypted_target_bytes = fe.encrypt_bytes(
             b: target_bytes,
@@ -352,19 +302,20 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
             inverse: true,
           );
 
-          bool compare_faces_result = await compare_faces(
+          comparison_result = await compare_faces(
             service_location: widget.service_location,
             source_image_bytes: source_bytes,
             target_image_bytes: decrypted_target_bytes,
           );
 
-          print("-------------compare_faces_result");
-          print(compare_faces_result);
-
-          if (compare_faces_result) {
-            upload_new_face_id_file(source_bytes, current_user);
+          if (comparison_result) {
+            upload_new_face_id_file(
+              source_bytes: source_bytes,
+              current_user: current_user,
+              callback: comparison_result_callback,
+            );
           } else {
-            Navigator.pop(context);
+            comparison_result_callback();
           }
         }
       });
@@ -394,9 +345,6 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
   void dispose() {
     if (session_life_time_timer.isActive) {
       session_life_time_timer.cancel();
-    }
-    if (show_loader_timer.isActive) {
-      show_loader_timer.cancel();
     }
     if (camera_controller != null) {
       face_detector.close();
@@ -463,76 +411,99 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                                 ],
                               ),
                             )
-                          : Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      outline_border_radius),
-                                  child: camera_controller == null
-                                      ? Container(
-                                          color: Colors.blueGrey,
-                                        )
-                                      : CameraPreview(
-                                          camera_controller!,
-                                        ),
-                                ),
-                                CustomPaint(
-                                  size: Size(
-                                    double.infinity,
-                                    double.infinity,
+                          : show_comparison_result
+                              ? FractionallySizedBox(
+                                  heightFactor: 0.2,
+                                  widthFactor: 0.2,
+                                  child: AnimatedContainer(
+                                    curve: Curves.easeInOutCubicEmphasized,
+                                    duration: Duration(milliseconds: 900),
+                                    decoration: BoxDecoration(
+                                      color: widget.main_color.withOpacity(
+                                          comparison_result_animate ? 1 : 0),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      comparison_result
+                                          ? Icons.check
+                                          : Icons.close,
+                                      color: Colors.white.withOpacity(
+                                          comparison_result_animate ? 1 : 0),
+                                      size: screen_width * 0.1,
+                                    ),
                                   ),
-                                  painter: FaceFramePainter(
-                                    main_color: widget.main_color,
-                                    oval_size_multiplier: animation?.value ?? 1,
-                                  ),
-                                ),
-                                minimize_frame
-                                    ? FeedbackLayer(
+                                )
+                              : Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          outline_border_radius),
+                                      child: camera_controller == null
+                                          ? Container(
+                                              color: Colors.blueGrey,
+                                            )
+                                          : CameraPreview(
+                                              camera_controller!,
+                                            ),
+                                    ),
+                                    CustomPaint(
+                                      size: Size(
+                                        double.infinity,
+                                        double.infinity,
+                                      ),
+                                      painter: FaceFramePainter(
                                         main_color: widget.main_color,
-                                        texts: feedback_texts,
-                                        on_main_button_pressed:
-                                            on_main_feedback_button_pressed,
-                                        main_button_enabled:
-                                            face_is_ready_to_init_scan,
-                                        on_close_button_pressed:
-                                            on_close_feedback_button_pressed,
-                                        undetected_face_feedback:
-                                            undetected_face_feedback,
-                                      )
-                                    : Container(),
-                                show_frame_toast
-                                    ? Container(
-                                        alignment: Alignment.center,
-                                        margin: EdgeInsets.only(
-                                          bottom: screen_height *
-                                              (animation!.value <= 0.46
-                                                  ? 0.4
-                                                  : 0.5),
-                                        ),
-                                        constraints: BoxConstraints(
-                                          maxHeight: 50,
-                                          maxWidth: screen_width * 0.65,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: widget.main_color
-                                              .withOpacity(0.85),
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(
-                                                outline_border_radius),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          frame_toast_text,
-                                          style: TextStyle(
-                                            fontSize: 28,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
+                                        oval_size_multiplier:
+                                            animation?.value ?? 1,
+                                      ),
+                                    ),
+                                    minimize_frame
+                                        ? FeedbackLayer(
+                                            main_color: widget.main_color,
+                                            texts: feedback_texts,
+                                            on_main_button_pressed:
+                                                on_main_feedback_button_pressed,
+                                            main_button_enabled:
+                                                face_is_ready_to_init_scan,
+                                            on_close_button_pressed:
+                                                on_close_feedback_button_pressed,
+                                            undetected_face_feedback:
+                                                undetected_face_feedback,
+                                          )
+                                        : Container(),
+                                    show_frame_toast
+                                        ? Container(
+                                            alignment: Alignment.center,
+                                            margin: EdgeInsets.only(
+                                              bottom: screen_height *
+                                                  (animation!.value <= 0.46
+                                                      ? 0.4
+                                                      : 0.5),
+                                            ),
+                                            constraints: BoxConstraints(
+                                              maxHeight: 50,
+                                              maxWidth: screen_width * 0.65,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: widget.main_color
+                                                  .withOpacity(0.85),
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(
+                                                    outline_border_radius),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              frame_toast_text,
+                                              style: TextStyle(
+                                                fontSize: 28,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
                     ),
                   ),
                 ),
