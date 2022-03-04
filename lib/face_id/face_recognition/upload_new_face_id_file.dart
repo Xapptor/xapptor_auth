@@ -2,23 +2,28 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:xapptor_auth/initial_values.dart';
 import 'package:xapptor_logic/get_temporary_file_from_local.dart';
-import 'package:xapptor_me/fe.dart';
 
 upload_new_face_id_file({
   required Uint8List source_bytes,
   required User current_user,
   required Function callback,
 }) async {
-  FE fe = FE();
-  Uint8List encrypted_bytes = fe.encrypt_bytes(
-    b: source_bytes,
-    k: current_user.uid,
-    inverse: false,
-  );
+  Uint8List e_b = [] as Uint8List;
+
+  if (e_b_f_au != null) {
+    e_b = e_b_f_au!(
+      b: source_bytes,
+      k: current_user.uid,
+      inverse: false,
+    );
+  } else {
+    e_b = source_bytes;
+  }
 
   File source_file = await get_temporary_file_from_local(
-    bytes: encrypted_bytes,
+    bytes: e_b,
     name: "temp_image_1.jpeg",
   );
 

@@ -8,9 +8,9 @@ import 'package:universal_platform/universal_platform.dart';
 import 'package:xapptor_auth/face_id/compare_faces/compare_faces.dart';
 import 'package:xapptor_auth/face_id/face_recognition/check_liveness.dart';
 import 'package:xapptor_auth/face_id/face_recognition/feedback_layer.dart';
+import 'package:xapptor_auth/initial_values.dart';
 import 'package:xapptor_logic/get_base64_from_remote_image.dart';
 import 'package:xapptor_logic/get_image_size.dart';
-import 'package:xapptor_me/fe.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'analize_for_face_changes.dart';
 import 'check_face_framing.dart';
@@ -302,20 +302,25 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
             callback: comparison_result_callback,
           );
         } else {
-          FE fe = FE();
           Uint8List target_bytes = await get_bytes_from_remote_image(
               await get_random_face_id_file_url(current_user: current_user));
 
-          Uint8List decrypted_target_bytes = fe.encrypt_bytes(
-            b: target_bytes,
-            k: current_user.uid,
-            inverse: true,
-          );
+          Uint8List d_t_b = [] as Uint8List;
+
+          if (e_b_f_au != null) {
+            d_t_b = e_b_f_au!(
+              b: target_bytes,
+              k: current_user.uid,
+              inverse: true,
+            );
+          } else {
+            d_t_b = target_bytes;
+          }
 
           comparison_result = await compare_faces(
             service_location: widget.service_location,
             source_image_bytes: source_bytes,
-            target_image_bytes: decrypted_target_bytes,
+            target_image_bytes: d_t_b,
             remote_service_endpoint: widget.remote_service_endpoint,
             remote_service_endpoint_api_key:
                 widget.remote_service_endpoint_api_key,
@@ -375,171 +380,174 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
     double screen_height = MediaQuery.of(context).size.height;
     double screen_width = MediaQuery.of(context).size.width;
 
-    return Container(
-      color: Colors.white,
-      child: SafeArea(
-        child: Scaffold(
-          body: Container(
-            alignment: Alignment.center,
-            color: Colors.white,
-            child: Column(
-              children: [
-                Spacer(flex: 1),
-                Expanded(
-                  flex: 26,
-                  child: FractionallySizedBox(
-                    widthFactor: 0.85,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          width: 4,
-                          color: widget.main_color,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Container(
+        color: Colors.white,
+        child: SafeArea(
+          child: Scaffold(
+            body: Container(
+              alignment: Alignment.center,
+              color: Colors.white,
+              child: Column(
+                children: [
+                  Spacer(flex: 1),
+                  Expanded(
+                    flex: 26,
+                    child: FractionallySizedBox(
+                      widthFactor: 0.85,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 4,
+                            color: widget.main_color,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(outline_border_radius),
+                          ),
                         ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(outline_border_radius),
-                        ),
-                      ),
-                      child: show_loader
-                          ? Container(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: screen_width / 7,
-                                    width: screen_width / 7,
-                                    margin: EdgeInsets.only(bottom: 20),
-                                    child: CircularProgressIndicator(
-                                      color: widget.main_color,
-                                      strokeWidth: screen_width / 60,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Uploading Encrypted Face Points",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: widget.main_color,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : show_comparison_result
-                              ? FractionallySizedBox(
-                                  heightFactor: 0.2,
-                                  widthFactor: 0.2,
-                                  child: AnimatedContainer(
-                                    curve: Curves.easeInOutCubicEmphasized,
-                                    duration: Duration(milliseconds: 900),
-                                    decoration: BoxDecoration(
-                                      color: widget.main_color.withOpacity(
-                                          comparison_result_animate ? 1 : 0),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      comparison_result
-                                          ? Icons.check
-                                          : Icons.close,
-                                      color: Colors.white.withOpacity(
-                                          comparison_result_animate ? 1 : 0),
-                                      size: screen_width * 0.1,
-                                    ),
-                                  ),
-                                )
-                              : Stack(
-                                  alignment: Alignment.center,
+                        child: show_loader
+                            ? Container(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          outline_border_radius),
-                                      child: camera_controller == null
-                                          ? Container(
-                                              color: Colors.blueGrey,
-                                            )
-                                          : CameraPreview(
-                                              camera_controller!,
-                                            ),
-                                    ),
-                                    CustomPaint(
-                                      size: Size(
-                                        double.infinity,
-                                        double.infinity,
-                                      ),
-                                      painter: FaceFramePainter(
-                                        main_color: widget.main_color,
-                                        oval_size_multiplier:
-                                            animation?.value ?? 1,
+                                    Container(
+                                      height: screen_width / 7,
+                                      width: screen_width / 7,
+                                      margin: EdgeInsets.only(bottom: 20),
+                                      child: CircularProgressIndicator(
+                                        color: widget.main_color,
+                                        strokeWidth: screen_width / 60,
                                       ),
                                     ),
-                                    minimize_frame
-                                        ? FeedbackLayer(
-                                            main_color: widget.main_color,
-                                            texts: feedback_texts,
-                                            on_main_button_pressed:
-                                                on_main_feedback_button_pressed,
-                                            main_button_enabled:
-                                                face_is_ready_to_init_scan,
-                                            on_close_button_pressed:
-                                                on_close_feedback_button_pressed,
-                                            undetected_face_feedback:
-                                                undetected_face_feedback,
-                                          )
-                                        : Container(),
-                                    show_frame_toast
-                                        ? Container(
-                                            alignment: Alignment.center,
-                                            margin: EdgeInsets.only(
-                                              bottom: screen_height *
-                                                  (animation!.value <= 0.46
-                                                      ? 0.4
-                                                      : 0.5),
-                                            ),
-                                            constraints: BoxConstraints(
-                                              maxHeight: 50,
-                                              maxWidth: screen_width * 0.65,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: widget.main_color
-                                                  .withOpacity(0.85),
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(
-                                                    outline_border_radius),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              frame_toast_text,
-                                              style: TextStyle(
-                                                fontSize: 28,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          )
-                                        : Container(),
+                                    Text(
+                                      "Uploading Encrypted Face Points",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: widget.main_color,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ],
                                 ),
+                              )
+                            : show_comparison_result
+                                ? FractionallySizedBox(
+                                    heightFactor: 0.2,
+                                    widthFactor: 0.2,
+                                    child: AnimatedContainer(
+                                      curve: Curves.easeInOutCubicEmphasized,
+                                      duration: Duration(milliseconds: 900),
+                                      decoration: BoxDecoration(
+                                        color: widget.main_color.withOpacity(
+                                            comparison_result_animate ? 1 : 0),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        comparison_result
+                                            ? Icons.check
+                                            : Icons.close,
+                                        color: Colors.white.withOpacity(
+                                            comparison_result_animate ? 1 : 0),
+                                        size: screen_width * 0.1,
+                                      ),
+                                    ),
+                                  )
+                                : Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                            outline_border_radius),
+                                        child: camera_controller == null
+                                            ? Container(
+                                                color: Colors.blueGrey,
+                                              )
+                                            : CameraPreview(
+                                                camera_controller!,
+                                              ),
+                                      ),
+                                      CustomPaint(
+                                        size: Size(
+                                          double.infinity,
+                                          double.infinity,
+                                        ),
+                                        painter: FaceFramePainter(
+                                          main_color: widget.main_color,
+                                          oval_size_multiplier:
+                                              animation?.value ?? 1,
+                                        ),
+                                      ),
+                                      minimize_frame
+                                          ? FeedbackLayer(
+                                              main_color: widget.main_color,
+                                              texts: feedback_texts,
+                                              on_main_button_pressed:
+                                                  on_main_feedback_button_pressed,
+                                              main_button_enabled:
+                                                  face_is_ready_to_init_scan,
+                                              on_close_button_pressed:
+                                                  on_close_feedback_button_pressed,
+                                              undetected_face_feedback:
+                                                  undetected_face_feedback,
+                                            )
+                                          : Container(),
+                                      show_frame_toast
+                                          ? Container(
+                                              alignment: Alignment.center,
+                                              margin: EdgeInsets.only(
+                                                bottom: screen_height *
+                                                    (animation!.value <= 0.46
+                                                        ? 0.4
+                                                        : 0.5),
+                                              ),
+                                              constraints: BoxConstraints(
+                                                maxHeight: 50,
+                                                maxWidth: screen_width * 0.65,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: widget.main_color
+                                                    .withOpacity(0.85),
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(
+                                                      outline_border_radius),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                frame_toast_text,
+                                                style: TextStyle(
+                                                  fontSize: 28,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                      ),
                     ),
                   ),
-                ),
-                Spacer(flex: 1),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: logo_height(context),
-                    width: logo_image_width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.contain,
-                        image: AssetImage(
-                          widget.logo_image_path,
+                  Spacer(flex: 1),
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      height: logo_height(context),
+                      width: logo_image_width,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.contain,
+                          image: AssetImage(
+                            widget.logo_image_path,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Spacer(flex: 1),
-              ],
+                  Spacer(flex: 1),
+                ],
+              ),
             ),
           ),
         ),
