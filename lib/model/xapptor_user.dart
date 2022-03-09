@@ -28,7 +28,7 @@ class XapptorUser {
   XapptorUser.from_snapshot(
     String id,
     String email,
-    Map<String, dynamic> snapshot,
+    Map<dynamic, dynamic> snapshot,
   )   : id = id,
         firstname = snapshot['firstname'],
         lastname = snapshot['lastname'],
