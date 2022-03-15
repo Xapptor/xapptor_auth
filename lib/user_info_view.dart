@@ -8,6 +8,7 @@ import 'package:xapptor_ui/widgets/webview/webview.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
 import 'check_if_app_enabled.dart';
 import 'form_field_validators.dart';
+import 'signin_with_google.dart';
 import 'user_info_form_functions.dart';
 import 'package:xapptor_translation/translate.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_logic/is_portrait.dart';
 import 'user_info_view_container.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 // Dynamic User Info View.
 
@@ -43,6 +46,8 @@ class UserInfoView extends StatefulWidget {
     required this.has_back_button,
     required this.text_field_background_color,
     this.edit_icon_use_text_field_background_color,
+    this.enable_google_signin = false,
+    this.enable_apple_signin = false,
   });
 
   final List<String> text_list;
@@ -66,6 +71,8 @@ class UserInfoView extends StatefulWidget {
   final bool has_back_button;
   final Color? text_field_background_color;
   final bool? edit_icon_use_text_field_background_color;
+  final bool enable_google_signin;
+  final bool enable_apple_signin;
 
   @override
   _UserInfoViewState createState() => _UserInfoViewState();
@@ -166,12 +173,17 @@ class _UserInfoViewState extends State<UserInfoView> {
   }
 
   check_login() async {
-    Timer(Duration(milliseconds: 300), () {
+    Timer(Duration(milliseconds: 300), () async {
       if (FirebaseAuth.instance.currentUser != null) {
         print("User is logged in");
         open_screen("home");
       } else {
-        print("User is not sign");
+        var google_signin_account = await _google_signin.currentUser;
+        if (google_signin_account != null) {
+          signin_with_google(google_signin_account);
+        } else {
+          print("User is not sign");
+        }
       }
     });
   }
@@ -187,11 +199,31 @@ class _UserInfoViewState extends State<UserInfoView> {
     setState(() {});
   }
 
+  GoogleSignIn _google_signin = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
+
+  Future<GoogleSignInAccount?> handle_google_signin() async {
+    try {
+      GoogleSignInAccount? google_signin_account =
+          await _google_signin.signIn();
+      if (google_signin_account != null) {
+        return google_signin_account;
+      }
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     check_if_app_enabled();
-    if (widget.user_info_form_type == UserInfoFormType.login) check_login();
+    if (is_login(widget.user_info_form_type)) check_login();
 
     init_prefs(is_login);
 
@@ -235,6 +267,15 @@ class _UserInfoViewState extends State<UserInfoView> {
     password_input_controller.dispose();
     confirm_password_input_controller.dispose();
     super.dispose();
+  }
+
+  ShapeBorder third_party_signin_method_shape(double screen_width) {
+    return RoundedRectangleBorder(
+      side: BorderSide(
+        color: widget.text_color,
+      ),
+      borderRadius: BorderRadius.circular(screen_width),
+    );
   }
 
   @override
@@ -954,6 +995,53 @@ class _UserInfoViewState extends State<UserInfoView> {
                     SizedBox(
                       height: sized_box_space,
                     ),
+                    is_login(widget.user_info_form_type) &&
+                            (widget.enable_google_signin ||
+                                widget.enable_apple_signin)
+                        ? Column(
+                            children: [
+                              Text(
+                                "Or",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: widget.text_color,
+                                ),
+                              ),
+                              SizedBox(
+                                height: sized_box_space,
+                              ),
+                              widget.enable_google_signin
+                                  ? SignInButton(
+                                      Buttons.Google,
+                                      shape: third_party_signin_method_shape(
+                                          screen_width),
+                                      onPressed: () async {
+                                        GoogleSignInAccount?
+                                            google_signin_account =
+                                            await handle_google_signin();
+                                        if (google_signin_account != null) {
+                                          signin_with_google(
+                                              google_signin_account);
+                                        }
+                                      },
+                                    )
+                                  : Container(),
+                              SizedBox(
+                                height: sized_box_space,
+                              ),
+                              widget.enable_apple_signin
+                                  ? SignInButton(
+                                      Buttons.Apple,
+                                      shape: third_party_signin_method_shape(
+                                          screen_width),
+                                      onPressed: () {
+                                        print("Apple");
+                                      },
+                                    )
+                                  : Container(),
+                            ],
+                          )
+                        : Container(),
                   ],
                 ),
               ),
