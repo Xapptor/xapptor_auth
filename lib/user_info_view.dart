@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_logic/get_image_size.dart';
+import 'package:xapptor_logic/sha256_of_string.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
@@ -8,6 +9,7 @@ import 'package:xapptor_ui/widgets/webview/webview.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
 import 'check_if_app_enabled.dart';
 import 'form_field_validators.dart';
+import 'signin_with_apple.dart';
 import 'signin_with_google.dart';
 import 'user_info_form_functions.dart';
 import 'package:xapptor_translation/translate.dart';
@@ -20,6 +22,7 @@ import 'package:xapptor_logic/is_portrait.dart';
 import 'user_info_view_container.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 // Dynamic User Info View.
 
@@ -48,6 +51,8 @@ class UserInfoView extends StatefulWidget {
     this.edit_icon_use_text_field_background_color,
     this.enable_google_signin = false,
     this.enable_apple_signin = false,
+    this.apple_signin_client_id = "",
+    this.apple_signin_redirect_url = "",
   });
 
   final List<String> text_list;
@@ -73,6 +78,8 @@ class UserInfoView extends StatefulWidget {
   final bool? edit_icon_use_text_field_background_color;
   final bool enable_google_signin;
   final bool enable_apple_signin;
+  final String apple_signin_client_id;
+  final String apple_signin_redirect_url;
 
   @override
   _UserInfoViewState createState() => _UserInfoViewState();
@@ -1034,8 +1041,32 @@ class _UserInfoViewState extends State<UserInfoView> {
                                       Buttons.Apple,
                                       shape: third_party_signin_method_shape(
                                           screen_width),
-                                      onPressed: () {
-                                        print("Apple");
+                                      onPressed: () async {
+                                        final raw_nonce = generateNonce();
+                                        final nonce =
+                                            sha256_of_string(raw_nonce);
+
+                                        AuthorizationCredentialAppleID
+                                            credential = await SignInWithApple
+                                                .getAppleIDCredential(
+                                          webAuthenticationOptions:
+                                              WebAuthenticationOptions(
+                                            clientId:
+                                                widget.apple_signin_client_id,
+                                            redirectUri: Uri.parse(widget
+                                                .apple_signin_redirect_url),
+                                          ),
+                                          scopes: [
+                                            AppleIDAuthorizationScopes.email,
+                                            AppleIDAuthorizationScopes.fullName,
+                                          ],
+                                          //nonce: nonce,
+                                        );
+
+                                        signin_with_apple(
+                                          credential,
+                                          raw_nonce,
+                                        );
                                       },
                                     )
                                   : Container(),

@@ -10,7 +10,6 @@ signin_with_google(GoogleSignInAccount google_signin_account) async {
     accessToken: google_signin_authentication.accessToken,
     idToken: google_signin_authentication.idToken,
   );
-
   await FirebaseAuth.instance.signInWithCredential(credential);
   open_screen("home");
 }
