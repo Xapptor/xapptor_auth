@@ -70,13 +70,13 @@ UserInfoView(
                 TextSpan(
                     text: 'I accept the ',
                     style: TextStyle(
-                    color: color_abeinstitute_text,
+                    color: color_text,
                     ),
                 ),
                 TextSpan(
                     text: 'privacy policies.',
                     style: TextStyle(
-                    color: color_abeinstitute_text,
+                    color: color_text,
                     fontWeight: FontWeight.bold,
                     ),
                     recognizer: TapGestureRecognizer()

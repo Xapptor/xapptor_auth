@@ -39,7 +39,7 @@ class UserInfoView extends StatefulWidget {
     required this.first_button_color,
     required this.second_button_color,
     required this.third_button_color,
-    required this.logo_image_path,
+    required this.logo_path,
     this.image_border_radius = 0,
     required this.topbar_color,
     required this.has_language_picker,
@@ -66,7 +66,7 @@ class UserInfoView extends StatefulWidget {
   final LinearGradient first_button_color;
   final Color second_button_color;
   final Color third_button_color;
-  final String logo_image_path;
+  final String logo_path;
   final double image_border_radius;
   final Color topbar_color;
   final bool has_language_picker;
@@ -198,10 +198,10 @@ class _UserInfoViewState extends State<UserInfoView> {
   double logo_image_width = 0;
 
   check_logo_image_width() async {
-    logo_image_width = await check_if_image_is_square(
-            image: Image.asset(widget.logo_image_path))
-        ? logo_height(context)
-        : logo_width(context);
+    logo_image_width =
+        await check_if_image_is_square(image: Image.asset(widget.logo_path))
+            ? logo_height(context)
+            : logo_width(context);
 
     setState(() {});
   }
@@ -321,7 +321,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                     ),
                     Container(
                       //color: Colors.lightGreen,
-                      child: widget.logo_image_path.contains("http")
+                      child: widget.logo_path.contains("http")
                           ? Container(
                               height: logo_height(context),
                               width: logo_image_width,
@@ -332,7 +332,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                               ),
                               child: Webview(
                                 id: "20",
-                                src: widget.logo_image_path,
+                                src: widget.logo_path,
                               ),
                             )
                           : Container(
@@ -345,7 +345,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 image: DecorationImage(
                                   fit: BoxFit.contain,
                                   image: AssetImage(
-                                    widget.logo_image_path,
+                                    widget.logo_path,
                                   ),
                                 ),
                               ),
