@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -248,8 +249,7 @@ class UserInfoFormFunctions {
     required GlobalKey<FormState> email_form_key,
     required List<TextEditingController> input_controllers,
     required String user_id,
-    required bool editing_email,
-    required widget_parent,
+    required bool password_verification_enabled,
   }) async {
     TextEditingController email_input_controller = input_controllers[0];
     TextEditingController confirm_email_input_controller = input_controllers[1];
@@ -269,10 +269,8 @@ class UserInfoFormFunctions {
               print(e);
             }
 
-            editing_email = false;
-            widget_parent.setState(() {});
-
-            show_user_info_saved_message(context, 2);
+            show_user_info_saved_message(
+                context, password_verification_enabled ? 2 : 1);
           }).catchError((err) {
             print(err);
           });
@@ -297,8 +295,7 @@ class UserInfoFormFunctions {
     required List<TextEditingController> input_controllers,
     required String user_id,
     required String email,
-    required bool editing_password,
-    required widget_parent,
+    required bool password_verification_enabled,
   }) async {
     TextEditingController password_input_controller = input_controllers[0];
     TextEditingController confirm_password_input_controller =
@@ -310,11 +307,8 @@ class UserInfoFormFunctions {
         User user = FirebaseAuth.instance.currentUser!;
 
         user.updatePassword(password_input_controller.text).then((_) {
-          editing_password = false;
-
-          widget_parent.setState(() {});
-
-          show_user_info_saved_message(context, 3);
+          show_user_info_saved_message(
+              context, password_verification_enabled ? 3 : 2);
         }).catchError((error) {
           print("Password can't be changed " + error.toString());
         });
@@ -340,8 +334,7 @@ class UserInfoFormFunctions {
     required int gender_value,
     required String country_value,
     required String user_id,
-    required bool editing_name_and_info,
-    required widget_parent,
+    required bool password_verification_enabled,
   }) {
     TextEditingController firstname_input_controller = input_controllers[0];
     TextEditingController lastname_input_controller = input_controllers[1];
@@ -356,11 +349,8 @@ class UserInfoFormFunctions {
         "gender": gender_value,
         "country": country_value,
       }).then((result) {
-        editing_name_and_info = false;
-
-        widget_parent.setState(() {});
-
-        show_user_info_saved_message(context, 2);
+        show_user_info_saved_message(
+            context, password_verification_enabled ? 2 : 1);
       }).catchError((err) {
         print(err);
       });
@@ -372,11 +362,13 @@ class UserInfoFormFunctions {
       Navigator.of(context).pop();
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("User info saved"),
-        duration: Duration(seconds: 3),
-      ),
-    );
+    Timer(Duration(milliseconds: 500), () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("User info saved"),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    });
   }
 }

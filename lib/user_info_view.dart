@@ -96,19 +96,24 @@ class _UserInfoViewState extends State<UserInfoView> {
   bool editing_password = false;
   bool editing_name_and_info = false;
 
+  static DateTime over_18 = DateTime(
+      DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
+
   String firstname = "";
   String lastname = "";
   String email = "";
   String birthday = "";
   int gender_index = 0;
   String country = "";
-  DateTime date = DateTime.now();
+  DateTime date = over_18;
 
   bool _password_visible = false;
   bool remember_me = false;
 
   bool accept_terms = false;
   String birthday_label = "";
+
+  bool password_verification_enabled = true;
 
   TextEditingController firstname_input_controller = TextEditingController();
   TextEditingController last_name_input_controller = TextEditingController();
@@ -122,8 +127,6 @@ class _UserInfoViewState extends State<UserInfoView> {
   String gender_value = "";
   String? country_value = "";
 
-  static DateTime over_18 = DateTime(
-      DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
   static DateTime first_date = DateTime(
       DateTime.now().year - 150, DateTime.now().month, DateTime.now().day);
   DateTime selected_date = over_18;
@@ -1161,7 +1164,7 @@ class _UserInfoViewState extends State<UserInfoView> {
     if (widget.first_button_action == null) {
       if (is_edit_account(widget.user_info_form_type)) {
         if (editing_email || editing_password || editing_name_and_info) {
-          show_alert_dialog(context);
+          show_edit_account_alert_dialog(context);
         }
       } else if (is_register(widget.user_info_form_type)) {
         List<TextEditingController> inputControllers = [
@@ -1219,7 +1222,7 @@ class _UserInfoViewState extends State<UserInfoView> {
         : widget.text_color;
   }
 
-  show_alert_dialog(BuildContext context) {
+  show_edit_account_alert_dialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1251,7 +1254,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                     context: context,
                     email: email,
                     text_color: widget.text_color,
-                    function: () {
+                    enabled: password_verification_enabled,
+                    callback: () {
                       String uid = FirebaseAuth.instance.currentUser!.uid;
 
                       if (editing_name_and_info) {
@@ -1270,8 +1274,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                               widget.gender_values.indexOf(gender_value),
                           country_value: country_value ?? "",
                           user_id: uid,
-                          editing_name_and_info: editing_name_and_info,
-                          widget_parent: this,
+                          password_verification_enabled:
+                              password_verification_enabled,
                         );
                       }
 
@@ -1288,8 +1292,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                           input_controllers: inputControllers,
                           user_id: uid,
                           email: email_input_controller.text,
-                          editing_password: editing_password,
-                          widget_parent: this,
+                          password_verification_enabled:
+                              password_verification_enabled,
                         );
                       }
 
@@ -1305,8 +1309,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                           email_form_key: user_info_view_form_key,
                           input_controllers: inputControllers,
                           user_id: uid,
-                          editing_email: editing_email,
-                          widget_parent: this,
+                          password_verification_enabled:
+                              password_verification_enabled,
                         );
                       }
                     },
@@ -1324,64 +1328,68 @@ class _UserInfoViewState extends State<UserInfoView> {
     required BuildContext context,
     required String email,
     required Color text_color,
-    required Function function,
+    required Function callback,
+    required bool enabled,
   }) async {
-    TextEditingController password_input_controller = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Enter current password"),
-          content: TextFormField(
-            decoration: InputDecoration(
-              labelText: "Password",
-              labelStyle: TextStyle(
-                color: text_color,
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
+    if (!enabled) {
+      callback();
+    } else {
+      TextEditingController password_input_controller = TextEditingController();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Enter current password"),
+            content: TextFormField(
+              decoration: InputDecoration(
+                labelText: "Password",
+                labelStyle: TextStyle(
                   color: text_color,
                 ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: text_color,
+                  ),
+                ),
               ),
+              controller: password_input_controller,
+              validator: (value) => FormFieldValidators(
+                value: value!,
+                type: FormFieldValidatorsType.password,
+              ).validate(),
+              obscureText: true,
             ),
-            controller: password_input_controller,
-            validator: (value) => FormFieldValidators(
-              value: value!,
-              type: FormFieldValidatorsType.password,
-            ).validate(),
-            obscureText: true,
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text("Accept"),
-              onPressed: () async {
-                await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                  email: email,
-                  password: password_input_controller.text,
-                )
-                    .then((UserCredential userCredential) async {
-                  function();
-                }).catchError((onError) {
-                  print(onError);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("The password is invalid"),
-                    duration: Duration(milliseconds: 1500),
-                  ));
-                });
-              },
-            ),
-          ],
-        );
-      },
-    );
+            actions: <Widget>[
+              TextButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text("Accept"),
+                onPressed: () async {
+                  await FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                    email: email,
+                    password: password_input_controller.text,
+                  )
+                      .then((UserCredential userCredential) async {
+                    callback();
+                  }).catchError((onError) {
+                    print(onError);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("The password is invalid"),
+                      duration: Duration(milliseconds: 1500),
+                    ));
+                  });
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   // Get user info.
@@ -1393,13 +1401,25 @@ class _UserInfoViewState extends State<UserInfoView> {
           .collection("users")
           .doc(auth_user.uid)
           .get();
-      firstname = user.get("firstname");
-      lastname = user.get("lastname");
+
+      Map user_data = user.data() as Map;
+
+      firstname = user_data["firstname"] ?? "";
+      lastname = user_data["lastname"] ?? "";
       email = auth_user.email!;
-      birthday = timestamp_to_date(user.get("birthday"));
-      gender_index = user.get("gender");
-      country = user.get("country");
-      date = DateTime.parse(user.get("birthday").toDate().toString());
+
+      if (user_data["birthday"] != null) {
+        birthday = timestamp_to_date(user_data["birthday"]);
+        date = DateTime.parse(user_data["birthday"].toDate().toString());
+      }
+
+      gender_index = user_data["gender"] ?? 0;
+      country = user_data["country"] ?? "";
+
+      if (firstname.isEmpty || lastname.isEmpty) {
+        editing_name_and_info = true;
+        password_verification_enabled = false;
+      }
 
       fill_fields();
     }
