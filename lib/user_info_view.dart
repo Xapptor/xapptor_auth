@@ -132,7 +132,7 @@ class _UserInfoViewState extends State<UserInfoView> {
       DateTime.now().year - 150, DateTime.now().month, DateTime.now().day);
   DateTime selected_date = over_18;
 
-  Future<Null> _select_date(BuildContext context) async {
+  Future<Null> _select_date() async {
     final DateTime? picked = (await showDatePicker(
       context: context,
       initialDate: selected_date,
@@ -745,10 +745,10 @@ class _UserInfoViewState extends State<UserInfoView> {
                                           if (is_edit_account(
                                               widget.user_info_form_type)) {
                                             if (editing_name_and_info) {
-                                              _select_date(context);
+                                              _select_date();
                                             }
                                           } else {
-                                            _select_date(context);
+                                            _select_date();
                                           }
                                         },
                                         child: Text(
