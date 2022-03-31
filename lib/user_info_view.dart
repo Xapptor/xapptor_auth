@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_logic/sha256_of_string.dart';
 import 'package:xapptor_router/app_screens.dart';
+import 'package:xapptor_translation/model/text_list.dart';
 import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:xapptor_ui/widgets/webview/webview.dart';
@@ -12,7 +13,7 @@ import 'form_field_validators.dart';
 import 'signin_with_apple.dart';
 import 'signin_with_google.dart';
 import 'user_info_form_functions.dart';
-import 'package:xapptor_translation/translate.dart';
+import 'package:xapptor_translation/translation_stream.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'user_info_form_type.dart';
@@ -55,12 +56,12 @@ class UserInfoView extends StatefulWidget {
     this.apple_signin_redirect_url = "",
   });
 
-  final List<String> text_list;
+  final TranslationTextListArray text_list;
   final RichText tc_and_pp_text;
   final Function? first_button_action;
   final Function? second_button_action;
   final Function? third_button_action;
-  final List<String> gender_values;
+  final TranslationTextListArray gender_values;
   final List<String>? country_values;
   final Color text_color;
   final LinearGradient first_button_color;
@@ -165,15 +166,24 @@ class _UserInfoViewState extends State<UserInfoView> {
   late TranslationStream translation_stream_gender;
   List<TranslationStream> translation_stream_list = [];
 
+  int source_language_index = 0;
+
+  update_source_language({
+    required int new_source_language_index,
+  }) {
+    source_language_index = new_source_language_index;
+    setState(() {});
+  }
+
   update_text_list({
     required int index,
     required String new_text,
     required int list_index,
   }) {
     if (list_index == 0) {
-      widget.text_list[index] = new_text;
+      widget.text_list.get(source_language_index)[index] = new_text;
     } else if (list_index == 1) {
-      widget.gender_values[index] = new_text;
+      widget.gender_values.get(source_language_index)[index] = new_text;
 
       if (gender_index == index) {
         gender_value = new_text;
@@ -240,27 +250,35 @@ class _UserInfoViewState extends State<UserInfoView> {
     check_logo_image_width();
 
     translation_stream = TranslationStream(
-      text_list: widget.text_list,
+      translation_text_list_array: widget.text_list,
       update_text_list_function: update_text_list,
       list_index: 0,
-      active_translation: widget.has_language_picker,
+      enable_initial_translation: widget.has_language_picker,
+      source_language_index: source_language_index,
     );
 
-    translation_stream_gender = TranslationStream(
-      text_list: widget.gender_values,
-      update_text_list_function: update_text_list,
-      list_index: 1,
-      active_translation: widget.has_language_picker,
-    );
+    if (widget.gender_values.translation_text_list_array.isNotEmpty) {
+      translation_stream_gender = TranslationStream(
+        translation_text_list_array: widget.gender_values,
+        update_text_list_function: update_text_list,
+        list_index: 1,
+        enable_initial_translation: widget.has_language_picker,
+        source_language_index: source_language_index,
+      );
 
-    translation_stream_list = [
-      translation_stream,
-      translation_stream_gender,
-    ];
+      translation_stream_list = [
+        translation_stream,
+        translation_stream_gender,
+      ];
+    } else {
+      translation_stream_list = [
+        translation_stream,
+      ];
+    }
 
     if (is_register(widget.user_info_form_type)) {
       setState(() {
-        gender_value = widget.gender_values[0];
+        gender_value = widget.gender_values.get(source_language_index)[0];
         country_value = widget.country_values?[0];
       });
     }
@@ -305,6 +323,7 @@ class _UserInfoViewState extends State<UserInfoView> {
       topbar_color: widget.topbar_color,
       text_color: widget.text_color,
       has_back_button: widget.has_back_button,
+      update_source_language: update_source_language,
       child: FractionallySizedBox(
         widthFactor: portrait ? 0.85 : 0.25,
         child: Form(
@@ -361,7 +380,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 height: sized_box_space,
                               ),
                               Text(
-                                widget.text_list[0],
+                                widget.text_list.get(source_language_index)[0],
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 18,
@@ -400,7 +419,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 ? editing_email
                                 : true,
                             decoration: InputDecoration(
-                              labelText: widget.text_list[0],
+                              labelText: widget.text_list
+                                  .get(source_language_index)[0],
                               labelStyle: TextStyle(
                                 color: widget.text_color,
                               ),
@@ -432,7 +452,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                       ? editing_email
                                       : true,
                                   decoration: InputDecoration(
-                                    labelText: widget.text_list[1],
+                                    labelText: widget.text_list
+                                        .get(source_language_index)[1],
                                     labelStyle: TextStyle(
                                       color: widget.text_color,
                                     ),
@@ -489,7 +510,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                           ? editing_password
                                           : true,
                                       decoration: InputDecoration(
-                                        labelText: widget.text_list[
+                                        labelText: widget.text_list
+                                                .get(source_language_index)[
                                             is_login(widget.user_info_form_type)
                                                 ? 1
                                                 : 2],
@@ -536,7 +558,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                                 ? editing_password
                                                 : true,
                                             decoration: InputDecoration(
-                                              labelText: widget.text_list[3],
+                                              labelText: widget.text_list.get(
+                                                  source_language_index)[3],
                                               labelStyle: TextStyle(
                                                 color: widget.text_color,
                                               ),
@@ -590,7 +613,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  widget.text_list[2],
+                                                  widget.text_list.get(
+                                                      source_language_index)[2],
                                                   style: TextStyle(
                                                     color: widget.text_color,
                                                   ),
@@ -638,7 +662,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                           ? editing_name_and_info
                                           : true,
                                       decoration: InputDecoration(
-                                        labelText: widget.text_list[4],
+                                        labelText: widget.text_list
+                                            .get(source_language_index)[4],
                                         labelStyle: TextStyle(
                                           color: widget.text_color,
                                         ),
@@ -665,7 +690,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                           ? editing_name_and_info
                                           : true,
                                       decoration: InputDecoration(
-                                        labelText: widget.text_list[5],
+                                        labelText: widget.text_list
+                                            .get(source_language_index)[5],
                                         labelStyle: TextStyle(
                                           color: widget.text_color,
                                         ),
@@ -728,7 +754,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                         child: Text(
                                           birthday_label != ""
                                               ? birthday_label
-                                              : widget.text_list[6],
+                                              : widget.text_list.get(
+                                                  source_language_index)[6],
                                           style: TextStyle(
                                             color: widget.text_color,
                                           ),
@@ -745,7 +772,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                       ),
                                       isExpanded: true,
                                       value: gender_value == ""
-                                          ? widget.gender_values[0]
+                                          ? widget.gender_values
+                                              .get(source_language_index)[0]
                                           : gender_value,
                                       iconSize: 24,
                                       elevation: 16,
@@ -772,6 +800,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                         }
                                       },
                                       items: widget.gender_values
+                                          .get(source_language_index)
                                           .map<DropdownMenuItem<String>>(
                                               (String value) {
                                         return DropdownMenuItem<String>(
@@ -921,7 +950,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                       }
                                     },
                                     child: Text(
-                                      widget.text_list[4],
+                                      widget.text_list
+                                          .get(source_language_index)[4],
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: widget.second_button_color,
@@ -946,7 +976,8 @@ class _UserInfoViewState extends State<UserInfoView> {
                                       }
                                     },
                                     child: Text(
-                                      widget.text_list[5],
+                                      widget.text_list
+                                          .get(source_language_index)[5],
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: widget.third_button_color,
@@ -985,8 +1016,14 @@ class _UserInfoViewState extends State<UserInfoView> {
                         child: Center(
                           child: Text(
                             is_login(widget.user_info_form_type)
-                                ? widget.text_list[widget.text_list.length - 3]
-                                : widget.text_list.last,
+                                ? widget.text_list.get(source_language_index)[
+                                    widget.text_list
+                                            .get(source_language_index)
+                                            .length -
+                                        3]
+                                : widget.text_list
+                                    .get(source_language_index)
+                                    .last,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: (widget.first_button_color.colors.first ==
@@ -1182,7 +1219,9 @@ class _UserInfoViewState extends State<UserInfoView> {
           register_form_key: user_info_view_form_key,
           input_controllers: inputControllers,
           selected_date: selected_date,
-          gender_value: widget.gender_values.indexOf(gender_value),
+          gender_value: widget.gender_values
+              .get(source_language_index)
+              .indexOf(gender_value),
           country_value: country_value ?? "",
           birthday_label: birthday_label,
         );
@@ -1270,8 +1309,9 @@ class _UserInfoViewState extends State<UserInfoView> {
                           name_and_info_form_key: user_info_view_form_key,
                           input_controllers: inputControllers,
                           selected_date: selected_date,
-                          gender_value:
-                              widget.gender_values.indexOf(gender_value),
+                          gender_value: widget.gender_values
+                              .get(source_language_index)
+                              .indexOf(gender_value),
                           country_value: country_value ?? "",
                           user_id: uid,
                           password_verification_enabled:
@@ -1435,7 +1475,8 @@ class _UserInfoViewState extends State<UserInfoView> {
     password_input_controller.text = "Aa00000000";
     confirm_password_input_controller.text = "Aa00000000";
     birthday_label = birthday;
-    gender_value = widget.gender_values[gender_index];
+    gender_value =
+        widget.gender_values.get(source_language_index)[gender_index];
     country_value = widget.country_values != null
         ? validate_picker_value(country, widget.country_values!)
         : "";

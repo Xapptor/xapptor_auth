@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:xapptor_auth/user_info_form_type.dart';
-import 'package:xapptor_translation/translate.dart';
+import 'package:xapptor_translation/translation_stream.dart';
 import 'package:xapptor_ui/widgets/app_version_container.dart';
 import 'package:xapptor_ui/widgets/topbar.dart';
 import 'package:xapptor_translation/language_picker.dart';
@@ -19,6 +19,7 @@ class UserInfoViewContainer extends StatefulWidget {
     required this.has_back_button,
     required this.user_info_form_type,
     required this.translation_stream_list,
+    required this.update_source_language,
   });
 
   final Widget child;
@@ -29,6 +30,8 @@ class UserInfoViewContainer extends StatefulWidget {
   final bool has_back_button;
   final UserInfoFormType user_info_form_type;
   final List<TranslationStream> translation_stream_list;
+  final Function({required int new_source_language_index})
+      update_source_language;
 
   @override
   _UserInfoViewContainerState createState() => _UserInfoViewContainerState();
@@ -66,6 +69,7 @@ class _UserInfoViewContainerState extends State<UserInfoViewContainer> {
                     ? LanguagePicker(
                         translation_stream_list: widget.translation_stream_list,
                         language_picker_items_text_color: widget.text_color,
+                        update_source_language: widget.update_source_language,
                       )
                     : Container(),
               ),
