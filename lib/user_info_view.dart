@@ -54,6 +54,7 @@ class UserInfoView extends StatefulWidget {
     this.enable_apple_signin = false,
     this.apple_signin_client_id = "",
     this.apple_signin_redirect_url = "",
+    this.source_language_index = 0,
   });
 
   final TranslationTextListArray text_list;
@@ -81,6 +82,7 @@ class UserInfoView extends StatefulWidget {
   final bool enable_apple_signin;
   final String apple_signin_client_id;
   final String apple_signin_redirect_url;
+  final int source_language_index;
 
   @override
   _UserInfoViewState createState() => _UserInfoViewState();
@@ -241,7 +243,10 @@ class _UserInfoViewState extends State<UserInfoView> {
 
   @override
   void initState() {
+    source_language_index = widget.source_language_index;
+
     super.initState();
+
     check_if_app_enabled();
     if (is_login(widget.user_info_form_type)) check_login();
 
