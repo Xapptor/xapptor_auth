@@ -258,7 +258,6 @@ class _UserInfoViewState extends State<UserInfoView> {
       translation_text_list_array: widget.text_list,
       update_text_list_function: update_text_list,
       list_index: 0,
-      enable_initial_translation: widget.has_language_picker,
       source_language_index: source_language_index,
     );
 
@@ -267,7 +266,6 @@ class _UserInfoViewState extends State<UserInfoView> {
         translation_text_list_array: widget.gender_values,
         update_text_list_function: update_text_list,
         list_index: 1,
-        enable_initial_translation: widget.has_language_picker,
         source_language_index: source_language_index,
       );
 
