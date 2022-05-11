@@ -13,7 +13,11 @@ sign_out({
         'https://www.googleapis.com/auth/contacts.readonly',
       ],
     );
-    await _google_signin.signOut();
+
+    if (_google_signin.clientId != null) {
+      await _google_signin.signOut();
+    }
+
     if (callback != null) {
       callback();
     } else {
