@@ -62,22 +62,14 @@ TranslationTextListArray account_values = TranslationTextListArray(
   [
     TranslationTextList(
       source_language: "en",
-      text_list: register_values.translation_text_list_array[0].text_list
-              .sublist(
-                  0,
-                  register_values
-                          .translation_text_list_array[0].text_list.length -
-                      1) +
+      text_list: register_values.list[0].text_list
+              .sublist(0, register_values.list[0].text_list.length - 1) +
           ["Update"],
     ),
     TranslationTextList(
       source_language: "es",
-      text_list: register_values.translation_text_list_array[1].text_list
-              .sublist(
-                  0,
-                  register_values
-                          .translation_text_list_array[1].text_list.length -
-                      1) +
+      text_list: register_values.list[1].text_list
+              .sublist(0, register_values.list[1].text_list.length - 1) +
           ["Actualizar"],
     ),
   ],

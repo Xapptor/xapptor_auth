@@ -261,7 +261,7 @@ class _UserInfoViewState extends State<UserInfoView> {
       source_language_index: source_language_index,
     );
 
-    if (widget.gender_values.translation_text_list_array.isNotEmpty) {
+    if (widget.gender_values.list.isNotEmpty) {
       translation_stream_gender = TranslationStream(
         translation_text_list_array: widget.gender_values,
         update_text_list_function: update_text_list,
