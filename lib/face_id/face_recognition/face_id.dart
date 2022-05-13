@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:camera/camera.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:xapptor_auth/face_id/compare_faces/compare_faces.dart';
@@ -17,6 +16,7 @@ import 'check_face_framing.dart';
 import 'convert_image_to_input_image.dart';
 import 'face_frame_painter.dart';
 import 'upload_new_face_id_file.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 enum FaceIDProcess {
   register,
@@ -55,14 +55,16 @@ class FaceID extends StatefulWidget {
 class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
   late List<CameraDescription> cameras;
   CameraController? camera_controller = null;
-  FaceDetector face_detector = GoogleMlKit.vision.faceDetector(
-    FaceDetectorOptions(
-      mode: FaceDetectorMode.accurate,
+
+  final face_detector = FaceDetector(
+    options: FaceDetectorOptions(
+      performanceMode: FaceDetectorMode.accurate,
       enableLandmarks: true,
       enableContours: false,
       enableClassification: true,
     ),
   );
+
   bool is_busy = false;
 
   bool minimize_frame = true;

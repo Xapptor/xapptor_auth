@@ -1,17 +1,18 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:xapptor_auth/face_id/face_recognition/convert_image_to_input_image.dart';
 import 'package:xapptor_logic/get_temporary_file_from_local.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 Future<bool> compare_faces_with_local_service({
   required Uint8List source_image_bytes,
   required Uint8List target_image_bytes,
 }) async {
-  FaceDetector face_detector = GoogleMlKit.vision.faceDetector(
-    FaceDetectorOptions(
-      mode: FaceDetectorMode.accurate,
+  final face_detector = FaceDetector(
+    options: FaceDetectorOptions(
+      performanceMode: FaceDetectorMode.accurate,
       enableLandmarks: true,
       enableContours: false,
       enableClassification: true,
@@ -67,31 +68,31 @@ Future<bool> compare_faces_with_local_service({
 List<int> get_face_offset_distances({
   required Face face,
 }) {
-  FaceLandmark? left_eye = face.getLandmark(FaceLandmarkType.leftEye);
-  FaceLandmark? right_eye = face.getLandmark(FaceLandmarkType.rightEye);
+  FaceLandmark? left_eye = face.landmarks[FaceLandmarkType.leftEye];
+  FaceLandmark? right_eye = face.landmarks[FaceLandmarkType.rightEye];
 
-  FaceLandmark? nose_base = face.getLandmark(FaceLandmarkType.noseBase);
+  FaceLandmark? nose_base = face.landmarks[FaceLandmarkType.noseBase];
 
-  FaceLandmark? left_cheek = face.getLandmark(FaceLandmarkType.leftCheek);
-  FaceLandmark? right_cheek = face.getLandmark(FaceLandmarkType.rightCheek);
+  FaceLandmark? left_cheek = face.landmarks[FaceLandmarkType.leftCheek];
+  FaceLandmark? right_cheek = face.landmarks[FaceLandmarkType.rightCheek];
 
-  FaceLandmark? left_mouth = face.getLandmark(FaceLandmarkType.leftMouth);
-  FaceLandmark? right_mouth = face.getLandmark(FaceLandmarkType.rightMouth);
-  FaceLandmark? bottom_mouth = face.getLandmark(FaceLandmarkType.bottomMouth);
+  FaceLandmark? left_mouth = face.landmarks[FaceLandmarkType.leftMouth];
+  FaceLandmark? right_mouth = face.landmarks[FaceLandmarkType.rightMouth];
+  FaceLandmark? bottom_mouth = face.landmarks[FaceLandmarkType.bottomMouth];
 
-  Offset left_eye_position = left_eye?.position ?? Offset.zero;
-  Offset right_eye_position = right_eye?.position ?? Offset.zero;
+  Point<int> left_eye_position = left_eye?.position ?? Point(0, 0);
+  Point<int> right_eye_position = right_eye?.position ?? Point(0, 0);
 
-  Offset nose_base_position = nose_base?.position ?? Offset.zero;
+  Point<int> nose_base_position = nose_base?.position ?? Point(0, 0);
 
-  Offset left_cheek_position = left_cheek?.position ?? Offset.zero;
-  Offset right_cheek_position = right_cheek?.position ?? Offset.zero;
+  Point<int> left_cheek_position = left_cheek?.position ?? Point(0, 0);
+  Point<int> right_cheek_position = right_cheek?.position ?? Point(0, 0);
 
-  Offset left_mouth_position = left_mouth?.position ?? Offset.zero;
-  Offset right_mouth_position = right_mouth?.position ?? Offset.zero;
-  Offset bottom_mouth_position = bottom_mouth?.position ?? Offset.zero;
+  Point<int> left_mouth_position = left_mouth?.position ?? Point(0, 0);
+  Point<int> right_mouth_position = right_mouth?.position ?? Point(0, 0);
+  Point<int> bottom_mouth_position = bottom_mouth?.position ?? Point(0, 0);
 
-  List<Offset> offset_list_1 = [
+  List<Point> offset_list_1 = [
     left_eye_position,
     right_eye_position,
     left_cheek_position,
@@ -100,7 +101,7 @@ List<int> get_face_offset_distances({
     right_mouth_position,
   ];
 
-  List<Offset> offset_list_2 = [
+  List<Point> offset_list_2 = [
     left_eye_position,
     left_cheek_position,
     right_eye_position,
@@ -109,7 +110,7 @@ List<int> get_face_offset_distances({
     bottom_mouth_position,
   ];
 
-  List<Offset> offset_list_3 = [
+  List<Point> offset_list_3 = [
     left_eye_position,
     right_cheek_position,
     right_eye_position,
@@ -136,12 +137,12 @@ List<int> get_face_offset_distances({
 }
 
 List<int> get_offset_distances({
-  required List<Offset> offset_list,
+  required List<Point> offset_list,
 }) {
   List<int> offset_distances = [];
   for (var i = 0; i < offset_list.length; i += 2) {
     offset_distances
-        .add((offset_list[i] - offset_list[i + 1]).distance.round());
+        .add((offset_list[i].distanceTo(offset_list[i + 1]).round()));
   }
   return offset_distances;
 }

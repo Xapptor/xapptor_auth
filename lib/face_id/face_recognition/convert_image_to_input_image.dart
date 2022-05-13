@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 Future<InputImage> convert_image_file_to_input_image({
   required File file,
@@ -24,12 +24,11 @@ InputImage convert_camera_image_to_input_image({
   final Size image_size = Size(image.width.toDouble(), image.height.toDouble());
 
   final InputImageRotation image_rotation =
-      InputImageRotationMethods.fromRawValue(camera.sensorOrientation) ??
-          InputImageRotation.Rotation_0deg;
+      InputImageRotationValue.fromRawValue(camera.sensorOrientation) ??
+          InputImageRotation.rotation0deg;
 
   final InputImageFormat input_image_format =
-      InputImageFormatMethods.fromRawValue(image.format.raw) ??
-          InputImageFormat.NV21;
+      InputImageFormatValue(image.format.raw) ?? InputImageFormat.nv21;
 
   final plane_data = image.planes.map(
     (Plane plane) {
