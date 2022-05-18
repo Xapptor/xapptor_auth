@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_logic/sha256_of_string.dart';
 import 'package:xapptor_router/app_screens.dart';
@@ -9,7 +10,6 @@ import 'package:xapptor_ui/values/ui.dart';
 import 'package:xapptor_ui/widgets/webview/webview.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
 import 'check_if_app_enabled.dart';
-import 'form_field_validators.dart';
 import 'signin_with_apple.dart';
 import 'signin_with_google.dart';
 import 'user_info_form_functions.dart';
