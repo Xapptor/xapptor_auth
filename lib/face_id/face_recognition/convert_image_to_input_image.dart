@@ -28,7 +28,7 @@ InputImage convert_camera_image_to_input_image({
           InputImageRotation.rotation0deg;
 
   final InputImageFormat input_image_format =
-      InputImageFormatValue(image.format.raw) ?? InputImageFormat.nv21;
+      image.format.raw ?? InputImageFormat.nv21;
 
   final plane_data = image.planes.map(
     (Plane plane) {
