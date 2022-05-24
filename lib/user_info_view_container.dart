@@ -59,6 +59,7 @@ class _UserInfoViewContainerState extends State<UserInfoViewContainer> {
         child: Scaffold(
           key: scaffold_key,
           appBar: TopBar(
+            context: context,
             background_color: widget.topbar_color,
             has_back_button: widget.has_back_button,
             actions: <Widget>[
