@@ -64,13 +64,25 @@ TranslationTextListArray account_values = TranslationTextListArray(
       source_language: "en",
       text_list: register_values.list[0].text_list
               .sublist(0, register_values.list[0].text_list.length - 1) +
-          ["Update"],
+          [
+            "Update",
+            "Delete My Account",
+            "Write your email in the box below\nto confirm Your Account Deletion",
+            "Email",
+            "Confirm Account Deletion",
+          ],
     ),
     TranslationTextList(
       source_language: "es",
       text_list: register_values.list[1].text_list
               .sublist(0, register_values.list[1].text_list.length - 1) +
-          ["Actualizar"],
+          [
+            "Actualizar",
+            "Eliminar Mi Cuenta",
+            "Escriba su correo electrónico en el cuadro a continuación\npara confirmar la Eliminación de Cuenta",
+            "Correo Electrónico",
+            "Confirmar Eliminación de Cuenta",
+          ],
     ),
   ],
 );

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:xapptor_auth/delete_account.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_logic/sha256_of_string.dart';
@@ -309,6 +310,8 @@ class _UserInfoViewState extends State<UserInfoView> {
     );
   }
 
+  Color confirm_button_color = Colors.grey;
+
   @override
   Widget build(BuildContext context) {
     bool portrait = is_portrait(context);
@@ -317,6 +320,49 @@ class _UserInfoViewState extends State<UserInfoView> {
     Color dropdown_color = widget.text_color == Colors.white
         ? widget.text_field_background_color!
         : Colors.white;
+
+    late TextButton second_button;
+
+    if (is_login(widget.user_info_form_type) ||
+        is_edit_account(widget.user_info_form_type)) {
+      second_button = TextButton(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                screen_width,
+              ),
+            ),
+          ),
+        ),
+        onPressed: () {
+          if (widget.second_button_action != null) {
+            widget.second_button_action!();
+          } else {
+            if (is_edit_account(widget.user_info_form_type)) {
+              delete_account(
+                text_list: widget.text_list.get(source_language_index).sublist(
+                    widget.text_list.get(source_language_index).length - 4),
+                context: context,
+                parent: this,
+              );
+            }
+          }
+        },
+        child: Text(
+          widget.text_list.get(source_language_index)[
+              widget.text_list.get(source_language_index).length -
+                  (is_login(widget.user_info_form_type) ? 2 : 4)],
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: is_edit_account(widget.user_info_form_type)
+                ? Colors.red
+                : widget.second_button_color,
+            fontSize: 12,
+          ),
+        ),
+      );
+    }
 
     return UserInfoViewContainer(
       translation_stream_list: translation_stream_list,
@@ -926,6 +972,20 @@ class _UserInfoViewState extends State<UserInfoView> {
                             ],
                           )
                         : Container(),
+                    is_edit_account(widget.user_info_form_type)
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: portrait ? 0 : (sized_box_space),
+                              ),
+                              second_button,
+                              SizedBox(
+                                height: portrait ? 0 : (sized_box_space),
+                              ),
+                            ],
+                          )
+                        : Container(),
                     is_login(widget.user_info_form_type)
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -936,32 +996,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  TextButton(
-                                    style: ButtonStyle(
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            screen_width,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      if (widget.second_button_action != null) {
-                                        widget.second_button_action!();
-                                      }
-                                    },
-                                    child: Text(
-                                      widget.text_list
-                                          .get(source_language_index)[4],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: widget.second_button_color,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
+                                  second_button,
                                   TextButton(
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.all<
@@ -1018,12 +1053,16 @@ class _UserInfoViewState extends State<UserInfoView> {
                             widget.second_button_color.withOpacity(0.2),
                         child: Center(
                           child: Text(
-                            is_login(widget.user_info_form_type)
+                            is_login(widget.user_info_form_type) ||
+                                    is_edit_account(widget.user_info_form_type)
                                 ? widget.text_list.get(source_language_index)[
-                                    widget.text_list
+                                    widget
+                                            .text_list
                                             .get(source_language_index)
                                             .length -
-                                        3]
+                                        (is_login(widget.user_info_form_type)
+                                            ? 3
+                                            : 5)]
                                 : widget.text_list
                                     .get(source_language_index)
                                     .last,
