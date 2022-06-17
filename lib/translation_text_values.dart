@@ -67,9 +67,10 @@ TranslationTextListArray account_values = TranslationTextListArray(
           [
             "Update",
             "Delete My Account",
-            "Write your email in the box below\nto confirm Your Account Deletion",
-            "Email",
+            "Write your password in the box below\nto confirm Your Account Deletion",
+            "Password",
             "Confirm Account Deletion",
+            "Password is Invalid",
           ],
     ),
     TranslationTextList(
@@ -79,9 +80,10 @@ TranslationTextListArray account_values = TranslationTextListArray(
           [
             "Actualizar",
             "Eliminar Mi Cuenta",
-            "Escriba su correo electrónico en el cuadro a continuación\npara confirmar la Eliminación de Cuenta",
-            "Correo Electrónico",
+            "Escribe tu contraseña en el cuadro a continuación\npara confirmar la Eliminación de tu Cuenta",
+            "Contraseña",
             "Confirmar Eliminación de Cuenta",
+            "Contraseña es Inválida",
           ],
     ),
   ],

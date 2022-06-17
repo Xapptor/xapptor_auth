@@ -340,11 +340,17 @@ class _UserInfoViewState extends State<UserInfoView> {
             widget.second_button_action!();
           } else {
             if (is_edit_account(widget.user_info_form_type)) {
-              delete_account(
-                text_list: widget.text_list.get(source_language_index).sublist(
-                    widget.text_list.get(source_language_index).length - 4),
+              showDialog(
                 context: context,
-                parent: this,
+                builder: (BuildContext context) {
+                  return DeleteAccountAlertDialog(
+                    text_list: widget.text_list
+                        .get(source_language_index)
+                        .sublist(
+                            widget.text_list.get(source_language_index).length -
+                                5),
+                  );
+                },
               );
             }
           }
@@ -352,7 +358,7 @@ class _UserInfoViewState extends State<UserInfoView> {
         child: Text(
           widget.text_list.get(source_language_index)[
               widget.text_list.get(source_language_index).length -
-                  (is_login(widget.user_info_form_type) ? 2 : 4)],
+                  (is_login(widget.user_info_form_type) ? 2 : 5)],
           textAlign: TextAlign.center,
           style: TextStyle(
             color: is_edit_account(widget.user_info_form_type)
