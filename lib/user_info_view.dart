@@ -56,6 +56,7 @@ class UserInfoView extends StatefulWidget {
     this.apple_signin_client_id = "",
     this.apple_signin_redirect_url = "",
     this.source_language_index = 0,
+    this.verify_email = true,
   });
 
   final TranslationTextListArray text_list;
@@ -84,6 +85,7 @@ class UserInfoView extends StatefulWidget {
   final String apple_signin_client_id;
   final String apple_signin_redirect_url;
   final int source_language_index;
+  final bool verify_email;
 
   @override
   _UserInfoViewState createState() => _UserInfoViewState();
@@ -1286,6 +1288,7 @@ class _UserInfoViewState extends State<UserInfoView> {
           input_controllers: inputControllers,
           prefs: prefs,
           persistence: Persistence.LOCAL,
+          verify_email: widget.verify_email,
         );
       } else if (is_forgot_password(widget.user_info_form_type)) {
         UserInfoFormFunctions().forgot_password(

@@ -19,6 +19,7 @@ class UserInfoFormFunctions {
     required List<TextEditingController> input_controllers,
     required SharedPreferences prefs,
     required Persistence persistence,
+    required bool verify_email,
   }) async {
     TextEditingController email_input_controller = input_controllers[0];
     TextEditingController password_input_controller = input_controllers[1];
@@ -41,17 +42,25 @@ class UserInfoFormFunctions {
         DocumentSnapshot snapshot_user =
             await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
-        if (value.user!.emailVerified) {
+        if (verify_email) {
+          if (value.user!.emailVerified) {
+            if (remember_me) prefs.setString("email", value.user!.email!);
+            open_screen("home");
+            email_input_controller.clear();
+            password_input_controller.clear();
+          } else {
+            show_email_verification_alert_dialog(
+              context: context,
+              user: value.user!,
+            );
+          }
+        } else {
           if (remember_me) prefs.setString("email", value.user!.email!);
           open_screen("home");
           email_input_controller.clear();
           password_input_controller.clear();
-        } else {
-          show_email_verification_alert_dialog(
-            context: context,
-            user: value.user!,
-          );
         }
+
         return null;
       }).catchError((error) {
         print("Login error: " + error.toString());
