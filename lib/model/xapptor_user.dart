@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
-
-// User Model.
 
 class XapptorUser {
   String id;
@@ -51,4 +51,18 @@ class XapptorUser {
       'owner': owner,
     };
   }
+}
+
+Future<XapptorUser> get_xapptor_user() async {
+  User current_user = await FirebaseAuth.instance.currentUser!;
+
+  DocumentSnapshot user_snap = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(current_user.uid)
+      .get();
+  return XapptorUser.from_snapshot(
+    current_user.uid,
+    current_user.email!,
+    user_snap.data() as Map<String, dynamic>,
+  );
 }
