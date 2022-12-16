@@ -208,6 +208,7 @@ class _UserInfoViewState extends State<UserInfoView> {
           signin_with_google(google_signin_account);
         } else {
           print("User is not sign");
+          check_logo_image_width();
         }
       }
     });
@@ -254,8 +255,6 @@ class _UserInfoViewState extends State<UserInfoView> {
     if (is_login(widget.user_info_form_type)) check_login();
 
     init_prefs(is_login);
-
-    check_logo_image_width();
 
     translation_stream = TranslationStream(
       translation_text_list_array: widget.text_list,
