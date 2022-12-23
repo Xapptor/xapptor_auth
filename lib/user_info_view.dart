@@ -1069,7 +1069,10 @@ class _UserInfoViewState extends State<UserInfoView> {
                                             .length -
                                         (is_login(widget.user_info_form_type)
                                             ? 3
-                                            : 5)]
+                                            : is_edit_account(
+                                                    widget.user_info_form_type)
+                                                ? 6
+                                                : 5)]
                                 : widget.text_list
                                     .get(source_language_index)
                                     .last,
