@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:xapptor_auth/initial_values.dart';
+import 'package:xapptor_api_key/initial_values.dart';
 
 upload_new_face_id_file({
   required Uint8List source_bytes,

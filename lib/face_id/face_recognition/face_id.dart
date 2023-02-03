@@ -7,7 +7,6 @@ import 'package:universal_platform/universal_platform.dart';
 import 'package:xapptor_auth/face_id/compare_faces/compare_faces.dart';
 import 'package:xapptor_auth/face_id/face_recognition/check_liveness.dart';
 import 'package:xapptor_auth/face_id/face_recognition/feedback_layer.dart';
-import 'package:xapptor_auth/initial_values.dart';
 import 'package:xapptor_logic/get_base64_from_remote_image.dart';
 import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_ui/values/ui.dart';
@@ -17,6 +16,7 @@ import 'convert_image_to_input_image.dart';
 import 'face_frame_painter.dart';
 import 'upload_new_face_id_file.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:xapptor_api_key/initial_values.dart';
 
 enum FaceIDProcess {
   register,

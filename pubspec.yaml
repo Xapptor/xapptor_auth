@@ -21,20 +21,22 @@ dependencies:
 
   universal_platform: ^1.0.0+1
   shared_preferences: ^2.0.15
-  intl: ^0.18.0
+  intl: ^0.17.0
   http: ^0.13.4
   crypto: ^3.0.1
   google_mlkit_face_detection: ^0.3.0
   camera: ^0.9.4+14
   camera_web: ^0.2.1+2
 
-  xapptor_logic: ^0.0.3
-  xapptor_router: ^0.0.2
-  xapptor_translation: ^0.0.3
-  xapptor_ui: ^0.0.3
+  # xapptor_api_key:
+  #   path: ../xapptor_api_key
+  # xapptor_logic: ^0.0.3
+  # xapptor_router: ^0.0.2
+  # xapptor_translation: ^0.0.3
+  # xapptor_ui: ^0.0.3
 
-dependency_overrides:
-  font_awesome_flutter: ^10.3.0
+  xapptor_api_key:
+    path: ../xapptor_api_key
   xapptor_logic:
     path: ../xapptor_logic
   xapptor_router:
@@ -43,6 +45,9 @@ dependency_overrides:
     path: ../xapptor_translation
   xapptor_ui:
     path: ../xapptor_ui
+
+dependency_overrides:
+  font_awesome_flutter: ^10.3.0
 
 dev_dependencies:
   flutter_test:
