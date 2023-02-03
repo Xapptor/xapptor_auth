@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:xapptor_auth/delete_account.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_logic/get_image_size.dart';
@@ -22,9 +23,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_ui/widgets/is_portrait.dart';
 import 'user_info_view_container.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 // Dynamic User Info View.
 
@@ -1111,7 +1111,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                               ),
                               widget.enable_google_signin
                                   ? SignInButton(
-                                      Buttons.Google,
+                                      Buttons.google,
                                       shape: third_party_signin_method_shape(
                                           screen_width),
                                       onPressed: () async {
@@ -1130,7 +1130,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                               ),
                               widget.enable_apple_signin
                                   ? SignInButton(
-                                      Buttons.Apple,
+                                      Buttons.apple,
                                       shape: third_party_signin_method_shape(
                                           screen_width),
                                       onPressed: () async {

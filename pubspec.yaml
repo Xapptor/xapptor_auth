@@ -15,7 +15,7 @@ dependencies:
   cloud_firestore: ^4.2.0
   firebase_storage: ^11.0.7
 
-  flutter_signin_button: ^2.0.0
+  sign_in_button: ^3.1.0
   google_sign_in: ^5.3.1
   sign_in_with_apple: ^3.3.0
 
@@ -45,9 +45,6 @@ dependencies:
     path: ../xapptor_translation
   xapptor_ui:
     path: ../xapptor_ui
-
-dependency_overrides:
-  font_awesome_flutter: ^10.3.0
 
 dev_dependencies:
   flutter_test:
