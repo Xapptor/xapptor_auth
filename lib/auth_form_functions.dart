@@ -262,6 +262,15 @@ class AuthFormFunctions {
         await FirebaseAuth.instance
             .sendPasswordResetEmail(email: email_input_controller.text)
             .then((value) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: Duration(seconds: 2),
+              backgroundColor: Colors.green,
+              content: Text(
+                'Restore password email sent successfully',
+              ),
+            ),
+          );
           open_screen("login");
         });
       } catch (e) {

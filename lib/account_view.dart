@@ -46,7 +46,6 @@ class AccountView extends StatefulWidget {
   final Color? text_field_background_color;
   final bool? edit_icon_use_text_field_background_color;
   final int source_language_index;
-  final bool verify_email;
 
   const AccountView({
     required this.text_list,
@@ -71,7 +70,6 @@ class AccountView extends StatefulWidget {
     required this.text_field_background_color,
     this.edit_icon_use_text_field_background_color,
     this.source_language_index = 0,
-    this.verify_email = true,
   });
 
   @override
@@ -101,7 +99,6 @@ class _AccountViewState extends State<AccountView> {
   DateTime date = over_18;
 
   bool _password_visible = false;
-  bool remember_me = false;
 
   bool accept_terms = false;
   String birthday_label = "";
@@ -193,6 +190,7 @@ class _AccountViewState extends State<AccountView> {
     source_language_index = widget.source_language_index;
     super.initState();
     check_if_app_enabled();
+    check_logo_image_width();
     init_prefs();
 
     translation_stream = TranslationStream(

@@ -44,6 +44,7 @@ class LoginAndRestoreView extends StatefulWidget {
   final bool? edit_icon_use_text_field_background_color;
   final bool enable_google_signin;
   final bool enable_apple_signin;
+  final bool enable_phone_signin;
   final String apple_signin_client_id;
   final String apple_signin_redirect_url;
   final int source_language_index;
@@ -70,6 +71,7 @@ class LoginAndRestoreView extends StatefulWidget {
     this.edit_icon_use_text_field_background_color,
     this.enable_google_signin = false,
     this.enable_apple_signin = false,
+    this.enable_phone_signin = false,
     this.apple_signin_client_id = "",
     this.apple_signin_redirect_url = "",
     this.source_language_index = 0,
