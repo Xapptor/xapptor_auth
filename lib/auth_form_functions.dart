@@ -12,6 +12,27 @@ import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
 class AuthFormFunctions {
   // Login
 
+  login_phone_number({
+    required BuildContext context,
+    required GlobalKey<FormState> login_form_key,
+    required List<TextEditingController> input_controllers,
+    required SharedPreferences prefs,
+  }) async {
+    TextEditingController phone_input_controller = input_controllers[0];
+
+    if (login_form_key.currentState!.validate()) {
+      if (UniversalPlatform.isWeb) {
+        await FirebaseAuth.instance
+            .signInWithPhoneNumber(phone_input_controller.text)
+            .then((ConfirmationResult value) {
+          print(value.verificationId);
+        }).catchError((error) => print(error));
+      } else {
+        //
+      }
+    }
+  }
+
   login({
     required BuildContext context,
     required bool remember_me,
@@ -31,53 +52,47 @@ class AuthFormFunctions {
         await FirebaseAuth.instance.setPersistence(persistence);
 
       await FirebaseAuth.instance
-          .signInWithPhoneNumber('+525611767636')
-          .then((ConfirmationResult value) {
-        print(value.verificationId);
-      }).catchError((error) => print(error));
+          .signInWithEmailAndPassword(
+        email: email_input_controller.text,
+        password: password_input_controller.text,
+      )
+          .then((UserCredential value) async {
+        User user = value.user!;
+        String uid = user.uid;
 
-      // await FirebaseAuth.instance
-      //     .signInWithEmailAndPassword(
-      //   email: email_input_controller.text,
-      //   password: password_input_controller.text,
-      // )
-      //     .then((UserCredential value) async {
-      //   User user = value.user!;
-      //   String uid = user.uid;
+        DocumentSnapshot snapshot_user =
+            await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
-      //   DocumentSnapshot snapshot_user =
-      //       await FirebaseFirestore.instance.collection("users").doc(uid).get();
+        if (verify_email) {
+          if (value.user!.emailVerified) {
+            if (remember_me) prefs.setString("email", value.user!.email!);
+            open_screen("home");
+            email_input_controller.clear();
+            password_input_controller.clear();
+          } else {
+            show_email_verification_alert_dialog(
+              context: context,
+              user: value.user!,
+            );
+          }
+        } else {
+          if (remember_me) prefs.setString("email", value.user!.email!);
+          open_screen("home");
+          email_input_controller.clear();
+          password_input_controller.clear();
+        }
 
-      //   if (verify_email) {
-      //     if (value.user!.emailVerified) {
-      //       if (remember_me) prefs.setString("email", value.user!.email!);
-      //       open_screen("home");
-      //       email_input_controller.clear();
-      //       password_input_controller.clear();
-      //     } else {
-      //       show_email_verification_alert_dialog(
-      //         context: context,
-      //         user: value.user!,
-      //       );
-      //     }
-      //   } else {
-      //     if (remember_me) prefs.setString("email", value.user!.email!);
-      //     open_screen("home");
-      //     email_input_controller.clear();
-      //     password_input_controller.clear();
-      //   }
+        return null;
+      }).catchError((error) {
+        print("Login error: " + error.toString());
 
-      //   return null;
-      // }).catchError((error) {
-      //   print("Login error: " + error.toString());
-
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(
-      //       content: Text("The password or email are invalid"),
-      //       duration: Duration(milliseconds: 1500),
-      //     ),
-      //   );
-      // });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("The password or email are invalid"),
+            duration: Duration(milliseconds: 1500),
+          ),
+        );
+      });
     }
   }
 
