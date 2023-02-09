@@ -244,7 +244,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
     if (widget.phone_signin_text_list != null && !use_email_signin) {
       main_button_text = widget.phone_signin_text_list!
-          .get(source_language_index)[verification_code_sent.value ? 2 : 3];
+          .get(source_language_index)[!verification_code_sent.value ? 2 : 3];
     } else {
       main_button_text = widget.text_list.get(source_language_index)[
           widget.text_list.get(source_language_index).length -
@@ -379,7 +379,9 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                     controller: email_input_controller,
                     validator: (value) => FormFieldValidators(
                       value: value!,
-                      type: FormFieldValidatorsType.email,
+                      type: use_email_signin
+                          ? FormFieldValidatorsType.email
+                          : FormFieldValidatorsType.phone,
                     ).validate(),
                     keyboardType: TextInputType.emailAddress,
                   ),
@@ -392,7 +394,10 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
             SizedBox(
               height: sized_box_space,
             ),
-            !widget.is_login
+            !widget.is_login ||
+                    (widget.phone_signin_text_list != null &&
+                        !use_email_signin &&
+                        !verification_code_sent.value)
                 ? Container()
                 : form_section_container(
                     outline_border: widget.outline_border,
@@ -420,26 +425,28 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                                 color: widget.text_color,
                               ),
                             ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _password_visible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: widget.text_color,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _password_visible = !_password_visible;
-                                });
-                              },
-                            ),
+                            suffixIcon: use_email_signin
+                                ? IconButton(
+                                    icon: Icon(
+                                      _password_visible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                      color: widget.text_color,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _password_visible = !_password_visible;
+                                      });
+                                    },
+                                  )
+                                : null,
                           ),
                           controller: password_input_controller,
                           validator: (value) => FormFieldValidators(
                             value: value!,
                             type: FormFieldValidatorsType.password,
                           ).validate(),
-                          obscureText: !_password_visible,
+                          obscureText: use_email_signin && !_password_visible,
                         ),
                         SizedBox(
                           height: sized_box_space,
@@ -631,6 +638,8 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
     );
   }
 
+  AuthFormFunctions auth_form_functions = AuthFormFunctions();
+
   on_pressed_first_button() {
     if (widget.first_button_action == null) {
       if (widget.is_login) {
@@ -639,8 +648,8 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
           password_input_controller,
         ];
 
-        if (widget.phone_signin_text_list == null) {
-          AuthFormFunctions().login(
+        if (use_email_signin) {
+          auth_form_functions.login(
             context: context,
             remember_me: remember_me,
             login_form_key: form_key,
@@ -650,13 +659,14 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
             verify_email: widget.verify_email,
           );
         } else {
-          AuthFormFunctions().login_phone_number(
+          auth_form_functions.login_phone_number(
             context: context,
             login_form_key: form_key,
             input_controllers: inputControllers,
             prefs: prefs,
             verification_code_sent: verification_code_sent,
             persistence: Persistence.LOCAL,
+            setState: setState,
           );
         }
       } else {

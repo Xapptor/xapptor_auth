@@ -12,7 +12,20 @@ import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
 class AuthFormFunctions {
   // Login
 
-  late ConfirmationResult confirmation_esult;
+  late ConfirmationResult confirmation_result;
+  String verification_id = '';
+
+  show_verification_code_sent_alert(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.green,
+        content: Text(
+          'Verification code sent',
+        ),
+      ),
+    );
+  }
 
   login_phone_number({
     required BuildContext context,
@@ -21,32 +34,76 @@ class AuthFormFunctions {
     required SharedPreferences prefs,
     required ValueNotifier<bool> verification_code_sent,
     required Persistence persistence,
+    required Function setState,
   }) async {
     TextEditingController phone_input_controller = input_controllers[0];
     TextEditingController code_input_controller = input_controllers[0];
 
-    if (login_form_key.currentState!.validate()) {
-      if (UniversalPlatform.isWeb) {
-        // Set persistence in Web.
-        await FirebaseAuth.instance.setPersistence(persistence);
+    if (UniversalPlatform.isWeb) {
+      // Set persistence in Web.
+      await FirebaseAuth.instance.setPersistence(persistence);
 
-        if (!verification_code_sent.value) {
-          confirmation_esult = await FirebaseAuth.instance
-              .signInWithPhoneNumber(phone_input_controller.text)
-              .catchError((error) => print(error));
+      if (!verification_code_sent.value) {
+        confirmation_result = await FirebaseAuth.instance
+            .signInWithPhoneNumber(phone_input_controller.text)
+            .catchError((error) => print(error));
 
-          verification_code_sent.value = true;
-        } else {
-          await confirmation_esult
-              .confirm(code_input_controller.text)
-              .catchError((error) => print(error));
+        verification_id = confirmation_result.verificationId;
+        verification_code_sent.value = true;
+        setState(() {});
+        show_verification_code_sent_alert(context);
+      } else {
+        final AuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verification_id,
+          smsCode: code_input_controller.text,
+        );
 
+        FirebaseAuth.instance.signInWithCredential(credential).then((value) {
           verification_code_sent.value = false;
-          open_screen("home");
           phone_input_controller.clear();
           code_input_controller.clear();
-        }
+          setState(() {});
+          open_screen("home");
+        });
       }
+    } else {
+//       FirebaseAuth _auth = FirebaseAuth.instance;
+//           _auth.verifyPhoneNumber(
+//               phoneNumber: '+2$mobile',
+//               timeout: Duration(seconds: 60),
+//               verificationCompleted: (AuthCredential authCredential){
+//                 var _credential = PhoneAuthProvider.credential(verificationId: actualCode, smsCode: smsCodeController.text);
+//                 _auth.signInWithCredential(_credential).then((UserCredential result) async {
+//                   pr.hide();
+//                   setState(() {
+//                     status = 'Authentication successful';
+//                   });
+// //The rest of my success code
+//                 }).catchError((e){
+//                   print(e);
+//                   Navigator.of(context).pushAndRemoveUntil(
+//                       MaterialPageRoute(
+//                           builder: (context) => Welcome()),
+//                           (Route<dynamic> route) => false);
+// };
+//               },
+//               verificationFailed: (FirebaseAuthException  authException){
+//                 print(authException.message);
+//               },
+//               codeSent: (String verificationId, [int forceResendingToken]){
+//                 setState(() {
+//                   actualCode = verificationId;
+//                   status = 'Code sent';
+//                 });
+//               },
+//               codeAutoRetrievalTimeout: (String verificationId){
+//                 verificationId = verificationId;
+//                 print(verificationId);
+//                 setState(() {
+//                   status = 'Auto retrieval timeout';
+//                 });
+//               },
+//               );
     }
   }
 
@@ -82,9 +139,9 @@ class AuthFormFunctions {
         if (verify_email) {
           if (value.user!.emailVerified) {
             if (remember_me) prefs.setString("email", value.user!.email!);
-            open_screen("home");
             email_input_controller.clear();
             password_input_controller.clear();
+            open_screen("home");
           } else {
             show_email_verification_alert_dialog(
               context: context,
@@ -93,9 +150,9 @@ class AuthFormFunctions {
           }
         } else {
           if (remember_me) prefs.setString("email", value.user!.email!);
-          open_screen("home");
           email_input_controller.clear();
           password_input_controller.clear();
+          open_screen("home");
         }
 
         return null;
