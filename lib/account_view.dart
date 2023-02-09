@@ -239,8 +239,6 @@ class _AccountViewState extends State<AccountView> {
     super.dispose();
   }
 
-  Color confirm_button_color = Colors.grey;
-
   @override
   Widget build(BuildContext context) {
     bool portrait = is_portrait(context);

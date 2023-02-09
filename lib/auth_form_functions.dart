@@ -12,23 +12,40 @@ import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
 class AuthFormFunctions {
   // Login
 
+  late ConfirmationResult confirmation_esult;
+
   login_phone_number({
     required BuildContext context,
     required GlobalKey<FormState> login_form_key,
     required List<TextEditingController> input_controllers,
     required SharedPreferences prefs,
+    required ValueNotifier<bool> verification_code_sent,
+    required Persistence persistence,
   }) async {
     TextEditingController phone_input_controller = input_controllers[0];
+    TextEditingController code_input_controller = input_controllers[0];
 
     if (login_form_key.currentState!.validate()) {
       if (UniversalPlatform.isWeb) {
-        await FirebaseAuth.instance
-            .signInWithPhoneNumber(phone_input_controller.text)
-            .then((ConfirmationResult value) {
-          print(value.verificationId);
-        }).catchError((error) => print(error));
-      } else {
-        //
+        // Set persistence in Web.
+        await FirebaseAuth.instance.setPersistence(persistence);
+
+        if (!verification_code_sent.value) {
+          confirmation_esult = await FirebaseAuth.instance
+              .signInWithPhoneNumber(phone_input_controller.text)
+              .catchError((error) => print(error));
+
+          verification_code_sent.value = true;
+        } else {
+          await confirmation_esult
+              .confirm(code_input_controller.text)
+              .catchError((error) => print(error));
+
+          verification_code_sent.value = false;
+          open_screen("home");
+          phone_input_controller.clear();
+          code_input_controller.clear();
+        }
       }
     }
   }
@@ -47,7 +64,6 @@ class AuthFormFunctions {
 
     if (login_form_key.currentState!.validate()) {
       // Set persistence in Web.
-
       if (UniversalPlatform.isWeb)
         await FirebaseAuth.instance.setPersistence(persistence);
 

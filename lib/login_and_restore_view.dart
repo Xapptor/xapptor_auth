@@ -22,6 +22,7 @@ import 'package:xapptor_ui/widgets/is_portrait.dart';
 import 'auth_container.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_button/sign_in_button.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginAndRestoreView extends StatefulWidget {
   final bool is_login;
@@ -44,7 +45,7 @@ class LoginAndRestoreView extends StatefulWidget {
   final bool? edit_icon_use_text_field_background_color;
   final bool enable_google_signin;
   final bool enable_apple_signin;
-  final bool enable_phone_signin;
+  final TranslationTextListArray? phone_signin_text_list;
   final String apple_signin_client_id;
   final String apple_signin_redirect_url;
   final int source_language_index;
@@ -71,7 +72,7 @@ class LoginAndRestoreView extends StatefulWidget {
     this.edit_icon_use_text_field_background_color,
     this.enable_google_signin = false,
     this.enable_apple_signin = false,
-    this.enable_phone_signin = false,
+    this.phone_signin_text_list,
     this.apple_signin_client_id = "",
     this.apple_signin_redirect_url = "",
     this.source_language_index = 0,
@@ -106,6 +107,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
   }
 
   late TranslationStream translation_stream;
+  late TranslationStream translation_stream_phone;
   List<TranslationStream> translation_stream_list = [];
 
   int source_language_index = 0;
@@ -124,6 +126,9 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
   }) {
     if (list_index == 0) {
       widget.text_list.get(source_language_index)[index] = new_text;
+    } else if (list_index == 1) {
+      widget.phone_signin_text_list!.get(source_language_index)[index] =
+          new_text;
     }
     setState(() {});
   }
@@ -192,9 +197,23 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
       source_language_index: source_language_index,
     );
 
-    translation_stream_list = [
-      translation_stream,
-    ];
+    if (widget.phone_signin_text_list != null) {
+      translation_stream_phone = TranslationStream(
+        translation_text_list_array: widget.phone_signin_text_list!,
+        update_text_list_function: update_text_list,
+        list_index: 1,
+        source_language_index: source_language_index,
+      );
+
+      translation_stream_list = [
+        translation_stream,
+        translation_stream_phone,
+      ];
+    } else {
+      translation_stream_list = [
+        translation_stream,
+      ];
+    }
   }
 
   @override
@@ -213,12 +232,24 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
     );
   }
 
-  Color confirm_button_color = Colors.grey;
+  bool use_email_signin = true;
+  ValueNotifier<bool> verification_code_sent = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
     bool portrait = is_portrait(context);
     double screen_width = MediaQuery.of(context).size.width;
+
+    String main_button_text = '';
+
+    if (widget.phone_signin_text_list != null && !use_email_signin) {
+      main_button_text = widget.phone_signin_text_list!
+          .get(source_language_index)[verification_code_sent.value ? 2 : 3];
+    } else {
+      main_button_text = widget.text_list.get(source_language_index)[
+          widget.text_list.get(source_language_index).length -
+              (widget.is_login ? 3 : 1)];
+    }
 
     return AuthContainer(
       translation_stream_list: translation_stream_list,
@@ -264,6 +295,63 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
             SizedBox(
               height: sized_box_space,
             ),
+            widget.is_login && widget.phone_signin_text_list != null
+                ? Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 5),
+                            padding: EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: use_email_signin
+                                  ? widget.text_color
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                use_email_signin = !use_email_signin;
+                                setState(() {});
+                              },
+                              icon: Icon(
+                                FontAwesomeIcons.envelope,
+                                color: use_email_signin
+                                    ? Colors.white
+                                    : widget.text_color,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: !use_email_signin
+                                  ? widget.text_color
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                use_email_signin = !use_email_signin;
+                                setState(() {});
+                              },
+                              icon: Icon(
+                                FontAwesomeIcons.mobile,
+                                color: !use_email_signin
+                                    ? Colors.white
+                                    : widget.text_color,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: sized_box_space,
+                      ),
+                    ],
+                  )
+                : Container(),
             form_section_container(
               outline_border: widget.outline_border,
               border_color: widget.text_color,
@@ -273,8 +361,12 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                   TextFormField(
                     style: TextStyle(color: widget.text_color),
                     decoration: InputDecoration(
-                      labelText: widget.text_list
-                          .get(source_language_index)[widget.is_login ? 0 : 1],
+                      labelText: widget.phone_signin_text_list != null &&
+                              !use_email_signin
+                          ? widget.phone_signin_text_list!
+                              .get(source_language_index)[0]
+                          : widget.text_list.get(
+                              source_language_index)[widget.is_login ? 0 : 1],
                       labelStyle: TextStyle(
                         color: widget.text_color,
                       ),
@@ -314,8 +406,12 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                           },
                           style: TextStyle(color: widget.text_color),
                           decoration: InputDecoration(
-                            labelText:
-                                widget.text_list.get(source_language_index)[1],
+                            labelText: widget.phone_signin_text_list != null &&
+                                    !use_email_signin
+                                ? widget.phone_signin_text_list!
+                                    .get(source_language_index)[1]
+                                : widget.text_list
+                                    .get(source_language_index)[1],
                             labelStyle: TextStyle(
                               color: widget.text_color,
                             ),
@@ -446,9 +542,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                 splash_color: widget.second_button_color.withOpacity(0.2),
                 child: Center(
                   child: Text(
-                    widget.text_list.get(source_language_index)[
-                        widget.text_list.get(source_language_index).length -
-                            (widget.is_login ? 3 : 1)],
+                    main_button_text,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: (widget.first_button_color.colors.first ==
@@ -545,15 +639,26 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
           password_input_controller,
         ];
 
-        AuthFormFunctions().login(
-          context: context,
-          remember_me: remember_me,
-          login_form_key: form_key,
-          input_controllers: inputControllers,
-          prefs: prefs,
-          persistence: Persistence.LOCAL,
-          verify_email: widget.verify_email,
-        );
+        if (widget.phone_signin_text_list == null) {
+          AuthFormFunctions().login(
+            context: context,
+            remember_me: remember_me,
+            login_form_key: form_key,
+            input_controllers: inputControllers,
+            prefs: prefs,
+            persistence: Persistence.LOCAL,
+            verify_email: widget.verify_email,
+          );
+        } else {
+          AuthFormFunctions().login_phone_number(
+            context: context,
+            login_form_key: form_key,
+            input_controllers: inputControllers,
+            prefs: prefs,
+            verification_code_sent: verification_code_sent,
+            persistence: Persistence.LOCAL,
+          );
+        }
       } else {
         AuthFormFunctions().restore_password(
           context: context,

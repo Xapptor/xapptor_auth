@@ -1,5 +1,28 @@
 import 'package:xapptor_translation/model/text_list.dart';
 
+TranslationTextListArray login_phone_values = TranslationTextListArray(
+  [
+    TranslationTextList(
+      source_language: "en",
+      text_list: [
+        "Phone Number",
+        "Verification Code",
+        "Send Code",
+        "Validate Code",
+      ],
+    ),
+    TranslationTextList(
+      source_language: "es",
+      text_list: [
+        "Número de Teléfono",
+        "Código de Verificación",
+        "Enviar Código",
+        "Validar Código",
+      ],
+    ),
+  ],
+);
+
 TranslationTextListArray login_values = TranslationTextListArray(
   [
     TranslationTextList(
