@@ -9,7 +9,7 @@ import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
 
 // Functions executed in Auth Screens.
 
-class UserInfoFormFunctions {
+class AuthFormFunctions {
   // Login
 
   login({
@@ -31,47 +31,53 @@ class UserInfoFormFunctions {
         await FirebaseAuth.instance.setPersistence(persistence);
 
       await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-        email: email_input_controller.text,
-        password: password_input_controller.text,
-      )
-          .then((UserCredential value) async {
-        User user = value.user!;
-        String uid = user.uid;
+          .signInWithPhoneNumber('+525611767636')
+          .then((ConfirmationResult value) {
+        print(value.verificationId);
+      }).catchError((error) => print(error));
 
-        DocumentSnapshot snapshot_user =
-            await FirebaseFirestore.instance.collection("users").doc(uid).get();
+      // await FirebaseAuth.instance
+      //     .signInWithEmailAndPassword(
+      //   email: email_input_controller.text,
+      //   password: password_input_controller.text,
+      // )
+      //     .then((UserCredential value) async {
+      //   User user = value.user!;
+      //   String uid = user.uid;
 
-        if (verify_email) {
-          if (value.user!.emailVerified) {
-            if (remember_me) prefs.setString("email", value.user!.email!);
-            open_screen("home");
-            email_input_controller.clear();
-            password_input_controller.clear();
-          } else {
-            show_email_verification_alert_dialog(
-              context: context,
-              user: value.user!,
-            );
-          }
-        } else {
-          if (remember_me) prefs.setString("email", value.user!.email!);
-          open_screen("home");
-          email_input_controller.clear();
-          password_input_controller.clear();
-        }
+      //   DocumentSnapshot snapshot_user =
+      //       await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
-        return null;
-      }).catchError((error) {
-        print("Login error: " + error.toString());
+      //   if (verify_email) {
+      //     if (value.user!.emailVerified) {
+      //       if (remember_me) prefs.setString("email", value.user!.email!);
+      //       open_screen("home");
+      //       email_input_controller.clear();
+      //       password_input_controller.clear();
+      //     } else {
+      //       show_email_verification_alert_dialog(
+      //         context: context,
+      //         user: value.user!,
+      //       );
+      //     }
+      //   } else {
+      //     if (remember_me) prefs.setString("email", value.user!.email!);
+      //     open_screen("home");
+      //     email_input_controller.clear();
+      //     password_input_controller.clear();
+      //   }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("The password or email are invalid"),
-            duration: Duration(milliseconds: 1500),
-          ),
-        );
-      });
+      //   return null;
+      // }).catchError((error) {
+      //   print("Login error: " + error.toString());
+
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       content: Text("The password or email are invalid"),
+      //       duration: Duration(milliseconds: 1500),
+      //     ),
+      //   );
+      // });
     }
   }
 
@@ -231,12 +237,12 @@ class UserInfoFormFunctions {
 
   // Restore Password
 
-  forgot_password({
+  restore_password({
     required BuildContext context,
-    required GlobalKey<FormState> forgot_password_form_key,
+    required GlobalKey<FormState> restore_password_form_key,
     required TextEditingController email_input_controller,
   }) async {
-    if (forgot_password_form_key.currentState!.validate()) {
+    if (restore_password_form_key.currentState!.validate()) {
       try {
         await FirebaseAuth.instance
             .sendPasswordResetEmail(email: email_input_controller.text)

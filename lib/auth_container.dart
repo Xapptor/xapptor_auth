@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
-import 'package:xapptor_auth/user_info_form_type.dart';
+import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_translation/translation_stream.dart';
 import 'package:xapptor_ui/widgets/app_version_container.dart';
 import 'package:xapptor_ui/widgets/topbar.dart';
@@ -9,8 +9,19 @@ import 'package:xapptor_ui/widgets/is_portrait.dart';
 
 // Contains User Info Forms.
 
-class UserInfoViewContainer extends StatefulWidget {
-  const UserInfoViewContainer({
+class AuthContainer extends StatefulWidget {
+  final Widget child;
+  final Color text_color;
+  final Color topbar_color;
+  final bool has_language_picker;
+  final Widget? custom_background;
+  final bool has_back_button;
+  final AuthFormType user_info_form_type;
+  final List<TranslationStream> translation_stream_list;
+  final Function({required int new_source_language_index})
+      update_source_language;
+
+  const AuthContainer({
     required this.child,
     required this.text_color,
     required this.topbar_color,
@@ -22,22 +33,11 @@ class UserInfoViewContainer extends StatefulWidget {
     required this.update_source_language,
   });
 
-  final Widget child;
-  final Color text_color;
-  final Color topbar_color;
-  final bool has_language_picker;
-  final Widget? custom_background;
-  final bool has_back_button;
-  final UserInfoFormType user_info_form_type;
-  final List<TranslationStream> translation_stream_list;
-  final Function({required int new_source_language_index})
-      update_source_language;
-
   @override
-  _UserInfoViewContainerState createState() => _UserInfoViewContainerState();
+  _AuthContainerState createState() => _AuthContainerState();
 }
 
-class _UserInfoViewContainerState extends State<UserInfoViewContainer> {
+class _AuthContainerState extends State<AuthContainer> {
   final GlobalKey<FormState> login_form_key = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffold_key = new GlobalKey<ScaffoldState>();
 
@@ -108,7 +108,10 @@ class _UserInfoViewContainerState extends State<UserInfoViewContainer> {
                                     color: widget.custom_background != null
                                         ? Colors.transparent
                                         : Colors.white,
-                                    child: widget.child,
+                                    child: FractionallySizedBox(
+                                      widthFactor: portrait ? 0.85 : 0.25,
+                                      child: widget.child,
+                                    ),
                                   ),
                                 ),
                               ],

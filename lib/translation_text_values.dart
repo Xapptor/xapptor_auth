@@ -9,7 +9,7 @@ TranslationTextListArray login_values = TranslationTextListArray(
         "Password",
         "Remember me",
         "Log In",
-        "Recover password",
+        "Restore password",
         "Register",
       ],
     ),
@@ -89,14 +89,14 @@ TranslationTextListArray account_values = TranslationTextListArray(
   ],
 );
 
-TranslationTextListArray forgot_password_values = TranslationTextListArray(
+TranslationTextListArray restore_password_values = TranslationTextListArray(
   [
     TranslationTextList(
       source_language: "en",
       text_list: [
-        "Enter your Email",
-        "Email",
         "Restore your Password",
+        "Email",
+        "Restore",
       ],
     ),
     TranslationTextList(
