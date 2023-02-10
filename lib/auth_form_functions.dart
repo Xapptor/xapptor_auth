@@ -33,8 +33,8 @@ class AuthFormFunctions {
     required List<TextEditingController> input_controllers,
     required SharedPreferences prefs,
     required ValueNotifier<bool> verification_code_sent,
+    required Function update_verification_code_sent,
     required Persistence persistence,
-    required Function setState,
   }) async {
     TextEditingController phone_input_controller = input_controllers[0];
     TextEditingController code_input_controller = input_controllers[0];
@@ -49,8 +49,7 @@ class AuthFormFunctions {
             .catchError((error) => print(error));
 
         verification_id = confirmation_result.verificationId;
-        verification_code_sent.value = true;
-        setState(() {});
+        update_verification_code_sent();
         show_verification_code_sent_alert(context);
       } else {
         final AuthCredential credential = PhoneAuthProvider.credential(
@@ -59,10 +58,9 @@ class AuthFormFunctions {
         );
 
         FirebaseAuth.instance.signInWithCredential(credential).then((value) {
-          verification_code_sent.value = false;
           phone_input_controller.clear();
           code_input_controller.clear();
-          setState(() {});
+          update_verification_code_sent();
           open_screen("home");
         });
       }
