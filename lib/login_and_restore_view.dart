@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:xapptor_auth/get_auth_view_logo.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
@@ -334,6 +335,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                               onPressed: () {
                                 use_email_signin = !use_email_signin;
                                 email_input_controller.clear();
+                                password_input_controller.clear();
                                 check_remember_me();
                                 setState(() {});
                               },
@@ -357,6 +359,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                               onPressed: () {
                                 use_email_signin = !use_email_signin;
                                 email_input_controller.clear();
+                                password_input_controller.clear();
                                 check_remember_me();
                                 setState(() {});
                               },
@@ -481,6 +484,14 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                               ).validate(),
                               obscureText:
                                   use_email_signin && !_password_visible,
+                              keyboardType: use_email_signin
+                                  ? TextInputType.text
+                                  : TextInputType.number,
+                              inputFormatters: use_email_signin
+                                  ? null
+                                  : <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
                             ),
                             SizedBox(
                               height: sized_box_space,
