@@ -30,6 +30,7 @@ class LoginAndRestoreView extends StatefulWidget {
   final Function? first_button_action;
   final Function? second_button_action;
   final Function? third_button_action;
+  final Function? resend_code_button_action;
   final Color text_color;
   final LinearGradient first_button_color;
   final Color second_button_color;
@@ -57,6 +58,7 @@ class LoginAndRestoreView extends StatefulWidget {
     required this.first_button_action,
     required this.second_button_action,
     required this.third_button_action,
+    this.resend_code_button_action,
     required this.text_color,
     required this.first_button_color,
     required this.second_button_color,
@@ -111,6 +113,8 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
   List<TranslationStream> translation_stream_list = [];
 
   int source_language_index = 0;
+
+  AuthFormFunctions auth_form_functions = AuthFormFunctions();
 
   update_source_language({
     required int new_source_language_index,
@@ -505,23 +509,58 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: portrait ? 0 : (sized_box_space),
+                        height: sized_box_space,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           TextButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    MediaQuery.of(context).size.width,
+                                  ),
+                                ),
+                              ),
+                            ),
                             onPressed: () {
-                              if (widget.second_button_action != null) {
-                                widget.second_button_action!();
+                              if (use_email_signin) {
+                                if (widget.second_button_action != null) {
+                                  widget.second_button_action!();
+                                }
+                              } else {
+                                if (widget.resend_code_button_action != null) {
+                                  widget.resend_code_button_action!();
+                                } else {
+                                  auth_form_functions.send_verification_code(
+                                    context: context,
+                                    phone_input_controller:
+                                        email_input_controller,
+                                    code_input_controller:
+                                        password_input_controller,
+                                    prefs: prefs,
+                                    update_verification_code_sent:
+                                        update_verification_code_sent,
+                                  );
+                                }
                               }
                             },
                             child: Text(
-                              widget.text_list.get(source_language_index)[widget
-                                      .text_list
-                                      .get(source_language_index)
-                                      .length -
-                                  2],
+                              !use_email_signin &&
+                                      widget.phone_signin_text_list != null
+                                  ? widget.phone_signin_text_list!
+                                      .get(source_language_index)[widget
+                                          .phone_signin_text_list!
+                                          .get(source_language_index)
+                                          .length -
+                                      2]
+                                  : widget.text_list.get(source_language_index)[
+                                      widget.text_list
+                                              .get(source_language_index)
+                                              .length -
+                                          2],
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: widget.second_button_color,
@@ -529,25 +568,38 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                               ),
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              if (widget.third_button_action != null) {
-                                widget.third_button_action!();
-                              }
-                            },
-                            child: Text(
-                              widget.text_list.get(source_language_index)[5],
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: widget.third_button_color,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
+                          !use_email_signin
+                              ? Container()
+                              : TextButton(
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (widget.third_button_action != null) {
+                                      widget.third_button_action!();
+                                    }
+                                  },
+                                  child: Text(
+                                    widget.text_list
+                                        .get(source_language_index)[5],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: widget.third_button_color,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
                         ],
                       ),
                       SizedBox(
-                        height: portrait ? 0 : (sized_box_space),
+                        height: sized_box_space,
                       ),
                     ],
                   ),
@@ -655,8 +707,6 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
       ),
     );
   }
-
-  AuthFormFunctions auth_form_functions = AuthFormFunctions();
 
   on_pressed_first_button() {
     if (widget.first_button_action == null) {

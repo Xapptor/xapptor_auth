@@ -775,11 +775,11 @@ class _AccountViewState extends State<AccountView> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(
-                              height: portrait ? 0 : (sized_box_space),
+                              height: sized_box_space,
                             ),
                             second_button,
                             SizedBox(
-                              height: portrait ? 0 : (sized_box_space),
+                              height: sized_box_space,
                             ),
                           ],
                         )

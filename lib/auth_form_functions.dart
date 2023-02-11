@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:xapptor_auth/model/xapptor_user.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
 
@@ -12,7 +13,7 @@ import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
 class AuthFormFunctions {
   // Login
 
-  late ConfirmationResult confirmation_result;
+  ConfirmationResult? confirmation_result;
   String verification_id = '';
 
   show_verification_code_sent_alert(BuildContext context) {
@@ -27,6 +28,82 @@ class AuthFormFunctions {
     );
   }
 
+  send_verification_code({
+    required BuildContext context,
+    required TextEditingController phone_input_controller,
+    required TextEditingController code_input_controller,
+    required SharedPreferences prefs,
+    required Function update_verification_code_sent,
+  }) async {
+    if (UniversalPlatform.isWeb) {
+      await FirebaseAuth.instance
+          .signInWithPhoneNumber(phone_input_controller.text)
+          .then((value) {
+        confirmation_result = value;
+        verification_id = confirmation_result!.verificationId;
+        update_verification_code_sent();
+        show_verification_code_sent_alert(context);
+      }).onError((error, stackTrace) {
+        show_error_alert(context, 'The phone number is invalid');
+      });
+    } else {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phone_input_controller.text,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          UserCredential user_credential =
+              await FirebaseAuth.instance.signInWithCredential(credential);
+
+          complete_login_phone_number(
+            user_credential: user_credential,
+            phone_input_controller: phone_input_controller,
+            code_input_controller: code_input_controller,
+            update_verification_code_sent: update_verification_code_sent,
+          );
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          show_error_alert(context, 'The phone number is invalid');
+        },
+        codeSent: (String new_verification_id, int? resend_token) {
+          verification_id = new_verification_id;
+        },
+        codeAutoRetrievalTimeout: (String verification_id) {},
+      );
+    }
+  }
+
+  show_error_alert(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 3),
+        backgroundColor: Colors.red,
+        content: Text(
+          message,
+        ),
+      ),
+    );
+  }
+
+  complete_login_phone_number({
+    required UserCredential user_credential,
+    required TextEditingController phone_input_controller,
+    required TextEditingController code_input_controller,
+    required Function update_verification_code_sent,
+  }) {
+    XapptorUser xapptor_user = XapptorUser.empty();
+    xapptor_user.id = user_credential.user!.uid;
+
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user_credential.user!.uid)
+        .set(xapptor_user.to_json())
+        .then((value) {
+      phone_input_controller.clear();
+      code_input_controller.clear();
+      update_verification_code_sent();
+      open_screen("home");
+    });
+  }
+
   login_phone_number({
     required BuildContext context,
     required GlobalKey<FormState> login_form_key,
@@ -37,71 +114,53 @@ class AuthFormFunctions {
     required Persistence persistence,
   }) async {
     TextEditingController phone_input_controller = input_controllers[0];
-    TextEditingController code_input_controller = input_controllers[0];
+    TextEditingController code_input_controller = input_controllers[1];
 
-    if (UniversalPlatform.isWeb) {
-      // Set persistence in Web.
+    // Set persistence in Web.
+    if (UniversalPlatform.isWeb)
       await FirebaseAuth.instance.setPersistence(persistence);
 
-      if (!verification_code_sent.value) {
-        confirmation_result = await FirebaseAuth.instance
-            .signInWithPhoneNumber(phone_input_controller.text)
-            .catchError((error) => print(error));
-
-        verification_id = confirmation_result.verificationId;
-        update_verification_code_sent();
-        show_verification_code_sent_alert(context);
+    if (!verification_code_sent.value) {
+      send_verification_code(
+        context: context,
+        phone_input_controller: phone_input_controller,
+        code_input_controller: code_input_controller,
+        prefs: prefs,
+        update_verification_code_sent: update_verification_code_sent,
+      );
+    } else {
+      if (confirmation_result != null) {
+        await confirmation_result!
+            .confirm(code_input_controller.text)
+            .then((UserCredential user_credential) {
+          complete_login_phone_number(
+            user_credential: user_credential,
+            phone_input_controller: phone_input_controller,
+            code_input_controller: code_input_controller,
+            update_verification_code_sent: update_verification_code_sent,
+          );
+        }).onError((error, stackTrace) {
+          show_error_alert(context, 'The verification code is invalid');
+        });
       } else {
-        final AuthCredential credential = PhoneAuthProvider.credential(
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verification_id,
           smsCode: code_input_controller.text,
         );
 
-        FirebaseAuth.instance.signInWithCredential(credential).then((value) {
-          phone_input_controller.clear();
-          code_input_controller.clear();
-          update_verification_code_sent();
-          open_screen("home");
+        await FirebaseAuth.instance
+            .signInWithCredential(credential)
+            .then((UserCredential user_credential) {
+          complete_login_phone_number(
+            user_credential: user_credential,
+            phone_input_controller: phone_input_controller,
+            code_input_controller: code_input_controller,
+            update_verification_code_sent: update_verification_code_sent,
+          );
+        }).onError((error, stackTrace) {
+          show_error_alert(context, 'The verification code is invalid');
         });
       }
-    } else {
-//       FirebaseAuth _auth = FirebaseAuth.instance;
-//           _auth.verifyPhoneNumber(
-//               phoneNumber: '+2$mobile',
-//               timeout: Duration(seconds: 60),
-//               verificationCompleted: (AuthCredential authCredential){
-//                 var _credential = PhoneAuthProvider.credential(verificationId: actualCode, smsCode: smsCodeController.text);
-//                 _auth.signInWithCredential(_credential).then((UserCredential result) async {
-//                   pr.hide();
-//                   setState(() {
-//                     status = 'Authentication successful';
-//                   });
-// //The rest of my success code
-//                 }).catchError((e){
-//                   print(e);
-//                   Navigator.of(context).pushAndRemoveUntil(
-//                       MaterialPageRoute(
-//                           builder: (context) => Welcome()),
-//                           (Route<dynamic> route) => false);
-// };
-//               },
-//               verificationFailed: (FirebaseAuthException  authException){
-//                 print(authException.message);
-//               },
-//               codeSent: (String verificationId, [int forceResendingToken]){
-//                 setState(() {
-//                   actualCode = verificationId;
-//                   status = 'Code sent';
-//                 });
-//               },
-//               codeAutoRetrievalTimeout: (String verificationId){
-//                 verificationId = verificationId;
-//                 print(verificationId);
-//                 setState(() {
-//                   status = 'Auto retrieval timeout';
-//                 });
-//               },
-//               );
     }
   }
 

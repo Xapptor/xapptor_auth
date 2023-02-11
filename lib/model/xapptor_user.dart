@@ -51,6 +51,20 @@ class XapptorUser {
       'owner': owner,
     };
   }
+
+  factory XapptorUser.empty() {
+    return XapptorUser(
+      id: '',
+      firstname: '',
+      lastname: '',
+      email: '',
+      birthday: '',
+      gender: 0,
+      country: '',
+      admin: false,
+      owner: false,
+    );
+  }
 }
 
 Future<XapptorUser> get_xapptor_user() async {
