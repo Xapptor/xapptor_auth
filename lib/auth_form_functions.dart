@@ -326,16 +326,23 @@ class AuthFormFunctions {
                 Timestamp birthday_timestamp =
                     Timestamp.fromDate(selected_date);
 
+                XapptorUser xapptor_user = XapptorUser(
+                  id: current_user.user!.uid,
+                  firstname: firstname_input_controller.text,
+                  lastname: lastname_input_controller.text,
+                  email: email_input_controller.text,
+                  birthday: birthday_timestamp.toDate(),
+                  gender: gender_value,
+                  country: country_value,
+                  admin: false,
+                  owner: false,
+                );
+
                 FirebaseFirestore.instance
                     .collection("users")
                     .doc(current_user.user!.uid)
-                    .set({
-                  "firstname": firstname_input_controller.text,
-                  "lastname": lastname_input_controller.text,
-                  "birthday": birthday_timestamp,
-                  "gender": gender_value,
-                  "country": country_value,
-                }).then((result) {
+                    .set(xapptor_user.to_json())
+                    .then((result) {
                   firstname_input_controller.clear();
                   lastname_input_controller.clear();
                   email_input_controller.clear();
