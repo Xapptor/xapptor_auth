@@ -1074,7 +1074,7 @@ class _AccountViewState extends State<AccountView> {
 
       firstname = user_data["firstname"] ?? "";
       lastname = user_data["lastname"] ?? "";
-      email = auth_user.email!;
+      email = auth_user.email ?? "";
 
       if (user_data["birthday"] != null) {
         birthday = timestamp_to_date_string(user_data["birthday"]);
