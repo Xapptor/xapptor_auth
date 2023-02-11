@@ -34,6 +34,7 @@ class AuthFormFunctions {
     required TextEditingController code_input_controller,
     required SharedPreferences prefs,
     required Function update_verification_code_sent,
+    required bool remember_me,
   }) async {
     if (UniversalPlatform.isWeb) {
       await FirebaseAuth.instance
@@ -58,6 +59,8 @@ class AuthFormFunctions {
             phone_input_controller: phone_input_controller,
             code_input_controller: code_input_controller,
             update_verification_code_sent: update_verification_code_sent,
+            prefs: prefs,
+            remember_me: remember_me,
           );
         },
         verificationFailed: (FirebaseAuthException e) {
@@ -88,20 +91,35 @@ class AuthFormFunctions {
     required TextEditingController phone_input_controller,
     required TextEditingController code_input_controller,
     required Function update_verification_code_sent,
-  }) {
+    required SharedPreferences prefs,
+    required bool remember_me,
+  }) async {
     XapptorUser xapptor_user = XapptorUser.empty();
     xapptor_user.id = user_credential.user!.uid;
 
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user_credential.user!.uid)
-        .set(xapptor_user.to_json())
-        .then((value) {
+    var user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(xapptor_user.id)
+        .get();
+    if (user.exists) {
       phone_input_controller.clear();
       code_input_controller.clear();
       update_verification_code_sent();
       open_screen("home");
-    });
+    } else {
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(user_credential.user!.uid)
+          .set(xapptor_user.to_json())
+          .then((value) {
+        if (remember_me)
+          prefs.setString("phone_number", phone_input_controller.text);
+        phone_input_controller.clear();
+        code_input_controller.clear();
+        update_verification_code_sent();
+        open_screen("home");
+      });
+    }
   }
 
   login_phone_number({
@@ -112,6 +130,7 @@ class AuthFormFunctions {
     required ValueNotifier<bool> verification_code_sent,
     required Function update_verification_code_sent,
     required Persistence persistence,
+    required bool remember_me,
   }) async {
     TextEditingController phone_input_controller = input_controllers[0];
     TextEditingController code_input_controller = input_controllers[1];
@@ -127,6 +146,7 @@ class AuthFormFunctions {
         code_input_controller: code_input_controller,
         prefs: prefs,
         update_verification_code_sent: update_verification_code_sent,
+        remember_me: remember_me,
       );
     } else {
       if (confirmation_result != null) {
@@ -138,6 +158,8 @@ class AuthFormFunctions {
             phone_input_controller: phone_input_controller,
             code_input_controller: code_input_controller,
             update_verification_code_sent: update_verification_code_sent,
+            prefs: prefs,
+            remember_me: remember_me,
           );
         }).onError((error, stackTrace) {
           show_error_alert(context, 'The verification code is invalid');
@@ -156,6 +178,8 @@ class AuthFormFunctions {
             phone_input_controller: phone_input_controller,
             code_input_controller: code_input_controller,
             update_verification_code_sent: update_verification_code_sent,
+            prefs: prefs,
+            remember_me: remember_me,
           );
         }).onError((error, stackTrace) {
           show_error_alert(context, 'The verification code is invalid');

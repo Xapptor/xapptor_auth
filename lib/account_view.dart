@@ -10,6 +10,7 @@ import 'package:xapptor_logic/timestamp_to_date.dart';
 import 'check_if_app_enabled.dart';
 import 'form_section_container.dart';
 import 'get_auth_view_logo.dart';
+import 'get_over_18_date.dart';
 import 'show_password_verification_alert_dialog.dart';
 import 'auth_form_functions.dart';
 import 'package:xapptor_translation/translation_stream.dart';
@@ -87,16 +88,13 @@ class _AccountViewState extends State<AccountView> {
   bool editing_password = false;
   bool editing_name_and_info = false;
 
-  static DateTime over_18 = DateTime(
-      DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
-
   String firstname = "";
   String lastname = "";
   String email = "";
   String birthday = "";
   int gender_index = 0;
   String country = "";
-  DateTime date = over_18;
+  DateTime date = get_over_18_date();
 
   bool _password_visible = false;
 
@@ -119,14 +117,14 @@ class _AccountViewState extends State<AccountView> {
 
   static DateTime first_date = DateTime(
       DateTime.now().year - 150, DateTime.now().month, DateTime.now().day);
-  DateTime selected_date = over_18;
+  DateTime selected_date = get_over_18_date();
 
   Future<Null> _select_date() async {
     final DateTime? picked = (await showDatePicker(
       context: context,
       initialDate: selected_date,
       firstDate: first_date,
-      lastDate: over_18,
+      lastDate: get_over_18_date(),
     ));
     if (picked != null)
       setState(() {
@@ -1079,7 +1077,7 @@ class _AccountViewState extends State<AccountView> {
       email = auth_user.email!;
 
       if (user_data["birthday"] != null) {
-        birthday = timestamp_to_date(user_data["birthday"]);
+        birthday = timestamp_to_date_string(user_data["birthday"]);
         date = DateTime.parse(user_data["birthday"].toDate().toString());
       }
 

@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:xapptor_logic/timestamp_to_date.dart';
+import 'package:xapptor_auth/get_over_18_date.dart';
 
 class XapptorUser {
   String id;
   String firstname;
   String lastname;
   String email;
-  String birthday;
+  DateTime birthday;
   int gender;
   String country;
   bool admin;
@@ -33,7 +33,7 @@ class XapptorUser {
         firstname = snapshot['firstname'],
         lastname = snapshot['lastname'],
         email = email,
-        birthday = timestamp_to_date(snapshot['birthday']),
+        birthday = (snapshot['birthday'] as Timestamp).toDate(),
         gender = snapshot['gender'],
         country = snapshot['country'],
         admin = snapshot['admin'] ?? false,
@@ -58,7 +58,7 @@ class XapptorUser {
       firstname: '',
       lastname: '',
       email: '',
-      birthday: '',
+      birthday: get_over_18_date(),
       gender: 0,
       country: '',
       admin: false,

@@ -100,11 +100,22 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
   init_prefs() async {
     prefs = await SharedPreferences.getInstance();
+    check_remember_me();
+  }
 
-    if (prefs.getString("email") != null) {
-      email_input_controller.text = prefs.getString("email")!;
-      remember_me = true;
-      setState(() {});
+  check_remember_me() async {
+    if (use_email_signin) {
+      if (prefs.getString("email") != null) {
+        email_input_controller.text = prefs.getString("email")!;
+        remember_me = true;
+        setState(() {});
+      }
+    } else {
+      if (prefs.getString("phone_number") != null) {
+        email_input_controller.text = prefs.getString("phone_number")!;
+        remember_me = true;
+        setState(() {});
+      }
     }
   }
 
@@ -322,6 +333,8 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                             child: IconButton(
                               onPressed: () {
                                 use_email_signin = !use_email_signin;
+                                email_input_controller.clear();
+                                check_remember_me();
                                 setState(() {});
                               },
                               icon: Icon(
@@ -343,6 +356,8 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                             child: IconButton(
                               onPressed: () {
                                 use_email_signin = !use_email_signin;
+                                email_input_controller.clear();
+                                check_remember_me();
                                 setState(() {});
                               },
                               icon: Icon(
@@ -543,6 +558,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                                     prefs: prefs,
                                     update_verification_code_sent:
                                         update_verification_code_sent,
+                                    remember_me: remember_me,
                                   );
                                 }
                               }
@@ -735,6 +751,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
             verification_code_sent: verification_code_sent,
             update_verification_code_sent: update_verification_code_sent,
             persistence: Persistence.LOCAL,
+            remember_me: remember_me,
           );
         }
       } else {
