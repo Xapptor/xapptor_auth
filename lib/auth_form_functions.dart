@@ -102,6 +102,8 @@ class AuthFormFunctions {
         .doc(xapptor_user.id)
         .get();
     if (user.exists) {
+      if (remember_me)
+        prefs.setString("phone_number", phone_input_controller.text);
       phone_input_controller.clear();
       code_input_controller.clear();
       update_verification_code_sent();
