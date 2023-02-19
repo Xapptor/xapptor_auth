@@ -581,16 +581,13 @@ class _AccountViewState extends State<AccountView> {
                                       ),
                                     ),
                                   ),
-                                  onPressed: () {
-                                    if (is_edit_account(
-                                        widget.user_info_form_type)) {
-                                      if (editing_name_and_info) {
-                                        _select_date();
-                                      }
-                                    } else {
-                                      _select_date();
-                                    }
-                                  },
+                                  onPressed: is_edit_account(
+                                              widget.user_info_form_type) &&
+                                          !editing_name_and_info
+                                      ? null
+                                      : () {
+                                          _select_date();
+                                        },
                                   child: Text(
                                     birthday_label != ""
                                         ? birthday_label
@@ -625,20 +622,24 @@ class _AccountViewState extends State<AccountView> {
                                   color: widget.text_color,
                                 ),
                                 dropdownColor: dropdown_color,
-                                onChanged: (new_value) {
-                                  if (is_edit_account(
-                                      widget.user_info_form_type)) {
-                                    if (editing_name_and_info) {
-                                      setState(() {
-                                        gender_value = new_value!;
-                                      });
-                                    }
-                                  } else {
-                                    setState(() {
-                                      gender_value = new_value!;
-                                    });
-                                  }
-                                },
+                                onChanged: is_edit_account(
+                                            widget.user_info_form_type) &&
+                                        !editing_name_and_info
+                                    ? null
+                                    : (new_value) {
+                                        if (is_edit_account(
+                                            widget.user_info_form_type)) {
+                                          if (editing_name_and_info) {
+                                            setState(() {
+                                              gender_value = new_value!;
+                                            });
+                                          }
+                                        } else {
+                                          setState(() {
+                                            gender_value = new_value!;
+                                          });
+                                        }
+                                      },
                                 items: widget.gender_values
                                     .get(source_language_index)
                                     .map<DropdownMenuItem<String>>(
@@ -672,20 +673,24 @@ class _AccountViewState extends State<AccountView> {
                                         color: widget.text_color,
                                       ),
                                       dropdownColor: dropdown_color,
-                                      onChanged: (new_value) {
-                                        if (is_edit_account(
-                                            widget.user_info_form_type)) {
-                                          if (editing_name_and_info) {
-                                            setState(() {
-                                              country_value = new_value!;
-                                            });
-                                          }
-                                        } else {
-                                          setState(() {
-                                            country_value = new_value!;
-                                          });
-                                        }
-                                      },
+                                      onChanged: is_edit_account(
+                                                  widget.user_info_form_type) &&
+                                              !editing_name_and_info
+                                          ? null
+                                          : (new_value) {
+                                              if (is_edit_account(
+                                                  widget.user_info_form_type)) {
+                                                if (editing_name_and_info) {
+                                                  setState(() {
+                                                    country_value = new_value!;
+                                                  });
+                                                }
+                                              } else {
+                                                setState(() {
+                                                  country_value = new_value!;
+                                                });
+                                              }
+                                            },
                                       items: widget.country_values!
                                           .map<DropdownMenuItem<String>>(
                                               (String value) {
