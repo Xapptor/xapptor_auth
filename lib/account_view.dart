@@ -326,53 +326,144 @@ class _AccountViewState extends State<AccountView> {
                   SizedBox(
                     height: sized_box_space,
                   ),
-                  form_section_container(
-                    outline_border: widget.outline_border,
-                    border_color: widget.text_color,
-                    background_color: widget.text_field_background_color,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          style: TextStyle(color: widget.text_color),
-                          enabled: is_edit_account(widget.user_info_form_type)
-                              ? editing_email
-                              : true,
-                          decoration: InputDecoration(
-                            labelText:
-                                widget.text_list.get(source_language_index)[0],
-                            labelStyle: TextStyle(
-                              color: widget.text_color,
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
+                  Form(
+                    key: email_form_key,
+                    child: form_section_container(
+                      outline_border: widget.outline_border,
+                      border_color: widget.text_color,
+                      background_color: widget.text_field_background_color,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            style: TextStyle(color: widget.text_color),
+                            enabled: is_edit_account(widget.user_info_form_type)
+                                ? editing_email
+                                : true,
+                            decoration: InputDecoration(
+                              labelText: widget.text_list
+                                  .get(source_language_index)[0],
+                              labelStyle: TextStyle(
                                 color: widget.text_color,
                               ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: widget.text_color,
+                                ),
+                              ),
                             ),
+                            controller: email_input_controller,
+                            validator: (value) => FormFieldValidators(
+                              value: value!,
+                              type: FormFieldValidatorsType.email,
+                            ).validate(),
+                            keyboardType: TextInputType.emailAddress,
                           ),
-                          controller: email_input_controller,
-                          validator: (value) => FormFieldValidators(
-                            value: value!,
-                            type: FormFieldValidatorsType.email,
-                          ).validate(),
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        SizedBox(
-                          height: sized_box_space,
-                        ),
-                        is_register(widget.user_info_form_type) ||
-                                is_edit_account(
-                                  widget.user_info_form_type,
+                          SizedBox(
+                            height: sized_box_space,
+                          ),
+                          is_register(widget.user_info_form_type) ||
+                                  is_edit_account(
+                                    widget.user_info_form_type,
+                                  )
+                              ? TextFormField(
+                                  style: TextStyle(color: widget.text_color),
+                                  enabled: is_edit_account(
+                                    widget.user_info_form_type,
+                                  )
+                                      ? editing_email
+                                      : true,
+                                  decoration: InputDecoration(
+                                    labelText: widget.text_list
+                                        .get(source_language_index)[1],
+                                    labelStyle: TextStyle(
+                                      color: widget.text_color,
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: widget.text_color,
+                                      ),
+                                    ),
+                                  ),
+                                  controller: confirm_email_input_controller,
+                                  validator: (value) => FormFieldValidators(
+                                    value: value!,
+                                    type: FormFieldValidatorsType.email,
+                                  ).validate(),
+                                  keyboardType: TextInputType.emailAddress,
                                 )
-                            ? TextFormField(
+                              : Container(),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: sized_box_space,
+                      ),
+                      Form(
+                        key: password_form_key,
+                        child: form_section_container(
+                          outline_border: widget.outline_border,
+                          border_color: widget.text_color,
+                          background_color: widget.text_field_background_color,
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                onFieldSubmitted: (value) {
+                                  on_pressed_first_button();
+                                },
                                 style: TextStyle(color: widget.text_color),
-                                enabled: is_edit_account(
-                                  widget.user_info_form_type,
-                                )
-                                    ? editing_email
-                                    : true,
+                                enabled:
+                                    is_edit_account(widget.user_info_form_type)
+                                        ? editing_password
+                                        : true,
                                 decoration: InputDecoration(
                                   labelText: widget.text_list
-                                      .get(source_language_index)[1],
+                                      .get(source_language_index)[2],
+                                  labelStyle: TextStyle(
+                                    color: widget.text_color,
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: widget.text_color,
+                                    ),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _password_visible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                      color: widget.text_color,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _password_visible = !_password_visible;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                controller: password_input_controller,
+                                validator: (value) => FormFieldValidators(
+                                  value: value!,
+                                  type: FormFieldValidatorsType.password,
+                                ).validate(),
+                                obscureText: !_password_visible,
+                              ),
+                              SizedBox(
+                                height: sized_box_space,
+                              ),
+                              TextFormField(
+                                style: TextStyle(
+                                  color: widget.text_color,
+                                ),
+                                enabled:
+                                    is_edit_account(widget.user_info_form_type)
+                                        ? editing_password
+                                        : true,
+                                decoration: InputDecoration(
+                                  labelText: widget.text_list
+                                      .get(source_language_index)[3],
                                   labelStyle: TextStyle(
                                     color: widget.text_color,
                                   ),
@@ -382,392 +473,291 @@ class _AccountViewState extends State<AccountView> {
                                     ),
                                   ),
                                 ),
-                                controller: confirm_email_input_controller,
+                                controller: confirm_password_input_controller,
                                 validator: (value) => FormFieldValidators(
                                   value: value!,
-                                  type: FormFieldValidatorsType.email,
+                                  type: FormFieldValidatorsType.password,
                                 ).validate(),
-                                keyboardType: TextInputType.emailAddress,
-                              )
-                            : Container(),
-                      ],
-                    ),
+                                obscureText: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   Column(
                     children: [
                       SizedBox(
                         height: sized_box_space,
                       ),
-                      form_section_container(
-                        outline_border: widget.outline_border,
-                        border_color: widget.text_color,
-                        background_color: widget.text_field_background_color,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              onFieldSubmitted: (value) {
-                                on_pressed_first_button();
-                              },
-                              style: TextStyle(color: widget.text_color),
-                              enabled:
-                                  is_edit_account(widget.user_info_form_type)
-                                      ? editing_password
-                                      : true,
-                              decoration: InputDecoration(
-                                labelText: widget.text_list
-                                    .get(source_language_index)[2],
-                                labelStyle: TextStyle(
-                                  color: widget.text_color,
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: widget.text_color,
-                                  ),
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _password_visible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: widget.text_color,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _password_visible = !_password_visible;
-                                    });
-                                  },
-                                ),
-                              ),
-                              controller: password_input_controller,
-                              validator: (value) => FormFieldValidators(
-                                value: value!,
-                                type: FormFieldValidatorsType.password,
-                              ).validate(),
-                              obscureText: !_password_visible,
-                            ),
-                            SizedBox(
-                              height: sized_box_space,
-                            ),
-                            TextFormField(
-                              style: TextStyle(
-                                color: widget.text_color,
-                              ),
-                              enabled:
-                                  is_edit_account(widget.user_info_form_type)
-                                      ? editing_password
-                                      : true,
-                              decoration: InputDecoration(
-                                labelText: widget.text_list
-                                    .get(source_language_index)[3],
-                                labelStyle: TextStyle(
-                                  color: widget.text_color,
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: widget.text_color,
-                                  ),
-                                ),
-                              ),
-                              controller: confirm_password_input_controller,
-                              validator: (value) => FormFieldValidators(
-                                value: value!,
-                                type: FormFieldValidatorsType.password,
-                              ).validate(),
-                              obscureText: true,
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  is_register(widget.user_info_form_type) ||
-                          is_edit_account(widget.user_info_form_type)
-                      ? Column(
-                          children: [
-                            SizedBox(
-                              height: sized_box_space,
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(
-                                outline_padding,
-                              ),
-                              decoration: BoxDecoration(
-                                color: widget.text_field_background_color ??
-                                    Colors.transparent,
-                                border: Border.all(
-                                  width: outline_width,
-                                  color: widget.outline_border
-                                      ? widget.text_color
-                                      : widget.text_field_background_color!,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(outline_border_radius),
-                                ),
-                              ),
-                              child: Column(
-                                children: [
-                                  TextFormField(
-                                    style: TextStyle(color: widget.text_color),
-                                    enabled: is_edit_account(
-                                            widget.user_info_form_type)
+                      Form(
+                        key: name_and_info_form_key,
+                        child: form_section_container(
+                          outline_border: widget.outline_border,
+                          border_color: widget.text_color,
+                          background_color: widget.text_field_background_color,
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                style: TextStyle(color: widget.text_color),
+                                enabled:
+                                    is_edit_account(widget.user_info_form_type)
                                         ? editing_name_and_info
                                         : true,
-                                    decoration: InputDecoration(
-                                      labelText: widget.text_list
-                                          .get(source_language_index)[4],
-                                      labelStyle: TextStyle(
-                                        color: widget.text_color,
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: widget.text_color,
-                                        ),
-                                      ),
-                                    ),
-                                    controller: firstname_input_controller,
-                                    validator: (value) => FormFieldValidators(
-                                      value: value!,
-                                      type: FormFieldValidatorsType.name,
-                                    ).validate(),
+                                decoration: InputDecoration(
+                                  labelText: widget.text_list
+                                      .get(source_language_index)[4],
+                                  labelStyle: TextStyle(
+                                    color: widget.text_color,
                                   ),
-                                  SizedBox(
-                                    height: sized_box_space,
-                                  ),
-                                  TextFormField(
-                                    style: TextStyle(color: widget.text_color),
-                                    enabled: is_edit_account(
-                                            widget.user_info_form_type)
-                                        ? editing_name_and_info
-                                        : true,
-                                    decoration: InputDecoration(
-                                      labelText: widget.text_list
-                                          .get(source_language_index)[5],
-                                      labelStyle: TextStyle(
-                                        color: widget.text_color,
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: widget.text_color,
-                                        ),
-                                      ),
-                                    ),
-                                    controller: last_name_input_controller,
-                                    validator: (value) => FormFieldValidators(
-                                      value: value!,
-                                      type: FormFieldValidatorsType.name,
-                                    ).validate(),
-                                  ),
-                                  SizedBox(
-                                    height: sized_box_space,
-                                  ),
-                                  Container(
-                                    width: screen_width,
-                                    child: ElevatedButton(
-                                      style: ButtonStyle(
-                                        elevation:
-                                            MaterialStateProperty.all<double>(
-                                          0,
-                                        ),
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                          Colors.transparent,
-                                        ),
-                                        overlayColor:
-                                            MaterialStateProperty.all<Color>(
-                                          Colors.grey.withOpacity(0.2),
-                                        ),
-                                        shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              MediaQuery.of(context).size.width,
-                                            ),
-                                            side: BorderSide(
-                                              color: widget.text_color,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        if (is_edit_account(
-                                            widget.user_info_form_type)) {
-                                          if (editing_name_and_info) {
-                                            _select_date();
-                                          }
-                                        } else {
-                                          _select_date();
-                                        }
-                                      },
-                                      child: Text(
-                                        birthday_label != ""
-                                            ? birthday_label
-                                            : widget.text_list
-                                                .get(source_language_index)[6],
-                                        style: TextStyle(
-                                          color: widget.text_color,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: sized_box_space,
-                                  ),
-                                  DropdownButton<String>(
-                                    icon: Icon(
-                                      Icons.arrow_drop_down,
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
                                       color: widget.text_color,
                                     ),
-                                    isExpanded: true,
-                                    value: gender_value == ""
-                                        ? widget.gender_values
-                                            .get(source_language_index)[0]
-                                        : gender_value,
-                                    iconSize: 24,
-                                    elevation: 16,
+                                  ),
+                                ),
+                                controller: firstname_input_controller,
+                                validator: (value) => FormFieldValidators(
+                                  value: value!,
+                                  type: FormFieldValidatorsType.name,
+                                ).validate(),
+                              ),
+                              SizedBox(
+                                height: sized_box_space,
+                              ),
+                              TextFormField(
+                                style: TextStyle(color: widget.text_color),
+                                enabled:
+                                    is_edit_account(widget.user_info_form_type)
+                                        ? editing_name_and_info
+                                        : true,
+                                decoration: InputDecoration(
+                                  labelText: widget.text_list
+                                      .get(source_language_index)[5],
+                                  labelStyle: TextStyle(
+                                    color: widget.text_color,
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: widget.text_color,
+                                    ),
+                                  ),
+                                ),
+                                controller: last_name_input_controller,
+                                validator: (value) => FormFieldValidators(
+                                  value: value!,
+                                  type: FormFieldValidatorsType.name,
+                                ).validate(),
+                              ),
+                              SizedBox(
+                                height: sized_box_space,
+                              ),
+                              Container(
+                                width: screen_width,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    elevation:
+                                        MaterialStateProperty.all<double>(
+                                      0,
+                                    ),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                      Colors.transparent,
+                                    ),
+                                    overlayColor:
+                                        MaterialStateProperty.all<Color>(
+                                      Colors.grey.withOpacity(0.2),
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width,
+                                        ),
+                                        side: BorderSide(
+                                          color: widget.text_color,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (is_edit_account(
+                                        widget.user_info_form_type)) {
+                                      if (editing_name_and_info) {
+                                        _select_date();
+                                      }
+                                    } else {
+                                      _select_date();
+                                    }
+                                  },
+                                  child: Text(
+                                    birthday_label != ""
+                                        ? birthday_label
+                                        : widget.text_list
+                                            .get(source_language_index)[6],
                                     style: TextStyle(
                                       color: widget.text_color,
                                     ),
-                                    underline: Container(
-                                      height: 1,
-                                      color: widget.text_color,
-                                    ),
-                                    dropdownColor: dropdown_color,
-                                    onChanged: (new_value) {
-                                      if (is_edit_account(
-                                          widget.user_info_form_type)) {
-                                        if (editing_name_and_info) {
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: sized_box_space,
+                              ),
+                              DropdownButton<String>(
+                                icon: Icon(
+                                  Icons.arrow_drop_down,
+                                  color: widget.text_color,
+                                ),
+                                isExpanded: true,
+                                value: gender_value == ""
+                                    ? widget.gender_values
+                                        .get(source_language_index)[0]
+                                    : gender_value,
+                                iconSize: 24,
+                                elevation: 16,
+                                style: TextStyle(
+                                  color: widget.text_color,
+                                ),
+                                underline: Container(
+                                  height: 1,
+                                  color: widget.text_color,
+                                ),
+                                dropdownColor: dropdown_color,
+                                onChanged: (new_value) {
+                                  if (is_edit_account(
+                                      widget.user_info_form_type)) {
+                                    if (editing_name_and_info) {
+                                      setState(() {
+                                        gender_value = new_value!;
+                                      });
+                                    }
+                                  } else {
+                                    setState(() {
+                                      gender_value = new_value!;
+                                    });
+                                  }
+                                },
+                                items: widget.gender_values
+                                    .get(source_language_index)
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                              SizedBox(
+                                height: sized_box_space,
+                              ),
+                              widget.country_values != null
+                                  ? DropdownButton<String>(
+                                      icon: Icon(
+                                        Icons.arrow_drop_down,
+                                        color: widget.text_color,
+                                      ),
+                                      isExpanded: true,
+                                      value: country_value == ""
+                                          ? widget.country_values![0]
+                                          : country_value,
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      style: TextStyle(
+                                        color: widget.text_color,
+                                      ),
+                                      underline: Container(
+                                        height: 1,
+                                        color: widget.text_color,
+                                      ),
+                                      dropdownColor: dropdown_color,
+                                      onChanged: (new_value) {
+                                        if (is_edit_account(
+                                            widget.user_info_form_type)) {
+                                          if (editing_name_and_info) {
+                                            setState(() {
+                                              country_value = new_value!;
+                                            });
+                                          }
+                                        } else {
                                           setState(() {
-                                            gender_value = new_value!;
+                                            country_value = new_value!;
                                           });
                                         }
-                                      } else {
-                                        setState(() {
-                                          gender_value = new_value!;
-                                        });
-                                      }
-                                    },
-                                    items: widget.gender_values
-                                        .get(source_language_index)
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                  ),
-                                  SizedBox(
-                                    height: sized_box_space,
-                                  ),
-                                  widget.country_values != null
-                                      ? DropdownButton<String>(
-                                          icon: Icon(
-                                            Icons.arrow_drop_down,
-                                            color: widget.text_color,
-                                          ),
-                                          isExpanded: true,
-                                          value: country_value == ""
-                                              ? widget.country_values![0]
-                                              : country_value,
-                                          iconSize: 24,
-                                          elevation: 16,
-                                          style: TextStyle(
-                                            color: widget.text_color,
-                                          ),
-                                          underline: Container(
-                                            height: 1,
-                                            color: widget.text_color,
-                                          ),
-                                          dropdownColor: dropdown_color,
-                                          onChanged: (new_value) {
-                                            if (is_edit_account(
-                                                widget.user_info_form_type)) {
-                                              if (editing_name_and_info) {
-                                                setState(() {
-                                                  country_value = new_value!;
-                                                });
-                                              }
-                                            } else {
-                                              setState(() {
-                                                country_value = new_value!;
-                                              });
-                                            }
-                                          },
-                                          items: widget.country_values!
-                                              .map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        )
-                                      : Container(),
-                                  is_register(widget.user_info_form_type)
-                                      ? Column(
-                                          children: [
-                                            SizedBox(
-                                              height: sized_box_space,
-                                            ),
-                                            Container(
-                                              child: TextButton(
-                                                style: ButtonStyle(
-                                                  shape:
-                                                      MaterialStateProperty.all<
-                                                          RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                      ),
-                                                    ),
+                                      },
+                                      items: widget.country_values!
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    )
+                                  : Container(),
+                              is_register(widget.user_info_form_type)
+                                  ? Column(
+                                      children: [
+                                        SizedBox(
+                                          height: sized_box_space,
+                                        ),
+                                        Container(
+                                          child: TextButton(
+                                            style: ButtonStyle(
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .width,
                                                   ),
-                                                ),
-                                                onPressed: () {
-                                                  accept_terms = !accept_terms;
-                                                  setState(() {});
-                                                },
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: Container(
-                                                        child: Icon(
-                                                          accept_terms
-                                                              ? Icons
-                                                                  .check_box_outlined
-                                                              : Icons
-                                                                  .check_box_outline_blank,
-                                                          color:
-                                                              widget.text_color,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Spacer(flex: 1),
-                                                    Expanded(
-                                                      flex: 12,
-                                                      child:
-                                                          widget.tc_and_pp_text,
-                                                    ),
-                                                    Spacer(flex: 1),
-                                                  ],
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
-                                              height: sized_box_space,
+                                            onPressed: () {
+                                              accept_terms = !accept_terms;
+                                              setState(() {});
+                                            },
+                                            child: Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Container(
+                                                    child: Icon(
+                                                      accept_terms
+                                                          ? Icons
+                                                              .check_box_outlined
+                                                          : Icons
+                                                              .check_box_outline_blank,
+                                                      color: widget.text_color,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Spacer(flex: 1),
+                                                Expanded(
+                                                  flex: 12,
+                                                  child: widget.tc_and_pp_text,
+                                                ),
+                                                Spacer(flex: 1),
+                                              ],
                                             ),
-                                          ],
-                                        )
-                                      : Container(),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )
-                      : Container(),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: sized_box_space,
+                                        ),
+                                      ],
+                                    )
+                                  : Container(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   is_edit_account(widget.user_info_form_type)
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -916,8 +906,18 @@ class _AccountViewState extends State<AccountView> {
   on_pressed_first_button() {
     if (widget.first_button_action == null) {
       if (is_edit_account(widget.user_info_form_type)) {
-        if (editing_email || editing_password || editing_name_and_info) {
-          show_edit_account_alert_dialog(context);
+        if (editing_email) {
+          if (email_form_key.currentState!.validate()) {
+            show_edit_account_alert_dialog(context);
+          }
+        } else if (editing_password) {
+          if (password_form_key.currentState!.validate()) {
+            show_edit_account_alert_dialog(context);
+          }
+        } else if (editing_name_and_info) {
+          if (name_and_info_form_key.currentState!.validate()) {
+            show_edit_account_alert_dialog(context);
+          }
         }
       } else if (is_register(widget.user_info_form_type)) {
         List<TextEditingController> inputControllers = [
@@ -985,7 +985,7 @@ class _AccountViewState extends State<AccountView> {
                 if (editing_email ||
                     editing_password ||
                     editing_name_and_info) {
-                  show_password_verification_alert_dialog(
+                  show_authentication_alert_dialog(
                     context: context,
                     email: email,
                     text_color: widget.text_color,
@@ -1086,7 +1086,6 @@ class _AccountViewState extends State<AccountView> {
 
       if (firstname.isEmpty || lastname.isEmpty) {
         editing_name_and_info = true;
-        password_verification_enabled = false;
       }
 
       fill_fields();

@@ -35,6 +35,7 @@ class AuthFormFunctions {
     required SharedPreferences prefs,
     required Function update_verification_code_sent,
     required bool remember_me,
+    required Function? callback,
   }) async {
     if (UniversalPlatform.isWeb) {
       await FirebaseAuth.instance
@@ -61,6 +62,7 @@ class AuthFormFunctions {
             update_verification_code_sent: update_verification_code_sent,
             prefs: prefs,
             remember_me: remember_me,
+            callback: callback,
           );
         },
         verificationFailed: (FirebaseAuthException e) {
@@ -93,6 +95,7 @@ class AuthFormFunctions {
     required Function update_verification_code_sent,
     required SharedPreferences prefs,
     required bool remember_me,
+    required Function? callback,
   }) async {
     XapptorUser xapptor_user = XapptorUser.empty();
     xapptor_user.id = user_credential.user!.uid;
@@ -102,37 +105,57 @@ class AuthFormFunctions {
         .doc(xapptor_user.id)
         .get();
     if (user.exists) {
-      if (remember_me)
-        prefs.setString("phone_number", phone_input_controller.text);
+      if (remember_me) {
+        prefs.setString(
+            "phone_number", phone_input_controller.text.split(' ').last);
+        prefs.setString(
+            "phone_code", phone_input_controller.text.split(' ').first);
+      }
+
       phone_input_controller.clear();
       code_input_controller.clear();
       update_verification_code_sent();
-      open_screen("home");
+
+      if (callback != null) {
+        callback();
+      } else {
+        open_screen("home");
+      }
     } else {
       FirebaseFirestore.instance
           .collection("users")
           .doc(user_credential.user!.uid)
           .set(xapptor_user.to_json())
           .then((value) {
-        if (remember_me)
-          prefs.setString("phone_number", phone_input_controller.text);
+        if (remember_me) {
+          prefs.setString(
+              "phone_number", phone_input_controller.text.split(' ').last);
+          prefs.setString(
+              "phone_code", phone_input_controller.text.split(' ').first);
+        }
+
         phone_input_controller.clear();
         code_input_controller.clear();
         update_verification_code_sent();
-        open_screen("home");
+
+        if (callback != null) {
+          callback();
+        } else {
+          open_screen("home");
+        }
       });
     }
   }
 
   login_phone_number({
     required BuildContext context,
-    required GlobalKey<FormState> login_form_key,
     required List<TextEditingController> input_controllers,
     required SharedPreferences prefs,
     required ValueNotifier<bool> verification_code_sent,
     required Function update_verification_code_sent,
     required Persistence persistence,
     required bool remember_me,
+    Function? callback,
   }) async {
     TextEditingController phone_input_controller = input_controllers[0];
     TextEditingController code_input_controller = input_controllers[1];
@@ -149,6 +172,7 @@ class AuthFormFunctions {
         prefs: prefs,
         update_verification_code_sent: update_verification_code_sent,
         remember_me: remember_me,
+        callback: callback,
       );
     } else {
       if (confirmation_result != null) {
@@ -162,6 +186,7 @@ class AuthFormFunctions {
             update_verification_code_sent: update_verification_code_sent,
             prefs: prefs,
             remember_me: remember_me,
+            callback: callback,
           );
         }).onError((error, stackTrace) {
           show_error_alert(context, 'The verification code is invalid');
@@ -182,6 +207,7 @@ class AuthFormFunctions {
             update_verification_code_sent: update_verification_code_sent,
             prefs: prefs,
             remember_me: remember_me,
+            callback: callback,
           );
         }).onError((error, stackTrace) {
           show_error_alert(context, 'The verification code is invalid');
@@ -193,7 +219,7 @@ class AuthFormFunctions {
   login({
     required BuildContext context,
     required bool remember_me,
-    required GlobalKey<FormState> login_form_key,
+    required GlobalKey<FormState> form_key,
     required List<TextEditingController> input_controllers,
     required SharedPreferences prefs,
     required Persistence persistence,
@@ -202,7 +228,7 @@ class AuthFormFunctions {
     TextEditingController email_input_controller = input_controllers[0];
     TextEditingController password_input_controller = input_controllers[1];
 
-    if (login_form_key.currentState!.validate()) {
+    if (form_key.currentState!.validate()) {
       // Set persistence in Web.
       if (UniversalPlatform.isWeb)
         await FirebaseAuth.instance.setPersistence(persistence);
@@ -417,10 +443,10 @@ class AuthFormFunctions {
 
   restore_password({
     required BuildContext context,
-    required GlobalKey<FormState> restore_password_form_key,
+    required GlobalKey<FormState> form_key,
     required TextEditingController email_input_controller,
   }) async {
-    if (restore_password_form_key.currentState!.validate()) {
+    if (form_key.currentState!.validate()) {
       try {
         await FirebaseAuth.instance
             .sendPasswordResetEmail(email: email_input_controller.text)
@@ -561,7 +587,9 @@ class AuthFormFunctions {
 
   show_user_info_saved_message(BuildContext context, int times_pop) {
     for (int i = 0; 0 < times_pop; i++) {
-      Navigator.of(context).pop();
+      Timer(Duration(milliseconds: 100), () {
+        Navigator.of(context).pop();
+      });
     }
 
     Timer(Duration(milliseconds: 500), () {

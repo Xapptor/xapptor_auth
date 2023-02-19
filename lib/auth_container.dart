@@ -109,7 +109,7 @@ class _AuthContainerState extends State<AuthContainer> {
                                         ? Colors.transparent
                                         : Colors.white,
                                     child: FractionallySizedBox(
-                                      widthFactor: portrait ? 0.85 : 0.25,
+                                      widthFactor: portrait ? 0.9 : 0.3,
                                       child: widget.child,
                                     ),
                                   ),

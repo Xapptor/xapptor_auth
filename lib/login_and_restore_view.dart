@@ -8,6 +8,7 @@ import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_logic/sha256_of_string.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_translation/model/text_list.dart';
+import 'package:xapptor_ui/values/countries_phone_codes.dart';
 import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'check_if_app_enabled.dart';
@@ -112,11 +113,18 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
         setState(() {});
       }
     } else {
-      if (prefs.getString("phone_number") != null) {
-        email_input_controller.text = prefs.getString("phone_number")!;
-        remember_me = true;
-        setState(() {});
+      if (prefs.getString("phone_number") != null ||
+          prefs.getString("phone_code") != null) {
+        if (prefs.getString("phone_number") != null) {
+          email_input_controller.text = prefs.getString("phone_number")!;
+        }
+        if (prefs.getString("phone_code") != null) {
+          current_phone_code = country_phone_code_list.firstWhere(
+              (element) => element.dial_code == prefs.getString("phone_code"));
+        }
       }
+      remember_me = true;
+      setState(() {});
     }
   }
 
@@ -197,8 +205,23 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
     }
   }
 
+  late CountryPhoneCode current_phone_code;
+  late List<DropdownMenuItem<CountryPhoneCode>> dropdown_button_items;
+
   @override
   void initState() {
+    dropdown_button_items = country_phone_code_list
+        .map<DropdownMenuItem<CountryPhoneCode>>((CountryPhoneCode value) {
+      return DropdownMenuItem<CountryPhoneCode>(
+        value: value,
+        child: Text(
+          value.name.split(',').first + ' ' + value.dial_code,
+          overflow: TextOverflow.visible,
+        ),
+      );
+    }).toList();
+    current_phone_code = country_phone_code_list[0];
+
     source_language_index = widget.source_language_index;
     super.initState();
 
@@ -323,6 +346,8 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
+                            height: 38,
+                            width: 38,
                             margin: EdgeInsets.only(right: 5),
                             padding: EdgeInsets.all(3),
                             decoration: BoxDecoration(
@@ -332,6 +357,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: IconButton(
+                              padding: EdgeInsets.zero,
                               onPressed: () {
                                 use_email_signin = !use_email_signin;
                                 email_input_controller.clear();
@@ -344,10 +370,14 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                                 color: use_email_signin
                                     ? Colors.white
                                     : widget.text_color,
+                                size: 30,
                               ),
                             ),
                           ),
                           Container(
+                            height: 38,
+                            width: 38,
+                            margin: EdgeInsets.only(right: 5),
                             padding: EdgeInsets.all(3),
                             decoration: BoxDecoration(
                               color: !use_email_signin
@@ -356,6 +386,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: IconButton(
+                              padding: EdgeInsets.zero,
                               onPressed: () {
                                 use_email_signin = !use_email_signin;
                                 email_input_controller.clear();
@@ -364,17 +395,18 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                                 setState(() {});
                               },
                               icon: Icon(
-                                FontAwesomeIcons.mobile,
+                                FontAwesomeIcons.commentSms,
                                 color: !use_email_signin
                                     ? Colors.white
                                     : widget.text_color,
+                                size: 30,
                               ),
                             ),
                           ),
                         ],
                       ),
                       SizedBox(
-                        height: sized_box_space,
+                        height: sized_box_space * 0.7,
                       ),
                     ],
                   )
@@ -385,35 +417,67 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
               background_color: widget.text_field_background_color,
               child: Column(
                 children: [
-                  TextFormField(
-                    style: TextStyle(color: widget.text_color),
-                    decoration: InputDecoration(
-                      labelText: widget.phone_signin_text_list != null &&
-                              !use_email_signin
-                          ? widget.phone_signin_text_list!
-                              .get(source_language_index)[0]
-                          : widget.text_list.get(
-                              source_language_index)[widget.is_login ? 0 : 1],
-                      labelStyle: TextStyle(
-                        color: widget.text_color,
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: widget.text_color,
+                  Row(
+                    children: [
+                      use_email_signin
+                          ? Container()
+                          : Expanded(
+                              flex: 1,
+                              child: DropdownButton(
+                                isExpanded: true,
+                                underline: Container(),
+                                value: current_phone_code,
+                                items: dropdown_button_items,
+                                onChanged: (CountryPhoneCode? new_value) {
+                                  current_phone_code = new_value!;
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                      Expanded(
+                        flex: 1,
+                        child: TextFormField(
+                          onFieldSubmitted: (value) {
+                            on_pressed_first_button();
+                          },
+                          style: TextStyle(color: widget.text_color),
+                          decoration: InputDecoration(
+                            labelText: widget.phone_signin_text_list != null &&
+                                    !use_email_signin
+                                ? widget.phone_signin_text_list!
+                                    .get(source_language_index)[0]
+                                : widget.text_list.get(source_language_index)[
+                                    widget.is_login ? 0 : 1],
+                            labelStyle: TextStyle(
+                              color: widget.text_color,
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: widget.text_color,
+                              ),
+                            ),
+                            errorMaxLines: 2,
+                          ),
+                          controller: email_input_controller,
+                          inputFormatters: use_email_signin
+                              ? null
+                              : [FilteringTextInputFormatter.digitsOnly],
+                          validator: (value) => FormFieldValidators(
+                            value: value!,
+                            type: use_email_signin
+                                ? FormFieldValidatorsType.email
+                                : FormFieldValidatorsType.phone,
+                          ).validate(),
+                          keyboardType: use_email_signin
+                              ? TextInputType.emailAddress
+                              : TextInputType.number,
                         ),
                       ),
-                    ),
-                    controller: email_input_controller,
-                    validator: (value) => FormFieldValidators(
-                      value: value!,
-                      type: use_email_signin
-                          ? FormFieldValidatorsType.email
-                          : FormFieldValidatorsType.phone,
-                    ).validate(),
-                    keyboardType: TextInputType.emailAddress,
+                    ],
                   ),
                   SizedBox(
-                    height: sized_box_space,
+                    height: sized_box_space *
+                        (!use_email_signin && portrait ? 1.8 : 1),
                   ),
                 ],
               ),
@@ -480,7 +544,9 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                               controller: password_input_controller,
                               validator: (value) => FormFieldValidators(
                                 value: value!,
-                                type: FormFieldValidatorsType.password,
+                                type: use_email_signin
+                                    ? FormFieldValidatorsType.password
+                                    : FormFieldValidatorsType.sms_code,
                               ).validate(),
                               obscureText:
                                   use_email_signin && !_password_visible,
@@ -574,6 +640,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                                           update_verification_code_sent:
                                               update_verification_code_sent,
                                           remember_me: remember_me,
+                                          callback: null,
                                         );
                                       }
                                     }
@@ -744,37 +811,49 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
   on_pressed_first_button() {
     if (widget.first_button_action == null) {
       if (widget.is_login) {
-        List<TextEditingController> inputControllers = [
-          email_input_controller,
-          password_input_controller,
-        ];
-
         if (use_email_signin) {
+          List<TextEditingController> inputControllers = [
+            email_input_controller,
+            password_input_controller,
+          ];
+
           auth_form_functions.login(
             context: context,
             remember_me: remember_me,
-            login_form_key: form_key,
+            form_key: form_key,
             input_controllers: inputControllers,
             prefs: prefs,
             persistence: Persistence.LOCAL,
             verify_email: widget.verify_email,
           );
         } else {
-          auth_form_functions.login_phone_number(
-            context: context,
-            login_form_key: form_key,
-            input_controllers: inputControllers,
-            prefs: prefs,
-            verification_code_sent: verification_code_sent,
-            update_verification_code_sent: update_verification_code_sent,
-            persistence: Persistence.LOCAL,
-            remember_me: remember_me,
+          TextEditingController phone_input_controller = TextEditingController(
+            text: current_phone_code.dial_code +
+                ' ' +
+                email_input_controller.text,
           );
+
+          List<TextEditingController> inputControllers = [
+            phone_input_controller,
+            password_input_controller,
+          ];
+
+          if (form_key.currentState!.validate()) {
+            auth_form_functions.login_phone_number(
+              context: context,
+              input_controllers: inputControllers,
+              prefs: prefs,
+              verification_code_sent: verification_code_sent,
+              update_verification_code_sent: update_verification_code_sent,
+              persistence: Persistence.LOCAL,
+              remember_me: remember_me,
+            );
+          }
         }
       } else {
         AuthFormFunctions().restore_password(
           context: context,
-          restore_password_form_key: form_key,
+          form_key: form_key,
           email_input_controller: email_input_controller,
         );
       }
