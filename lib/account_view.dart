@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_auth/delete_account.dart';
+import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_translation/model/text_list.dart';
@@ -42,7 +43,7 @@ class AccountView extends StatefulWidget {
   final Color topbar_color;
   final bool has_language_picker;
   final Widget? custom_background;
-  final AuthFormType user_info_form_type;
+  final AuthFormType auth_form_type;
   final bool outline_border;
   final bool has_back_button;
   final Color? text_field_background_color;
@@ -66,7 +67,7 @@ class AccountView extends StatefulWidget {
     required this.topbar_color,
     required this.has_language_picker,
     required this.custom_background,
-    required this.user_info_form_type,
+    required this.auth_form_type,
     required this.outline_border,
     required this.has_back_button,
     required this.text_field_background_color,
@@ -217,14 +218,14 @@ class _AccountViewState extends State<AccountView> {
       ];
     }
 
-    if (is_register(widget.user_info_form_type)) {
+    if (is_register(widget.auth_form_type)) {
       setState(() {
         gender_value = widget.gender_values.get(source_language_index)[0];
         country_value = widget.country_values?[0];
       });
     }
 
-    if (is_edit_account(widget.user_info_form_type)) fetch_fields();
+    if (is_edit_account(widget.auth_form_type)) fetch_fields();
   }
 
   @override
@@ -251,7 +252,7 @@ class _AccountViewState extends State<AccountView> {
 
     late TextButton second_button;
 
-    if (is_edit_account(widget.user_info_form_type)) {
+    if (is_edit_account(widget.auth_form_type)) {
       second_button = TextButton(
         style: ButtonStyle(
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -266,7 +267,7 @@ class _AccountViewState extends State<AccountView> {
           if (widget.second_button_action != null) {
             widget.second_button_action!();
           } else {
-            if (is_edit_account(widget.user_info_form_type)) {
+            if (is_edit_account(widget.auth_form_type)) {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -287,7 +288,7 @@ class _AccountViewState extends State<AccountView> {
               widget.text_list.get(source_language_index).length - 5],
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: is_edit_account(widget.user_info_form_type)
+            color: is_edit_account(widget.auth_form_type)
                 ? Colors.red
                 : widget.second_button_color,
             fontSize: 12,
@@ -300,7 +301,7 @@ class _AccountViewState extends State<AccountView> {
 
     return AuthContainer(
       translation_stream_list: translation_stream_list,
-      user_info_form_type: widget.user_info_form_type,
+      user_info_form_type: widget.auth_form_type,
       custom_background: widget.custom_background,
       has_language_picker: widget.has_language_picker,
       topbar_color: widget.topbar_color,
@@ -324,7 +325,7 @@ class _AccountViewState extends State<AccountView> {
             SizedBox(
               height: sized_box_space,
             ),
-            is_edit_account(widget.user_info_form_type) &&
+            is_edit_account(widget.auth_form_type) &&
                     !user_has_email &&
                     !linking_email
                 ? Container()
@@ -347,7 +348,7 @@ class _AccountViewState extends State<AccountView> {
                         children: [
                           TextFormField(
                             style: TextStyle(color: widget.text_color),
-                            enabled: is_edit_account(widget.user_info_form_type)
+                            enabled: is_edit_account(widget.auth_form_type)
                                 ? editing_email
                                 : true,
                             decoration: InputDecoration(
@@ -372,14 +373,14 @@ class _AccountViewState extends State<AccountView> {
                           SizedBox(
                             height: sized_box_space,
                           ),
-                          is_register(widget.user_info_form_type) ||
+                          is_register(widget.auth_form_type) ||
                                   is_edit_account(
-                                    widget.user_info_form_type,
+                                    widget.auth_form_type,
                                   )
                               ? TextFormField(
                                   style: TextStyle(color: widget.text_color),
                                   enabled: is_edit_account(
-                                    widget.user_info_form_type,
+                                    widget.auth_form_type,
                                   )
                                       ? editing_email
                                       : true,
@@ -410,7 +411,7 @@ class _AccountViewState extends State<AccountView> {
             SizedBox(
               height: sized_box_space,
             ),
-            is_edit_account(widget.user_info_form_type) &&
+            is_edit_account(widget.auth_form_type) &&
                     !user_has_email &&
                     !linking_email
                 ? Container()
@@ -440,7 +441,7 @@ class _AccountViewState extends State<AccountView> {
                               on_pressed_first_button();
                             },
                             style: TextStyle(color: widget.text_color),
-                            enabled: is_edit_account(widget.user_info_form_type)
+                            enabled: is_edit_account(widget.auth_form_type)
                                 ? editing_password
                                 : true,
                             decoration: InputDecoration(
@@ -482,7 +483,7 @@ class _AccountViewState extends State<AccountView> {
                             style: TextStyle(
                               color: widget.text_color,
                             ),
-                            enabled: is_edit_account(widget.user_info_form_type)
+                            enabled: is_edit_account(widget.auth_form_type)
                                 ? editing_password
                                 : true,
                             decoration: InputDecoration(
@@ -508,7 +509,7 @@ class _AccountViewState extends State<AccountView> {
                       ),
                     ),
                   ),
-            is_edit_account(widget.user_info_form_type) &&
+            is_edit_account(widget.auth_form_type) &&
                     !user_has_email &&
                     !linking_email
                 ? form_section_container(
@@ -557,7 +558,7 @@ class _AccountViewState extends State<AccountView> {
                   children: [
                     TextFormField(
                       style: TextStyle(color: widget.text_color),
-                      enabled: is_edit_account(widget.user_info_form_type)
+                      enabled: is_edit_account(widget.auth_form_type)
                           ? editing_name_and_info
                           : true,
                       decoration: InputDecoration(
@@ -583,7 +584,7 @@ class _AccountViewState extends State<AccountView> {
                     ),
                     TextFormField(
                       style: TextStyle(color: widget.text_color),
-                      enabled: is_edit_account(widget.user_info_form_type)
+                      enabled: is_edit_account(widget.auth_form_type)
                           ? editing_name_and_info
                           : true,
                       decoration: InputDecoration(
@@ -632,13 +633,12 @@ class _AccountViewState extends State<AccountView> {
                             ),
                           ),
                         ),
-                        onPressed:
-                            is_edit_account(widget.user_info_form_type) &&
-                                    !editing_name_and_info
-                                ? null
-                                : () {
-                                    _select_date();
-                                  },
+                        onPressed: is_edit_account(widget.auth_form_type) &&
+                                !editing_name_and_info
+                            ? null
+                            : () {
+                                _select_date();
+                              },
                         child: Text(
                           birthday_label != ""
                               ? birthday_label
@@ -671,11 +671,11 @@ class _AccountViewState extends State<AccountView> {
                         color: widget.text_color,
                       ),
                       dropdownColor: dropdown_color,
-                      onChanged: is_edit_account(widget.user_info_form_type) &&
+                      onChanged: is_edit_account(widget.auth_form_type) &&
                               !editing_name_and_info
                           ? null
                           : (new_value) {
-                              if (is_edit_account(widget.user_info_form_type)) {
+                              if (is_edit_account(widget.auth_form_type)) {
                                 if (editing_name_and_info) {
                                   setState(() {
                                     gender_value = new_value!;
@@ -719,24 +719,23 @@ class _AccountViewState extends State<AccountView> {
                               color: widget.text_color,
                             ),
                             dropdownColor: dropdown_color,
-                            onChanged:
-                                is_edit_account(widget.user_info_form_type) &&
-                                        !editing_name_and_info
-                                    ? null
-                                    : (new_value) {
-                                        if (is_edit_account(
-                                            widget.user_info_form_type)) {
-                                          if (editing_name_and_info) {
-                                            setState(() {
-                                              country_value = new_value!;
-                                            });
-                                          }
-                                        } else {
-                                          setState(() {
-                                            country_value = new_value!;
-                                          });
-                                        }
-                                      },
+                            onChanged: is_edit_account(widget.auth_form_type) &&
+                                    !editing_name_and_info
+                                ? null
+                                : (new_value) {
+                                    if (is_edit_account(
+                                        widget.auth_form_type)) {
+                                      if (editing_name_and_info) {
+                                        setState(() {
+                                          country_value = new_value!;
+                                        });
+                                      }
+                                    } else {
+                                      setState(() {
+                                        country_value = new_value!;
+                                      });
+                                    }
+                                  },
                             items: widget.country_values!
                                 .map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
@@ -746,7 +745,7 @@ class _AccountViewState extends State<AccountView> {
                             }).toList(),
                           )
                         : Container(),
-                    is_register(widget.user_info_form_type)
+                    is_register(widget.auth_form_type)
                         ? Column(
                             children: [
                               SizedBox(
@@ -801,7 +800,7 @@ class _AccountViewState extends State<AccountView> {
                 ),
               ),
             ),
-            is_edit_account(widget.user_info_form_type)
+            is_edit_account(widget.auth_form_type)
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -834,12 +833,12 @@ class _AccountViewState extends State<AccountView> {
                 splash_color: widget.second_button_color.withOpacity(0.2),
                 child: Center(
                   child: Text(
-                    is_edit_account(widget.user_info_form_type)
-                        ? widget.text_list.get(source_language_index)[
-                            widget.text_list.get(source_language_index).length -
-                                (is_edit_account(widget.user_info_form_type)
-                                    ? 6
-                                    : 5)]
+                    is_edit_account(widget.auth_form_type)
+                        ? widget.text_list.get(source_language_index)[widget
+                                .text_list
+                                .get(source_language_index)
+                                .length -
+                            (is_edit_account(widget.auth_form_type) ? 6 : 5)]
                         : widget.text_list.get(source_language_index).last,
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -867,7 +866,7 @@ class _AccountViewState extends State<AccountView> {
 
   on_pressed_first_button() async {
     if (widget.first_button_action == null) {
-      if (is_edit_account(widget.user_info_form_type)) {
+      if (is_edit_account(widget.auth_form_type)) {
         if (linking_email) {
           if (email_input_controller.text ==
               confirm_email_input_controller.text) {
@@ -882,9 +881,19 @@ class _AccountViewState extends State<AccountView> {
                   ?.linkWithCredential(credential)
                   .then((value) {
                 show_success_alert(context, 'Email linked successfully');
+                editing_email = false;
+                editing_password = false;
+                setState(() {});
               }).onError((error, stackTrace) {
                 print(error.toString());
-                show_error_alert(context, 'Error linking email');
+
+                if (error
+                    .toString()
+                    .contains('requires recent authentication')) {
+                  show_quick_login(context);
+                } else {
+                  show_error_alert(context, 'Error linking email');
+                }
               });
             } else {
               show_neutral_alert(context, 'The passwords do not match');
@@ -907,7 +916,7 @@ class _AccountViewState extends State<AccountView> {
             }
           }
         }
-      } else if (is_register(widget.user_info_form_type)) {
+      } else if (is_register(widget.auth_form_type)) {
         List<TextEditingController> inputControllers = [
           firstname_input_controller,
           last_name_input_controller,
@@ -1095,6 +1104,8 @@ class _AccountViewState extends State<AccountView> {
         ? validate_picker_value(country, widget.country_values!)
         : "";
     selected_date = date;
+
+    _password_visible = false;
 
     if (linking_email) {
       linking_email = false;
