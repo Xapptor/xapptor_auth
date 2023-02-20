@@ -261,7 +261,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
   ValueNotifier<bool> verification_code_sent = ValueNotifier(false);
 
   update_verification_code_sent() {
-    verification_code_sent.value = !verification_code_sent.value;
+    verification_code_sent.value = true;
     setState(() {});
   }
 
@@ -638,7 +638,12 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                                             .send_verification_code(
                                           context: context,
                                           phone_input_controller:
-                                              email_input_controller,
+                                              TextEditingController(
+                                            text: current_phone_code
+                                                    .value.dial_code +
+                                                ' ' +
+                                                email_input_controller.text,
+                                          ),
                                           code_input_controller:
                                               password_input_controller,
                                           prefs: prefs,
