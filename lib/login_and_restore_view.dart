@@ -8,7 +8,8 @@ import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_logic/sha256_of_string.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_translation/model/text_list.dart';
-import 'package:xapptor_ui/values/countries_phone_codes.dart';
+import 'package:xapptor_ui/values/country_phone_codes.dart';
+import 'package:xapptor_ui/widgets/country_phone_codes_picker.dart';
 import 'package:xapptor_ui/widgets/custom_card.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'check_if_app_enabled.dart';
@@ -119,7 +120,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
           email_input_controller.text = prefs.getString("phone_number")!;
         }
         if (prefs.getString("phone_code") != null) {
-          current_phone_code = country_phone_code_list.firstWhere(
+          current_phone_code.value = country_phone_code_list.firstWhere(
               (element) => element.dial_code == prefs.getString("phone_code"));
         }
       }
@@ -205,23 +206,8 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
     }
   }
 
-  late CountryPhoneCode current_phone_code;
-  late List<DropdownMenuItem<CountryPhoneCode>> dropdown_button_items;
-
   @override
   void initState() {
-    dropdown_button_items = country_phone_code_list
-        .map<DropdownMenuItem<CountryPhoneCode>>((CountryPhoneCode value) {
-      return DropdownMenuItem<CountryPhoneCode>(
-        value: value,
-        child: Text(
-          value.name.split(',').first + ' ' + value.dial_code,
-          overflow: TextOverflow.visible,
-        ),
-      );
-    }).toList();
-    current_phone_code = country_phone_code_list[0];
-
     source_language_index = widget.source_language_index;
     super.initState();
 
@@ -279,6 +265,9 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
     setState(() {});
   }
 
+  ValueNotifier<CountryPhoneCode> current_phone_code =
+      ValueNotifier(country_phone_code_list.first);
+
   @override
   Widget build(BuildContext context) {
     bool portrait = is_portrait(context);
@@ -293,6 +282,23 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
       main_button_text = widget.text_list.get(source_language_index)[
           widget.text_list.get(source_language_index).length -
               (widget.is_login ? 3 : 1)];
+    }
+
+    int current_phone_code_length =
+        current_phone_code.value.name.split(',').first.length +
+            current_phone_code.value.dial_code.length;
+
+    int current_phone_code_flex = 0;
+
+    if (current_phone_code_length > 0 && current_phone_code_length <= 12) {
+      current_phone_code_flex = (current_phone_code_length * 0.9).floor();
+      //
+    } else if (current_phone_code_length > 12 &&
+        current_phone_code_length <= 25) {
+      current_phone_code_flex = (current_phone_code_length * 0.7).floor();
+      //
+    } else if (current_phone_code_length >= 26) {
+      current_phone_code_flex = (current_phone_code_length * 0.4).floor();
     }
 
     return AuthContainer(
@@ -418,24 +424,24 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
               child: Column(
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       use_email_signin
                           ? Container()
                           : Expanded(
-                              flex: 1,
-                              child: DropdownButton(
-                                isExpanded: true,
-                                underline: Container(),
-                                value: current_phone_code,
-                                items: dropdown_button_items,
-                                onChanged: (CountryPhoneCode? new_value) {
-                                  current_phone_code = new_value!;
-                                  setState(() {});
-                                },
+                              flex: current_phone_code_flex,
+                              child: Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: CountryPhoneCodesPicker(
+                                  current_phone_code: current_phone_code,
+                                  text_color: widget.text_color,
+                                  setState: setState,
+                                ),
                               ),
                             ),
+                      use_email_signin ? Container() : Spacer(flex: 1),
                       Expanded(
-                        flex: 1,
+                        flex: 12,
                         child: TextFormField(
                           onFieldSubmitted: (value) {
                             on_pressed_first_button();
@@ -476,8 +482,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                     ],
                   ),
                   SizedBox(
-                    height: sized_box_space *
-                        (!use_email_signin && portrait ? 1.8 : 1),
+                    height: sized_box_space,
                   ),
                 ],
               ),
@@ -828,7 +833,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
           );
         } else {
           TextEditingController phone_input_controller = TextEditingController(
-            text: current_phone_code.dial_code +
+            text: current_phone_code.value.dial_code +
                 ' ' +
                 email_input_controller.text,
           );
