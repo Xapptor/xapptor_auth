@@ -23,6 +23,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_ui/widgets/is_portrait.dart';
 import 'auth_container.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Dynamic User Info View.
 
@@ -239,6 +240,7 @@ class _AccountViewState extends State<AccountView> {
     super.dispose();
   }
 
+  bool linking_phone = false;
   bool linking_email = false;
 
   @override
@@ -297,7 +299,19 @@ class _AccountViewState extends State<AccountView> {
       );
     }
 
-    bool user_has_email = FirebaseAuth.instance.currentUser!.email != null;
+    List<UserInfo> user_providers =
+        FirebaseAuth.instance.currentUser!.providerData;
+
+    bool email_linked = false;
+    bool phone_linked = false;
+
+    user_providers.forEach((user_provider) {
+      if (user_provider.providerId == 'password') {
+        email_linked = true;
+      } else if (user_provider.providerId == 'phone') {
+        phone_linked = true;
+      }
+    });
 
     return AuthContainer(
       translation_stream_list: translation_stream_list,
@@ -326,7 +340,107 @@ class _AccountViewState extends State<AccountView> {
               height: sized_box_space,
             ),
             is_edit_account(widget.auth_form_type) &&
-                    !user_has_email &&
+                    phone_linked &&
+                    user_providers.length > 1
+                ? form_section_container(
+                    outline_border: widget.outline_border,
+                    border_color: widget.text_color,
+                    background_color: widget.text_field_background_color,
+                    add_final_padding: true,
+                    child: TextButton(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.currentUser
+                            ?.unlink(PhoneAuthProvider().providerId)
+                            .then((value) {
+                          setState(() {});
+                          show_success_alert(context, 'Phone unlink success');
+                        }).onError((error, stackTrace) {
+                          print(error);
+                          show_error_alert(context, 'Phone unlink error');
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size(50, 30),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        alignment: Alignment.centerLeft,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.linkSlash,
+                            size: 16,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 8),
+                            child: Text(
+                              'Unlink Phone',
+                              style: TextStyle(
+                                color: widget.text_color,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(),
+            SizedBox(
+              height: sized_box_space,
+            ),
+            is_edit_account(widget.auth_form_type) &&
+                    email_linked &&
+                    user_providers.length > 1
+                ? form_section_container(
+                    outline_border: widget.outline_border,
+                    border_color: widget.text_color,
+                    background_color: widget.text_field_background_color,
+                    add_final_padding: true,
+                    child: TextButton(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.currentUser
+                            ?.unlink(EmailAuthProvider.PROVIDER_ID)
+                            .then((value) {
+                          setState(() {});
+                          show_success_alert(context, 'Email unlink success');
+                        }).onError((error, stackTrace) {
+                          print(error);
+                          show_error_alert(context, 'Email unlink error');
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size(50, 30),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        alignment: Alignment.centerLeft,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.linkSlash,
+                            size: 16,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 8),
+                            child: Text(
+                              'Unlink Email',
+                              style: TextStyle(
+                                color: widget.text_color,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(),
+            SizedBox(
+              height: sized_box_space,
+            ),
+            is_edit_account(widget.auth_form_type) &&
+                    !email_linked &&
                     !linking_email
                 ? Container()
                 : Form(
@@ -412,7 +526,7 @@ class _AccountViewState extends State<AccountView> {
               height: sized_box_space,
             ),
             is_edit_account(widget.auth_form_type) &&
-                    !user_has_email &&
+                    !email_linked &&
                     !linking_email
                 ? Container()
                 : Form(
@@ -510,7 +624,48 @@ class _AccountViewState extends State<AccountView> {
                     ),
                   ),
             is_edit_account(widget.auth_form_type) &&
-                    !user_has_email &&
+                    !phone_linked &&
+                    !linking_phone
+                ? form_section_container(
+                    outline_border: widget.outline_border,
+                    border_color: widget.text_color,
+                    background_color: widget.text_field_background_color,
+                    add_final_padding: true,
+                    child: TextButton(
+                      onPressed: () {
+                        linking_phone = true;
+                        setState(() {});
+                        show_quick_login(context);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size(50, 30),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        alignment: Alignment.centerLeft,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.link,
+                            size: 16,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 8),
+                            child: Text(
+                              'Link Phone',
+                              style: TextStyle(
+                                color: widget.text_color,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(),
+            is_edit_account(widget.auth_form_type) &&
+                    !email_linked &&
                     !linking_email
                 ? form_section_container(
                     outline_border: widget.outline_border,
@@ -518,21 +673,40 @@ class _AccountViewState extends State<AccountView> {
                     background_color: widget.text_field_background_color,
                     add_final_padding: true,
                     child: TextButton(
-                        onPressed: () {
-                          editing_email = true;
-                          editing_password = true;
-                          password_input_controller.text = "";
-                          confirm_password_input_controller.text = "";
+                      onPressed: () {
+                        editing_email = true;
+                        editing_password = true;
+                        password_input_controller.text = "";
+                        confirm_password_input_controller.text = "";
 
-                          linking_email = true;
-                          setState(() {});
-                        },
-                        child: Text(
-                          'Link Email',
-                          style: TextStyle(
-                            color: widget.text_color,
+                        linking_email = true;
+                        setState(() {});
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size(50, 30),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        alignment: Alignment.centerLeft,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.link,
+                            size: 16,
                           ),
-                        )),
+                          Container(
+                            margin: EdgeInsets.only(left: 8),
+                            child: Text(
+                              'Link Email',
+                              style: TextStyle(
+                                color: widget.text_color,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   )
                 : Container(),
             SizedBox(
