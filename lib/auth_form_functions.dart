@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_auth/model/xapptor_user.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
+import 'package:xapptor_ui/widgets/show_alert.dart';
 
 // Functions executed in Auth Screens.
 
@@ -15,18 +16,6 @@ class AuthFormFunctions {
 
   ConfirmationResult? confirmation_result;
   String verification_id = '';
-
-  show_verification_code_sent_alert(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.green,
-        content: Text(
-          'Verification code sent',
-        ),
-      ),
-    );
-  }
 
   send_verification_code({
     required BuildContext context,
@@ -44,7 +33,7 @@ class AuthFormFunctions {
         confirmation_result = value;
         verification_id = confirmation_result!.verificationId;
         update_verification_code_sent();
-        show_verification_code_sent_alert(context);
+        show_success_alert(context, 'Verification code sent');
       }).onError((error, stackTrace) {
         show_error_alert(context, 'The phone number is invalid');
       });
@@ -74,18 +63,6 @@ class AuthFormFunctions {
         codeAutoRetrievalTimeout: (String verification_id) {},
       );
     }
-  }
-
-  show_error_alert(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 3),
-        backgroundColor: Colors.red,
-        content: Text(
-          message,
-        ),
-      ),
-    );
   }
 
   complete_login_phone_number({
@@ -267,13 +244,7 @@ class AuthFormFunctions {
         return null;
       }).catchError((error) {
         print("Login error: " + error.toString());
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("The password or email are invalid"),
-            duration: Duration(milliseconds: 1500),
-          ),
-        );
+        show_error_alert(context, 'The password or email are invalid');
       });
     }
   }
@@ -394,48 +365,25 @@ class AuthFormFunctions {
                 if (error.toString().contains("email") &&
                     error.toString().contains("already") &&
                     error.toString().contains("use")) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("The email address is already registered."),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+                  show_error_alert(
+                      context, 'The email address is already registered');
                 }
 
                 return error.toString();
               });
             } else {
-              show_custom_dialog(
-                context: context,
-                title: "Failed",
-                message: "The passwords do not match",
-                button_text: "Close",
-              );
+              show_neutral_alert(context, 'The passwords do not match');
             }
           } else {
-            show_custom_dialog(
-              context: context,
-              title: "Failed",
-              message: "The emails do not match",
-              button_text: "Close",
-            );
+            show_neutral_alert(context, 'The emails do not match');
           }
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Enter your date of birth"),
-            duration: Duration(seconds: 3),
-          ),
-        );
+        show_neutral_alert(context, 'Enter your date of birth');
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("You need to accept the terms of use & privacy policy"),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      show_neutral_alert(
+          context, 'You need to accept the terms of use & privacy policy');
     }
   }
 
@@ -451,15 +399,8 @@ class AuthFormFunctions {
         await FirebaseAuth.instance
             .sendPasswordResetEmail(email: email_input_controller.text)
             .then((value) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              duration: Duration(seconds: 2),
-              backgroundColor: Colors.green,
-              content: Text(
-                'Restore password email sent successfully',
-              ),
-            ),
-          );
+          show_success_alert(
+              context, 'Restore password email sent successfully');
           open_screen("login");
         });
       } catch (e) {
@@ -504,12 +445,7 @@ class AuthFormFunctions {
           });
         });
       } else {
-        show_custom_dialog(
-          context: context,
-          title: "Failed",
-          message: "The emails do not match",
-          button_text: "Close",
-        );
+        show_neutral_alert(context, 'The emails do not match');
       }
     }
   }
@@ -541,12 +477,7 @@ class AuthFormFunctions {
           print("Password can't be changed " + error.toString());
         });
       } else {
-        show_custom_dialog(
-          context: context,
-          title: "Failed",
-          message: "The passwords do not match",
-          button_text: "Close",
-        );
+        show_neutral_alert(context, 'The passwords do not match');
       }
     }
   }
@@ -593,12 +524,7 @@ class AuthFormFunctions {
     }
 
     Timer(Duration(milliseconds: 500), () {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("User info saved"),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      show_success_alert(context, 'User info saved successfully');
     });
   }
 }
