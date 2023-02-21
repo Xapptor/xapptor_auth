@@ -60,6 +60,7 @@ show_authentication_alert_dialog({
 
     showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(alert_title),

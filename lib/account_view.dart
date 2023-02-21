@@ -353,10 +353,16 @@ class _AccountViewState extends State<AccountView> {
                             ?.unlink(PhoneAuthProvider().providerId)
                             .then((value) {
                           setState(() {});
-                          show_success_alert(context, 'Phone unlink success');
+                          show_success_alert(
+                            context: context,
+                            message: 'Phone unlink success',
+                          );
                         }).onError((error, stackTrace) {
                           print(error);
-                          show_error_alert(context, 'Phone unlink error');
+                          show_error_alert(
+                            context: context,
+                            message: 'Phone unlink error',
+                          );
                         });
                       },
                       style: TextButton.styleFrom(
@@ -403,10 +409,16 @@ class _AccountViewState extends State<AccountView> {
                             ?.unlink(EmailAuthProvider.PROVIDER_ID)
                             .then((value) {
                           setState(() {});
-                          show_success_alert(context, 'Email unlink success');
+                          show_success_alert(
+                            context: context,
+                            message: 'Email unlink success',
+                          );
                         }).onError((error, stackTrace) {
                           print(error);
-                          show_error_alert(context, 'Email unlink error');
+                          show_error_alert(
+                            context: context,
+                            message: 'Email unlink error',
+                          );
                         });
                       },
                       style: TextButton.styleFrom(
@@ -1062,7 +1074,10 @@ class _AccountViewState extends State<AccountView> {
               await FirebaseAuth.instance.currentUser
                   ?.linkWithCredential(credential)
                   .then((value) {
-                show_success_alert(context, 'Email linked successfully');
+                show_success_alert(
+                  context: context,
+                  message: 'Email linked successfully',
+                );
                 editing_email = false;
                 editing_password = false;
                 setState(() {});
@@ -1077,14 +1092,23 @@ class _AccountViewState extends State<AccountView> {
                     available_login_providers: AvailableLoginProviders.phone,
                   );
                 } else {
-                  show_error_alert(context, 'Error linking email');
+                  show_error_alert(
+                    context: context,
+                    message: 'Error linking email',
+                  );
                 }
               });
             } else {
-              show_neutral_alert(context, 'The passwords do not match');
+              show_neutral_alert(
+                context: context,
+                message: 'The passwords do not match',
+              );
             }
           } else {
-            show_neutral_alert(context, 'The emails do not match');
+            show_neutral_alert(
+              context: context,
+              message: 'The emails do not match',
+            );
           }
         } else {
           if (editing_email) {
@@ -1142,6 +1166,7 @@ class _AccountViewState extends State<AccountView> {
   show_edit_account_alert_dialog(BuildContext context) {
     showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (BuildContext dialog_context) {
         return AlertDialog(
           title: Text("Do you want to save the changes?"),
