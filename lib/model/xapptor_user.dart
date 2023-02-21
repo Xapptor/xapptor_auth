@@ -43,7 +43,6 @@ class XapptorUser {
     return {
       'firstname': firstname,
       'lastname': lastname,
-      'email': email,
       'birthday': birthday,
       'gender': gender,
       'country': country,

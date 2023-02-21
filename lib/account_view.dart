@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_auth/delete_account.dart';
+import 'package:xapptor_auth/check_provider.dart';
 import 'package:xapptor_auth/login_and_restore_view.dart';
 import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
@@ -270,17 +271,10 @@ class _AccountViewState extends State<AccountView> {
             widget.second_button_action!();
           } else {
             if (is_edit_account(widget.auth_form_type)) {
-              showDialog(
+              delete_account(
                 context: context,
-                builder: (BuildContext context) {
-                  return DeleteAccountAlertDialog(
-                    text_list: widget.text_list
-                        .get(source_language_index)
-                        .sublist(
-                            widget.text_list.get(source_language_index).length -
-                                5),
-                  );
-                },
+                text_list: widget.text_list.get(source_language_index).sublist(
+                    widget.text_list.get(source_language_index).length - 5),
               );
             }
           }
@@ -301,17 +295,8 @@ class _AccountViewState extends State<AccountView> {
 
     List<UserInfo> user_providers =
         FirebaseAuth.instance.currentUser!.providerData;
-
-    bool email_linked = false;
-    bool phone_linked = false;
-
-    user_providers.forEach((user_provider) {
-      if (user_provider.providerId == 'password') {
-        email_linked = true;
-      } else if (user_provider.providerId == 'phone') {
-        phone_linked = true;
-      }
-    });
+    bool email_linked = check_email_provider(user_providers: user_providers);
+    bool phone_linked = check_phone_provider(user_providers: user_providers);
 
     return AuthContainer(
       translation_stream_list: translation_stream_list,
