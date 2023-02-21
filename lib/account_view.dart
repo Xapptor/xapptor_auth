@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_auth/delete_account.dart';
+import 'package:xapptor_auth/login_and_restore_view.dart';
 import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_logic/get_image_size.dart';
@@ -626,42 +627,54 @@ class _AccountViewState extends State<AccountView> {
             is_edit_account(widget.auth_form_type) &&
                     !phone_linked &&
                     !linking_phone
-                ? form_section_container(
-                    outline_border: widget.outline_border,
-                    border_color: widget.text_color,
-                    background_color: widget.text_field_background_color,
-                    add_final_padding: true,
-                    child: TextButton(
-                      onPressed: () {
-                        linking_phone = true;
-                        setState(() {});
-                        show_quick_login(context);
-                      },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size(50, 30),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        alignment: Alignment.centerLeft,
+                ? Column(
+                    children: [
+                      SizedBox(
+                        height: sized_box_space,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            FontAwesomeIcons.link,
-                            size: 16,
+                      form_section_container(
+                        outline_border: widget.outline_border,
+                        border_color: widget.text_color,
+                        background_color: widget.text_field_background_color,
+                        add_final_padding: true,
+                        child: TextButton(
+                          onPressed: () {
+                            linking_phone = true;
+                            setState(() {});
+                            show_quick_login(
+                              context: context,
+                              available_login_providers:
+                                  AvailableLoginProviders.phone,
+                              message: 'Link Phone',
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size(50, 30),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            alignment: Alignment.centerLeft,
                           ),
-                          Container(
-                            margin: EdgeInsets.only(left: 8),
-                            child: Text(
-                              'Link Phone',
-                              style: TextStyle(
-                                color: widget.text_color,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                FontAwesomeIcons.link,
+                                size: 16,
                               ),
-                            ),
+                              Container(
+                                margin: EdgeInsets.only(left: 8),
+                                child: Text(
+                                  'Link Phone',
+                                  style: TextStyle(
+                                    color: widget.text_color,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   )
                 : Container(),
             is_edit_account(widget.auth_form_type) &&
@@ -1064,7 +1077,10 @@ class _AccountViewState extends State<AccountView> {
                 if (error
                     .toString()
                     .contains('requires recent authentication')) {
-                  show_quick_login(context);
+                  show_quick_login(
+                    context: context,
+                    available_login_providers: AvailableLoginProviders.phone,
+                  );
                 } else {
                   show_error_alert(context, 'Error linking email');
                 }
