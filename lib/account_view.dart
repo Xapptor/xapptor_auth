@@ -1064,7 +1064,7 @@ class _AccountViewState extends State<AccountView> {
                 password: password_input_controller.text,
               );
 
-              final user_credential = await FirebaseAuth.instance.currentUser
+              await FirebaseAuth.instance.currentUser
                   ?.linkWithCredential(credential)
                   .then((value) {
                 show_success_alert(context, 'Email linked successfully');
