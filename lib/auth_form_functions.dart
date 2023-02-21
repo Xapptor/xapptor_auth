@@ -511,21 +511,17 @@ class AuthFormFunctions {
       if (email_input_controller.text == confirm_email_input_controller.text) {
         User user = FirebaseAuth.instance.currentUser!;
 
-        user.updateEmail(email_input_controller.text).then((value) {
-          FirebaseFirestore.instance.collection("users").doc(user_id).update({
-            "email": email_input_controller.text,
-          }).then((result) async {
-            try {
-              await user.sendEmailVerification();
-            } catch (e) {
-              print("An error occured while trying to send email verification");
-              print(e);
-            }
+        user.updateEmail(email_input_controller.text).then((result) async {
+          try {
+            await user.sendEmailVerification();
+          } catch (e) {
+            print("An error occured while trying to send email verification");
+            print(e);
+          }
 
-            show_user_info_saved_message(context);
-          }).catchError((err) {
-            print(err);
-          });
+          show_user_info_saved_message(context);
+        }).catchError((err) {
+          print(err);
         });
       } else {
         show_neutral_alert(
