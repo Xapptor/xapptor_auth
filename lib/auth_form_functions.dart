@@ -36,15 +36,23 @@ class AuthFormFunctions {
         confirmation_result = value;
         verification_id = confirmation_result!.verificationId;
         update_verification_code_sent();
-        show_success_alert(context, 'Verification code sent');
+        show_success_alert(
+          context: context,
+          message: 'Verification code sent',
+        );
       }).onError((error, stackTrace) {
         print(error);
 
         if (error.toString().contains('blocked')) {
-          show_error_alert(context,
-              'Device blocked due to unusual activity. Try again later.');
+          show_error_alert(
+            context: context,
+            message: 'Device blocked due to unusual activity. Try again later.',
+          );
         } else {
-          show_error_alert(context, 'The phone number is invalid');
+          show_error_alert(
+            context: context,
+            message: 'The phone number is invalid',
+          );
         }
       });
     } else {
@@ -65,7 +73,10 @@ class AuthFormFunctions {
           );
         },
         verificationFailed: (FirebaseAuthException e) {
-          show_error_alert(context, 'The phone number is invalid');
+          show_error_alert(
+            context: context,
+            message: 'The phone number is invalid',
+          );
         },
         codeSent: (String new_verification_id, int? resend_token) {
           verification_id = new_verification_id;
@@ -185,7 +196,10 @@ class AuthFormFunctions {
             ?.linkWithCredential(credential)
             .then((value) {
           Navigator.pop(context);
-          show_success_alert(context, 'Phone linked successfully');
+          show_success_alert(
+            context: context,
+            message: 'Phone linked successfully',
+          );
         }).onError((error, stackTrace) {
           print(error.toString());
 
@@ -195,7 +209,10 @@ class AuthFormFunctions {
               available_login_providers: AvailableLoginProviders.email,
             );
           } else {
-            show_error_alert(context, 'Error linking phone');
+            show_error_alert(
+              context: context,
+              message: 'Error linking phone',
+            );
           }
         });
       } else {
@@ -213,7 +230,10 @@ class AuthFormFunctions {
               callback: callback,
             );
           }).onError((error, stackTrace) {
-            show_error_alert(context, 'The verification code is invalid');
+            show_error_alert(
+              context: context,
+              message: 'The verification code is invalid',
+            );
           });
         } else {
           await FirebaseAuth.instance
@@ -229,7 +249,10 @@ class AuthFormFunctions {
               callback: callback,
             );
           }).onError((error, stackTrace) {
-            show_error_alert(context, 'The verification code is invalid');
+            show_error_alert(
+              context: context,
+              message: 'The verification code is invalid',
+            );
           });
         }
       }
@@ -287,7 +310,10 @@ class AuthFormFunctions {
         return null;
       }).catchError((error) {
         print("Login error: " + error.toString());
-        show_error_alert(context, 'The password or email are invalid');
+        show_error_alert(
+          context: context,
+          message: 'The password or email are invalid',
+        );
       });
     }
   }
@@ -409,24 +435,37 @@ class AuthFormFunctions {
                     error.toString().contains("already") &&
                     error.toString().contains("use")) {
                   show_error_alert(
-                      context, 'The email address is already registered');
+                    context: context,
+                    message: 'The email address is already registered',
+                  );
                 }
 
                 return error.toString();
               });
             } else {
-              show_neutral_alert(context, 'The passwords do not match');
+              show_neutral_alert(
+                context: context,
+                message: 'The passwords do not match',
+              );
             }
           } else {
-            show_neutral_alert(context, 'The emails do not match');
+            show_neutral_alert(
+              context: context,
+              message: 'The emails do not match',
+            );
           }
         }
       } else {
-        show_neutral_alert(context, 'Enter your date of birth');
+        show_neutral_alert(
+          context: context,
+          message: 'Enter your date of birth',
+        );
       }
     } else {
       show_neutral_alert(
-          context, 'You need to accept the terms of use & privacy policy');
+        context: context,
+        message: 'You need to accept the terms of use & privacy policy',
+      );
     }
   }
 
@@ -443,7 +482,9 @@ class AuthFormFunctions {
             .sendPasswordResetEmail(email: email_input_controller.text)
             .then((value) {
           show_success_alert(
-              context, 'Restore password email sent successfully');
+            context: context,
+            message: 'Restore password email sent successfully',
+          );
           open_screen("login");
         });
       } catch (e) {
@@ -487,7 +528,10 @@ class AuthFormFunctions {
           });
         });
       } else {
-        show_neutral_alert(context, 'The emails do not match');
+        show_neutral_alert(
+          context: context,
+          message: 'The emails do not match',
+        );
       }
     }
   }
@@ -518,7 +562,10 @@ class AuthFormFunctions {
           print("Password can't be changed " + error.toString());
         });
       } else {
-        show_neutral_alert(context, 'The passwords do not match');
+        show_neutral_alert(
+          context: context,
+          message: 'The passwords do not match',
+        );
       }
     }
   }
@@ -558,8 +605,10 @@ class AuthFormFunctions {
 
   show_user_info_saved_message(BuildContext context) {
     Navigator.of(context).pop();
-    Timer(Duration(milliseconds: 500), () {
-      show_success_alert(context, 'User info saved successfully');
-    });
+    show_success_alert(
+      context: context,
+      message: 'User info saved successfully',
+      duration: Duration(seconds: 1),
+    );
   }
 }
