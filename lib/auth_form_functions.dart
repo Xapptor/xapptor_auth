@@ -4,9 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:xapptor_auth/login_and_restore_view.dart';
 import 'package:xapptor_auth/model/xapptor_user.dart';
+import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_router/app_screens.dart';
-import 'package:xapptor_ui/widgets/show_custom_dialog.dart';
 import 'package:xapptor_ui/widgets/show_alert.dart';
 
 // Functions executed in Auth Screens.
@@ -152,43 +153,62 @@ class AuthFormFunctions {
         callback: callback,
       );
     } else {
-      if (confirmation_result != null) {
-        await confirmation_result!
-            .confirm(code_input_controller.text)
-            .then((UserCredential user_credential) {
-          complete_login_phone_number(
-            user_credential: user_credential,
-            phone_input_controller: phone_input_controller,
-            code_input_controller: code_input_controller,
-            update_verification_code_sent: update_verification_code_sent,
-            prefs: prefs,
-            remember_me: remember_me,
-            callback: callback,
-          );
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verification_id,
+        smsCode: code_input_controller.text,
+      );
+
+      if (FirebaseAuth.instance.currentUser != null) {
+        await FirebaseAuth.instance.currentUser
+            ?.linkWithCredential(credential)
+            .then((value) {
+          show_success_alert(context, 'Email linked successfully');
         }).onError((error, stackTrace) {
-          show_error_alert(context, 'The verification code is invalid');
+          print(error.toString());
+
+          if (error.toString().contains('requires recent authentication')) {
+            show_quick_login(
+              context: context,
+              available_login_providers: AvailableLoginProviders.email,
+            );
+          } else {
+            show_error_alert(context, 'Error linking email');
+          }
         });
       } else {
-        PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verification_id,
-          smsCode: code_input_controller.text,
-        );
-
-        await FirebaseAuth.instance
-            .signInWithCredential(credential)
-            .then((UserCredential user_credential) {
-          complete_login_phone_number(
-            user_credential: user_credential,
-            phone_input_controller: phone_input_controller,
-            code_input_controller: code_input_controller,
-            update_verification_code_sent: update_verification_code_sent,
-            prefs: prefs,
-            remember_me: remember_me,
-            callback: callback,
-          );
-        }).onError((error, stackTrace) {
-          show_error_alert(context, 'The verification code is invalid');
-        });
+        if (confirmation_result != null) {
+          await confirmation_result!
+              .confirm(code_input_controller.text)
+              .then((UserCredential user_credential) {
+            complete_login_phone_number(
+              user_credential: user_credential,
+              phone_input_controller: phone_input_controller,
+              code_input_controller: code_input_controller,
+              update_verification_code_sent: update_verification_code_sent,
+              prefs: prefs,
+              remember_me: remember_me,
+              callback: callback,
+            );
+          }).onError((error, stackTrace) {
+            show_error_alert(context, 'The verification code is invalid');
+          });
+        } else {
+          await FirebaseAuth.instance
+              .signInWithCredential(credential)
+              .then((UserCredential user_credential) {
+            complete_login_phone_number(
+              user_credential: user_credential,
+              phone_input_controller: phone_input_controller,
+              code_input_controller: code_input_controller,
+              update_verification_code_sent: update_verification_code_sent,
+              prefs: prefs,
+              remember_me: remember_me,
+              callback: callback,
+            );
+          }).onError((error, stackTrace) {
+            show_error_alert(context, 'The verification code is invalid');
+          });
+        }
       }
     }
   }
