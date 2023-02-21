@@ -27,6 +27,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+enum AvailableLoginProviders {
+  all,
+  email,
+  phone,
+  email_and_phone,
+  google,
+  apple,
+}
+
 class LoginAndRestoreView extends StatefulWidget {
   AuthFormType auth_form_type;
   final TranslationTextListArray text_list;
@@ -46,13 +55,12 @@ class LoginAndRestoreView extends StatefulWidget {
   final bool outline_border;
   final bool has_back_button;
   final Color? text_field_background_color;
-  final bool enable_google_signin;
-  final bool enable_apple_signin;
   final TranslationTextListArray? phone_signin_text_list;
   final String apple_signin_client_id;
   final String apple_signin_redirect_url;
   final int source_language_index;
   final bool verify_email;
+  AvailableLoginProviders available_login_providers;
 
   LoginAndRestoreView({
     required this.auth_form_type,
@@ -73,13 +81,12 @@ class LoginAndRestoreView extends StatefulWidget {
     required this.outline_border,
     required this.has_back_button,
     required this.text_field_background_color,
-    this.enable_google_signin = false,
-    this.enable_apple_signin = false,
     this.phone_signin_text_list,
     this.apple_signin_client_id = "",
     this.apple_signin_redirect_url = "",
     this.source_language_index = 0,
     this.verify_email = true,
+    this.available_login_providers = AvailableLoginProviders.email_and_phone,
   });
 
   @override
@@ -207,10 +214,16 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
   @override
   void initState() {
     source_language_index = widget.source_language_index;
+    if (widget.available_login_providers == AvailableLoginProviders.phone)
+      use_email_signin = false;
+
     super.initState();
 
     check_if_app_enabled();
-    check_login();
+
+    if (!is_quick_login(widget.auth_form_type)) {
+      check_login();
+    }
     init_prefs();
 
     translation_stream = TranslationStream(
@@ -279,17 +292,20 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
     } else {
       main_button_text = widget.text_list.get(source_language_index)[
           widget.text_list.get(source_language_index).length -
-              (is_login(widget.auth_form_type) ? 3 : 1)];
+              (is_login(widget.auth_form_type) ||
+                      is_quick_login(widget.auth_form_type)
+                  ? 3
+                  : 1)];
     }
 
     int current_phone_code_length =
         current_phone_code.value.name.split(',').first.length +
             current_phone_code.value.dial_code.length;
 
-    int current_phone_code_flex = 0;
+    int current_phone_code_flex = 1;
 
     if (current_phone_code_length > 0 && current_phone_code_length <= 12) {
-      current_phone_code_flex = (current_phone_code_length * 0.9).floor();
+      current_phone_code_flex = (current_phone_code_length * 1.0).floor();
       //
     } else if (current_phone_code_length > 12 &&
         current_phone_code_length <= 25) {
@@ -299,249 +315,273 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
       current_phone_code_flex = (current_phone_code_length * 0.4).floor();
     }
 
-    Widget quick_login_widgets = Column(
-      children: [
-        is_login(widget.auth_form_type) && widget.phone_signin_text_list != null
-            ? Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 38,
-                        width: 38,
-                        margin: EdgeInsets.only(right: 5),
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          color: use_email_signin
-                              ? widget.text_color
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            use_email_signin = !use_email_signin;
-                            email_input_controller.clear();
-                            password_input_controller.clear();
-                            check_remember_me();
-                            setState(() {});
-                          },
-                          icon: Icon(
-                            FontAwesomeIcons.envelope,
-                            color: use_email_signin
-                                ? Colors.white
-                                : widget.text_color,
-                            size: 30,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: 38,
-                        width: 38,
-                        margin: EdgeInsets.only(right: 5),
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          color: !use_email_signin
-                              ? widget.text_color
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            use_email_signin = !use_email_signin;
-                            email_input_controller.clear();
-                            password_input_controller.clear();
-                            check_remember_me();
-                            setState(() {});
-                          },
-                          icon: Icon(
-                            FontAwesomeIcons.commentSms,
-                            color: !use_email_signin
-                                ? Colors.white
-                                : widget.text_color,
-                            size: 30,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: sized_box_space * 0.7,
-                  ),
-                ],
-              )
-            : Container(),
-        form_section_container(
-          outline_border: widget.outline_border,
-          border_color: widget.text_color,
-          background_color: widget.text_field_background_color,
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  use_email_signin
-                      ? Container()
-                      : Expanded(
-                          flex: current_phone_code_flex,
-                          child: Container(
-                            margin: EdgeInsets.only(top: 10),
-                            child: CountryPhoneCodesPicker(
-                              current_phone_code: current_phone_code,
-                              text_color: widget.text_color,
-                              setState: setState,
-                            ),
-                          ),
-                        ),
-                  use_email_signin ? Container() : Spacer(flex: 1),
-                  Expanded(
-                    flex: 12,
-                    child: TextFormField(
-                      onFieldSubmitted: (value) {
-                        on_pressed_first_button();
-                      },
-                      style: TextStyle(color: widget.text_color),
-                      decoration: InputDecoration(
-                        labelText: widget.phone_signin_text_list != null &&
-                                !use_email_signin
-                            ? widget.phone_signin_text_list!
-                                .get(source_language_index)[0]
-                            : widget.text_list.get(source_language_index)[
-                                is_login(widget.auth_form_type) ? 0 : 1],
-                        labelStyle: TextStyle(
-                          color: widget.text_color,
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: widget.text_color,
-                          ),
-                        ),
-                        errorMaxLines: 2,
-                      ),
-                      controller: email_input_controller,
-                      inputFormatters: use_email_signin
-                          ? null
-                          : [FilteringTextInputFormatter.digitsOnly],
-                      validator: (value) => FormFieldValidators(
-                        value: value!,
-                        type: use_email_signin
-                            ? FormFieldValidatorsType.email
-                            : FormFieldValidatorsType.phone,
-                      ).validate(),
-                      keyboardType: use_email_signin
-                          ? TextInputType.emailAddress
-                          : TextInputType.number,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: sized_box_space,
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: sized_box_space,
-        ),
-        AnimatedSwitcher(
-          duration: Duration(milliseconds: 300),
-          reverseDuration: Duration(milliseconds: 200),
-          child: !is_login(widget.auth_form_type) ||
-                  (widget.phone_signin_text_list != null &&
-                      !use_email_signin &&
-                      !verification_code_sent.value)
-              ? Container(
-                  key: ValueKey<int>(1),
-                )
-              : Container(
-                  key: ValueKey<int>(0),
-                  child: form_section_container(
-                    outline_border: widget.outline_border,
-                    border_color: widget.text_color,
-                    background_color: widget.text_field_background_color,
-                    child: Column(
+    Widget quick_login_widgets = Form(
+      key: form_key,
+      child: Column(
+        mainAxisSize: is_quick_login(widget.auth_form_type)
+            ? MainAxisSize.min
+            : MainAxisSize.max,
+        children: [
+          (is_login(widget.auth_form_type) ||
+                      is_quick_login(widget.auth_form_type)) &&
+                  widget.phone_signin_text_list != null &&
+                  (widget.available_login_providers ==
+                          AvailableLoginProviders.all ||
+                      widget.available_login_providers ==
+                          AvailableLoginProviders.email_and_phone)
+              ? Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        TextFormField(
-                          onFieldSubmitted: (value) {
-                            on_pressed_first_button();
-                          },
-                          style: TextStyle(color: widget.text_color),
-                          decoration: InputDecoration(
-                            labelText: widget.phone_signin_text_list != null &&
-                                    !use_email_signin
-                                ? widget.phone_signin_text_list!
-                                    .get(source_language_index)[1]
-                                : widget.text_list
-                                    .get(source_language_index)[1],
-                            labelStyle: TextStyle(
-                              color: widget.text_color,
+                        Container(
+                          height: 38,
+                          width: 38,
+                          margin: EdgeInsets.only(right: 5),
+                          padding: EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: use_email_signin
+                                ? widget.text_color
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              use_email_signin = !use_email_signin;
+                              email_input_controller.clear();
+                              password_input_controller.clear();
+                              check_remember_me();
+                              setState(() {});
+                            },
+                            icon: Icon(
+                              FontAwesomeIcons.envelope,
+                              color: use_email_signin
+                                  ? Colors.white
+                                  : widget.text_color,
+                              size: 30,
                             ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: widget.text_color,
+                          ),
+                        ),
+                        Container(
+                          height: 38,
+                          width: 38,
+                          margin: EdgeInsets.only(right: 5),
+                          padding: EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: !use_email_signin
+                                ? widget.text_color
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              use_email_signin = !use_email_signin;
+                              email_input_controller.clear();
+                              password_input_controller.clear();
+                              check_remember_me();
+                              setState(() {});
+                            },
+                            icon: Icon(
+                              FontAwesomeIcons.commentSms,
+                              color: !use_email_signin
+                                  ? Colors.white
+                                  : widget.text_color,
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: sized_box_space * 0.7,
+                    ),
+                  ],
+                )
+              : Container(),
+          form_section_container(
+            outline_border: widget.outline_border,
+            border_color: widget.text_color,
+            background_color: widget.text_field_background_color,
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    use_email_signin
+                        ? Container()
+                        : Expanded(
+                            flex: current_phone_code_flex,
+                            child: Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: CountryPhoneCodesPicker(
+                                current_phone_code: current_phone_code,
+                                text_color: widget.text_color,
+                                setState: setState,
                               ),
                             ),
-                            suffixIcon: use_email_signin
-                                ? IconButton(
-                                    icon: Icon(
-                                      _password_visible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                      color: widget.text_color,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _password_visible = !_password_visible;
-                                      });
-                                    },
-                                  )
-                                : null,
                           ),
-                          controller: password_input_controller,
-                          validator: (value) => FormFieldValidators(
-                            value: value!,
-                            type: use_email_signin
-                                ? FormFieldValidatorsType.password
-                                : FormFieldValidatorsType.sms_code,
-                          ).validate(),
-                          obscureText: use_email_signin && !_password_visible,
-                          keyboardType: use_email_signin
-                              ? TextInputType.text
-                              : TextInputType.number,
-                          inputFormatters: use_email_signin
-                              ? null
-                              : <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
+                    use_email_signin ? Container() : Spacer(flex: 1),
+                    Expanded(
+                      flex: 12,
+                      child: TextFormField(
+                        onFieldSubmitted: (value) {
+                          on_pressed_first_button();
+                        },
+                        style: TextStyle(color: widget.text_color),
+                        decoration: InputDecoration(
+                          labelText: widget.phone_signin_text_list != null &&
+                                  !use_email_signin
+                              ? widget.phone_signin_text_list!
+                                  .get(source_language_index)[0]
+                              : widget.text_list.get(source_language_index)[
+                                  is_login(widget.auth_form_type) ||
+                                          is_quick_login(widget.auth_form_type)
+                                      ? 0
+                                      : 1],
+                          labelStyle: TextStyle(
+                            color: widget.text_color,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: widget.text_color,
+                            ),
+                          ),
+                          errorMaxLines: 2,
                         ),
+                        controller: email_input_controller,
+                        inputFormatters: use_email_signin
+                            ? null
+                            : [FilteringTextInputFormatter.digitsOnly],
+                        validator: (value) => FormFieldValidators(
+                          value: value!,
+                          type: use_email_signin
+                              ? FormFieldValidatorsType.email
+                              : FormFieldValidatorsType.phone,
+                        ).validate(),
+                        keyboardType: use_email_signin
+                            ? TextInputType.emailAddress
+                            : TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: sized_box_space,
+                ),
+              ],
+            ),
+          ),
+          AnimatedSwitcher(
+            duration: Duration(milliseconds: 300),
+            reverseDuration: Duration(milliseconds: 200),
+            child: (!is_login(widget.auth_form_type) &&
+                        !is_quick_login(widget.auth_form_type)) ||
+                    (widget.phone_signin_text_list != null &&
+                        !use_email_signin &&
+                        !verification_code_sent.value)
+                ? Container(
+                    key: ValueKey<int>(1),
+                  )
+                : Container(
+                    key: ValueKey<int>(0),
+                    child: Column(
+                      children: [
                         SizedBox(
                           height: sized_box_space,
                         ),
-                        TextButton(
-                          onPressed: () {
-                            remember_me = !remember_me;
-                            setState(() {});
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Icon(
-                                  remember_me
-                                      ? Icons.check_box
-                                      : Icons.check_box_outline_blank,
-                                  color: widget.text_color,
+                        form_section_container(
+                          outline_border: widget.outline_border,
+                          border_color: widget.text_color,
+                          background_color: widget.text_field_background_color,
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                onFieldSubmitted: (value) {
+                                  on_pressed_first_button();
+                                },
+                                style: TextStyle(color: widget.text_color),
+                                decoration: InputDecoration(
+                                  labelText:
+                                      widget.phone_signin_text_list != null &&
+                                              !use_email_signin
+                                          ? widget.phone_signin_text_list!
+                                              .get(source_language_index)[1]
+                                          : widget.text_list
+                                              .get(source_language_index)[1],
+                                  labelStyle: TextStyle(
+                                    color: widget.text_color,
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: widget.text_color,
+                                    ),
+                                  ),
+                                  suffixIcon: use_email_signin
+                                      ? IconButton(
+                                          icon: Icon(
+                                            _password_visible
+                                                ? Icons.visibility
+                                                : Icons.visibility_off,
+                                            color: widget.text_color,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _password_visible =
+                                                  !_password_visible;
+                                            });
+                                          },
+                                        )
+                                      : null,
                                 ),
-                                margin: EdgeInsets.only(
-                                  right: 10,
-                                ),
+                                controller: password_input_controller,
+                                validator: (value) => FormFieldValidators(
+                                  value: value!,
+                                  type: use_email_signin
+                                      ? FormFieldValidatorsType.password
+                                      : FormFieldValidatorsType.sms_code,
+                                ).validate(),
+                                obscureText:
+                                    use_email_signin && !_password_visible,
+                                keyboardType: use_email_signin
+                                    ? TextInputType.text
+                                    : TextInputType.number,
+                                inputFormatters: use_email_signin
+                                    ? null
+                                    : <TextInputFormatter>[
+                                        FilteringTextInputFormatter.digitsOnly,
+                                      ],
                               ),
-                              Text(
-                                widget.text_list.get(source_language_index)[2],
-                                style: TextStyle(
-                                  color: widget.text_color,
+                              SizedBox(
+                                height: sized_box_space,
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  remember_me = !remember_me;
+                                  setState(() {});
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Icon(
+                                        remember_me
+                                            ? Icons.check_box
+                                            : Icons.check_box_outline_blank,
+                                        color: widget.text_color,
+                                      ),
+                                      margin: EdgeInsets.only(
+                                        right: 10,
+                                      ),
+                                    ),
+                                    Text(
+                                      widget.text_list
+                                          .get(source_language_index)[2],
+                                      style: TextStyle(
+                                        color: widget.text_color,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -550,215 +590,228 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                       ],
                     ),
                   ),
-                ),
-        ),
-        !is_login(widget.auth_form_type)
-            ? Container()
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: sized_box_space,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      !use_email_signin && !verification_code_sent.value
-                          ? Container()
-                          : TextButton(
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      MediaQuery.of(context).size.width,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                if (use_email_signin) {
-                                  if (widget.second_button_action != null) {
-                                    widget.second_button_action!();
-                                  }
-                                } else {
-                                  if (widget.resend_code_button_action !=
-                                      null) {
-                                    widget.resend_code_button_action!();
-                                  } else {
-                                    auth_form_functions.send_verification_code(
-                                      context: context,
-                                      phone_input_controller:
-                                          TextEditingController(
-                                        text:
-                                            current_phone_code.value.dial_code +
-                                                ' ' +
-                                                email_input_controller.text,
+          ),
+          !is_login(widget.auth_form_type)
+              ? Container()
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    !use_email_signin && !verification_code_sent.value
+                        ? Container()
+                        : SizedBox(
+                            height: sized_box_space,
+                          ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        !use_email_signin && !verification_code_sent.value
+                            ? Container()
+                            : TextButton(
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        MediaQuery.of(context).size.width,
                                       ),
-                                      code_input_controller:
-                                          password_input_controller,
-                                      prefs: prefs,
-                                      update_verification_code_sent:
-                                          update_verification_code_sent,
-                                      remember_me: remember_me,
-                                      callback: null,
-                                    );
-                                  }
-                                }
-                              },
-                              child: Text(
-                                !use_email_signin &&
-                                        widget.phone_signin_text_list != null
-                                    ? widget.phone_signin_text_list!
-                                        .get(source_language_index)[widget
-                                            .phone_signin_text_list!
-                                            .get(source_language_index)
-                                            .length -
-                                        2]
-                                    : widget.text_list
-                                        .get(source_language_index)[widget
-                                            .text_list
-                                            .get(source_language_index)
-                                            .length -
-                                        2],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: widget.second_button_color,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                      !use_email_signin || is_quick_login(widget.auth_form_type)
-                          ? Container()
-                          : TextButton(
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      MediaQuery.of(context).size.width,
                                     ),
                                   ),
                                 ),
-                              ),
-                              onPressed: () {
-                                if (widget.third_button_action != null) {
-                                  widget.third_button_action!();
-                                }
-                              },
-                              child: Text(
-                                widget.text_list.get(source_language_index)[5],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: widget.third_button_color,
-                                  fontSize: 12,
+                                onPressed: () {
+                                  if (use_email_signin) {
+                                    if (widget.second_button_action != null) {
+                                      widget.second_button_action!();
+                                    }
+                                  } else {
+                                    if (widget.resend_code_button_action !=
+                                        null) {
+                                      widget.resend_code_button_action!();
+                                    } else {
+                                      auth_form_functions
+                                          .send_verification_code(
+                                        context: context,
+                                        phone_input_controller:
+                                            TextEditingController(
+                                          text: current_phone_code
+                                                  .value.dial_code +
+                                              ' ' +
+                                              email_input_controller.text,
+                                        ),
+                                        code_input_controller:
+                                            password_input_controller,
+                                        prefs: prefs,
+                                        update_verification_code_sent:
+                                            update_verification_code_sent,
+                                        remember_me: remember_me,
+                                        callback: null,
+                                      );
+                                    }
+                                  }
+                                },
+                                child: Text(
+                                  !use_email_signin &&
+                                          widget.phone_signin_text_list != null
+                                      ? widget.phone_signin_text_list!
+                                          .get(source_language_index)[widget
+                                              .phone_signin_text_list!
+                                              .get(source_language_index)
+                                              .length -
+                                          2]
+                                      : widget.text_list
+                                          .get(source_language_index)[widget
+                                              .text_list
+                                              .get(source_language_index)
+                                              .length -
+                                          2],
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: widget.second_button_color,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
-                            ),
-                    ],
+                        !use_email_signin
+                            ? Container()
+                            : TextButton(
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        MediaQuery.of(context).size.width,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (widget.third_button_action != null) {
+                                    widget.third_button_action!();
+                                  }
+                                },
+                                child: Text(
+                                  widget.text_list
+                                      .get(source_language_index)[5],
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: widget.third_button_color,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: sized_box_space,
+                    ),
+                  ],
+                ),
+          Container(
+            height: 50,
+            width: screen_width / (portrait ? 2 : 8),
+            child: CustomCard(
+              border_radius: screen_width,
+              elevation: (widget.first_button_color.colors.first ==
+                          Colors.transparent &&
+                      widget.first_button_color.colors.last ==
+                          Colors.transparent)
+                  ? 0
+                  : 7,
+              on_pressed: on_pressed_first_button,
+              linear_gradient: widget.first_button_color,
+              splash_color: widget.second_button_color.withOpacity(0.2),
+              child: Center(
+                child: Text(
+                  main_button_text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: (widget.first_button_color.colors.first ==
+                                Colors.transparent &&
+                            widget.first_button_color.colors.last ==
+                                Colors.transparent)
+                        ? widget.second_button_color
+                        : Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
                   ),
-                  SizedBox(
-                    height: sized_box_space,
-                  ),
-                ],
-              ),
-        Container(
-          height: 50,
-          width: screen_width / (portrait ? 2 : 8),
-          child: CustomCard(
-            border_radius: screen_width,
-            elevation: (widget.first_button_color.colors.first ==
-                        Colors.transparent &&
-                    widget.first_button_color.colors.last == Colors.transparent)
-                ? 0
-                : 7,
-            on_pressed: on_pressed_first_button,
-            linear_gradient: widget.first_button_color,
-            splash_color: widget.second_button_color.withOpacity(0.2),
-            child: Center(
-              child: Text(
-                main_button_text,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: (widget.first_button_color.colors.first ==
-                              Colors.transparent &&
-                          widget.first_button_color.colors.last ==
-                              Colors.transparent)
-                      ? widget.second_button_color
-                      : Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
-        ),
-        SizedBox(
-          height: sized_box_space,
-        ),
-        (widget.enable_google_signin || widget.enable_apple_signin)
-            ? Column(
-                children: [
-                  Text(
-                    "Or",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: widget.text_color,
+          SizedBox(
+            height: sized_box_space,
+          ),
+          (widget.available_login_providers == AvailableLoginProviders.all ||
+                  widget.available_login_providers ==
+                      AvailableLoginProviders.apple ||
+                  widget.available_login_providers ==
+                      AvailableLoginProviders.google)
+              ? Column(
+                  children: [
+                    Text(
+                      "Or",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: widget.text_color,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: sized_box_space,
-                  ),
-                  widget.enable_google_signin
-                      ? SignInButton(
-                          Buttons.google,
-                          shape: third_party_signin_method_shape(screen_width),
-                          onPressed: () async {
-                            GoogleSignInAccount? google_signin_account =
-                                await handle_google_signin();
-                            if (google_signin_account != null) {
-                              signin_with_google(google_signin_account);
-                            }
-                          },
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: sized_box_space,
-                  ),
-                  widget.enable_apple_signin
-                      ? SignInButton(
-                          Buttons.apple,
-                          shape: third_party_signin_method_shape(screen_width),
-                          onPressed: () async {
-                            final raw_nonce = generateNonce();
-                            final nonce = sha256_of_string(raw_nonce);
+                    SizedBox(
+                      height: sized_box_space,
+                    ),
+                    widget.available_login_providers ==
+                            AvailableLoginProviders.google
+                        ? SignInButton(
+                            Buttons.google,
+                            shape:
+                                third_party_signin_method_shape(screen_width),
+                            onPressed: () async {
+                              GoogleSignInAccount? google_signin_account =
+                                  await handle_google_signin();
+                              if (google_signin_account != null) {
+                                signin_with_google(google_signin_account);
+                              }
+                            },
+                          )
+                        : Container(),
+                    SizedBox(
+                      height: sized_box_space,
+                    ),
+                    widget.available_login_providers ==
+                            AvailableLoginProviders.apple
+                        ? SignInButton(
+                            Buttons.apple,
+                            shape:
+                                third_party_signin_method_shape(screen_width),
+                            onPressed: () async {
+                              final raw_nonce = generateNonce();
+                              final nonce = sha256_of_string(raw_nonce);
 
-                            AuthorizationCredentialAppleID credential =
-                                await SignInWithApple.getAppleIDCredential(
-                              webAuthenticationOptions:
-                                  WebAuthenticationOptions(
-                                clientId: widget.apple_signin_client_id,
-                                redirectUri:
-                                    Uri.parse(widget.apple_signin_redirect_url),
-                              ),
-                              scopes: [
-                                AppleIDAuthorizationScopes.email,
-                                AppleIDAuthorizationScopes.fullName,
-                              ],
-                              //nonce: nonce,
-                            );
+                              AuthorizationCredentialAppleID credential =
+                                  await SignInWithApple.getAppleIDCredential(
+                                webAuthenticationOptions:
+                                    WebAuthenticationOptions(
+                                  clientId: widget.apple_signin_client_id,
+                                  redirectUri: Uri.parse(
+                                      widget.apple_signin_redirect_url),
+                                ),
+                                scopes: [
+                                  AppleIDAuthorizationScopes.email,
+                                  AppleIDAuthorizationScopes.fullName,
+                                ],
+                                //nonce: nonce,
+                              );
 
-                            signin_with_apple(
-                              credential,
-                              raw_nonce,
-                            );
-                          },
-                        )
-                      : Container(),
-                ],
-              )
-            : Container(),
-      ],
+                              signin_with_apple(
+                                credential,
+                                raw_nonce,
+                              );
+                            },
+                          )
+                        : Container(),
+                  ],
+                )
+              : Container(),
+        ],
+      ),
     );
 
     Widget return_widget = Container();
@@ -775,44 +828,41 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
         text_color: widget.text_color,
         has_back_button: widget.has_back_button,
         update_source_language: update_source_language,
-        child: Form(
-          key: form_key,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: sized_box_space,
-              ),
-              get_auth_view_logo(
-                context: context,
-                logo_path: widget.logo_path,
-                logo_image_width: logo_image_width,
-                image_border_radius: widget.image_border_radius,
-              ),
-              is_login(widget.auth_form_type)
-                  ? Container()
-                  : Column(
-                      children: [
-                        SizedBox(
-                          height: sized_box_space,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              height: sized_box_space,
+            ),
+            get_auth_view_logo(
+              context: context,
+              logo_path: widget.logo_path,
+              logo_image_width: logo_image_width,
+              image_border_radius: widget.image_border_radius,
+            ),
+            is_login(widget.auth_form_type)
+                ? Container()
+                : Column(
+                    children: [
+                      SizedBox(
+                        height: sized_box_space,
+                      ),
+                      Text(
+                        widget.text_list.get(source_language_index)[0],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: widget.text_color,
                         ),
-                        Text(
-                          widget.text_list.get(source_language_index)[0],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: widget.text_color,
-                          ),
-                        ),
-                      ],
-                    ),
-              SizedBox(
-                height: sized_box_space,
-              ),
-              quick_login_widgets,
-            ],
-          ),
+                      ),
+                    ],
+                  ),
+            SizedBox(
+              height: sized_box_space,
+            ),
+            quick_login_widgets,
+          ],
         ),
       );
     }
@@ -821,7 +871,8 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
   on_pressed_first_button() {
     if (widget.first_button_action == null) {
-      if (is_login(widget.auth_form_type)) {
+      if (is_login(widget.auth_form_type) ||
+          is_quick_login(widget.auth_form_type)) {
         if (use_email_signin) {
           List<TextEditingController> inputControllers = [
             email_input_controller,
