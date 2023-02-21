@@ -27,6 +27,8 @@ class AuthFormFunctions {
     required bool remember_me,
     required Function? callback,
   }) async {
+    // print(phone_input_controller.text);
+
     if (UniversalPlatform.isWeb) {
       await FirebaseAuth.instance
           .signInWithPhoneNumber(phone_input_controller.text)
@@ -36,7 +38,14 @@ class AuthFormFunctions {
         update_verification_code_sent();
         show_success_alert(context, 'Verification code sent');
       }).onError((error, stackTrace) {
-        show_error_alert(context, 'The phone number is invalid');
+        print(error);
+
+        if (error.toString().contains('blocked')) {
+          show_error_alert(context,
+              'Device blocked due to unusual activity. Try again later.');
+        } else {
+          show_error_alert(context, 'The phone number is invalid');
+        }
       });
     } else {
       await FirebaseAuth.instance.verifyPhoneNumber(
@@ -162,7 +171,8 @@ class AuthFormFunctions {
         await FirebaseAuth.instance.currentUser
             ?.linkWithCredential(credential)
             .then((value) {
-          show_success_alert(context, 'Email linked successfully');
+          Navigator.pop(context);
+          show_success_alert(context, 'Phone linked successfully');
         }).onError((error, stackTrace) {
           print(error.toString());
 
@@ -172,7 +182,7 @@ class AuthFormFunctions {
               available_login_providers: AvailableLoginProviders.email,
             );
           } else {
-            show_error_alert(context, 'Error linking email');
+            show_error_alert(context, 'Error linking phone');
           }
         });
       } else {

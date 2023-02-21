@@ -241,7 +241,6 @@ class _AccountViewState extends State<AccountView> {
     super.dispose();
   }
 
-  bool linking_phone = false;
   bool linking_email = false;
 
   @override
@@ -624,9 +623,7 @@ class _AccountViewState extends State<AccountView> {
                       ),
                     ),
                   ),
-            is_edit_account(widget.auth_form_type) &&
-                    !phone_linked &&
-                    !linking_phone
+            is_edit_account(widget.auth_form_type) && !phone_linked
                 ? Column(
                     children: [
                       SizedBox(
@@ -639,8 +636,6 @@ class _AccountViewState extends State<AccountView> {
                         add_final_padding: true,
                         child: TextButton(
                           onPressed: () {
-                            linking_phone = true;
-                            setState(() {});
                             show_quick_login(
                               context: context,
                               available_login_providers:
