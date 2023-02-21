@@ -1142,7 +1142,7 @@ class _AccountViewState extends State<AccountView> {
   show_edit_account_alert_dialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialog_context) {
         return AlertDialog(
           title: Text("Do you want to save the changes?"),
           actions: <Widget>[
@@ -1167,6 +1167,7 @@ class _AccountViewState extends State<AccountView> {
                 if (editing_email ||
                     editing_password ||
                     editing_name_and_info) {
+                  Navigator.of(dialog_context).pop();
                   show_authentication_alert_dialog(
                     context: context,
                     email: email,

@@ -75,6 +75,18 @@ class AuthFormFunctions {
     }
   }
 
+  save_phone_prefs({
+    required TextEditingController phone_input_controller,
+    required SharedPreferences prefs,
+  }) {
+    if (phone_input_controller.text.contains(' ')) {
+      prefs.setString(
+          "phone_number", phone_input_controller.text.split(' ').last);
+      prefs.setString(
+          "phone_code", phone_input_controller.text.split(' ').first);
+    }
+  }
+
   complete_login_phone_number({
     required UserCredential user_credential,
     required TextEditingController phone_input_controller,
@@ -93,10 +105,10 @@ class AuthFormFunctions {
         .get();
     if (user.exists) {
       if (remember_me) {
-        prefs.setString(
-            "phone_number", phone_input_controller.text.split(' ').last);
-        prefs.setString(
-            "phone_code", phone_input_controller.text.split(' ').first);
+        save_phone_prefs(
+          phone_input_controller: phone_input_controller,
+          prefs: prefs,
+        );
       }
 
       phone_input_controller.clear();
@@ -115,10 +127,10 @@ class AuthFormFunctions {
           .set(xapptor_user.to_json())
           .then((value) {
         if (remember_me) {
-          prefs.setString(
-              "phone_number", phone_input_controller.text.split(' ').last);
-          prefs.setString(
-              "phone_code", phone_input_controller.text.split(' ').first);
+          save_phone_prefs(
+            phone_input_controller: phone_input_controller,
+            prefs: prefs,
+          );
         }
 
         phone_input_controller.clear();
@@ -167,7 +179,8 @@ class AuthFormFunctions {
         smsCode: code_input_controller.text,
       );
 
-      if (FirebaseAuth.instance.currentUser != null) {
+      if (FirebaseAuth.instance.currentUser != null &&
+          FirebaseAuth.instance.currentUser?.phoneNumber == null) {
         await FirebaseAuth.instance.currentUser
             ?.linkWithCredential(credential)
             .then((value) {
@@ -468,8 +481,7 @@ class AuthFormFunctions {
               print(e);
             }
 
-            show_user_info_saved_message(
-                context, password_verification_enabled ? 2 : 1);
+            show_user_info_saved_message(context);
           }).catchError((err) {
             print(err);
           });
@@ -501,8 +513,7 @@ class AuthFormFunctions {
         User user = FirebaseAuth.instance.currentUser!;
 
         user.updatePassword(password_input_controller.text).then((_) {
-          show_user_info_saved_message(
-              context, password_verification_enabled ? 3 : 2);
+          show_user_info_saved_message(context);
         }).catchError((error) {
           print("Password can't be changed " + error.toString());
         });
@@ -538,21 +549,15 @@ class AuthFormFunctions {
         "gender": gender_value,
         "country": country_value,
       }).then((result) {
-        show_user_info_saved_message(
-            context, password_verification_enabled ? 2 : 1);
+        show_user_info_saved_message(context);
       }).catchError((err) {
         print(err);
       });
     }
   }
 
-  show_user_info_saved_message(BuildContext context, int times_pop) {
-    for (int i = 0; 0 < times_pop; i++) {
-      Timer(Duration(milliseconds: 100), () {
-        Navigator.of(context).pop();
-      });
-    }
-
+  show_user_info_saved_message(BuildContext context) {
+    Navigator.of(context).pop();
     Timer(Duration(milliseconds: 500), () {
       show_success_alert(context, 'User info saved successfully');
     });

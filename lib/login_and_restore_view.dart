@@ -126,7 +126,9 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
         }
         if (prefs.getString("phone_code") != null) {
           current_phone_code.value = country_phone_code_list.firstWhere(
-              (element) => element.dial_code == prefs.getString("phone_code"));
+            (element) => element.dial_code == prefs.getString("phone_code"),
+            orElse: () => country_phone_code_list[0],
+          );
         }
       }
       remember_me = true;
