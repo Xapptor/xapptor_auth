@@ -12,16 +12,21 @@ delete_account({
   required List<String> text_list,
 }) async {
   User user = FirebaseAuth.instance.currentUser!;
-  TextEditingController phone_input_controller = TextEditingController();
   TextEditingController password_input_controller = TextEditingController();
 
   List<UserInfo> user_providers = user.providerData;
   bool email_linked = check_email_provider(user_providers: user_providers);
   bool phone_linked = check_phone_provider(user_providers: user_providers);
 
+  // bool email_linked = true;
+  // bool phone_linked = false;
+
   AuthFormFunctions auth_form_functions = AuthFormFunctions();
 
   if (!email_linked && phone_linked) {
+    TextEditingController phone_input_controller = TextEditingController();
+    phone_input_controller.text = user.phoneNumber!;
+
     auth_form_functions.send_verification_code(
       context: context,
       phone_input_controller: phone_input_controller,
@@ -33,56 +38,60 @@ delete_account({
     );
   }
 
-  Widget confirm_button = Container(
-    margin: const EdgeInsets.all(10),
-    decoration: BoxDecoration(
-      color: Colors.red,
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: TextButton(
-      onPressed: () async {
-        _check_signin_method(
-          context: context,
-          text_list: text_list,
-          user: user,
-          email_linked: email_linked,
-          phone_linked: phone_linked,
-          password_input_controller: password_input_controller,
-          auth_form_functions: auth_form_functions,
-        );
-      },
-      child: Text(
-        text_list[text_list.length - 2],
-        style: TextStyle(
-          color: Colors.white,
-        ),
-      ),
-    ),
-  );
-
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(text_list[1]),
+        title: Text(text_list[email_linked
+            ? 2
+            : phone_linked
+                ? 3
+                : 1]),
         actions: [
+          !email_linked && !phone_linked
+              ? Container()
+              : Container(
+                  margin: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: text_list[phone_linked ? 5 : 4],
+                      labelStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    controller: password_input_controller,
+                    maxLines: null,
+                  ),
+                ),
           Container(
             margin: const EdgeInsets.all(10),
-            child: TextFormField(
-              decoration: InputDecoration(
-                labelText: text_list[2],
-                labelStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                hintStyle: TextStyle(
-                  color: Colors.grey,
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: TextButton(
+              onPressed: () async {
+                _check_signin_method(
+                  context: context,
+                  text_list: text_list,
+                  user: user,
+                  email_linked: email_linked,
+                  phone_linked: phone_linked,
+                  password_input_controller: password_input_controller,
+                  auth_form_functions: auth_form_functions,
+                );
+              },
+              child: Text(
+                text_list[text_list.length - 3],
+                style: TextStyle(
+                  color: Colors.white,
                 ),
               ),
-              controller: password_input_controller,
-              maxLines: null,
             ),
           ),
-          confirm_button,
         ],
       );
     },
@@ -131,7 +140,10 @@ _check_signin_method({
       show_error_alert(context: context, message: text_list.last);
     }
   } else {
-    //
+    _delete_account(
+      context: context,
+      user: user,
+    );
   }
 }
 
