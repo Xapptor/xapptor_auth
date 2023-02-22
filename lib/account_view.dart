@@ -4,6 +4,7 @@ import 'package:xapptor_auth/delete_account.dart';
 import 'package:xapptor_auth/check_provider.dart';
 import 'package:xapptor_auth/login_and_restore_view.dart';
 import 'package:xapptor_auth/show_quick_login.dart';
+import 'package:xapptor_auth/unlink_alert.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_translation/model/text_list.dart';
@@ -274,14 +275,13 @@ class _AccountViewState extends State<AccountView> {
               delete_account(
                 context: context,
                 text_list: widget.text_list.get(source_language_index).sublist(
-                    widget.text_list.get(source_language_index).length - 5),
+                    widget.text_list.get(source_language_index).length - 9),
               );
             }
           }
         },
         child: Text(
-          widget.text_list.get(source_language_index)[
-              widget.text_list.get(source_language_index).length - 5],
+          widget.text_list.get(source_language_index)[8],
           textAlign: TextAlign.center,
           style: TextStyle(
             color: is_edit_account(widget.auth_form_type)
@@ -334,21 +334,28 @@ class _AccountViewState extends State<AccountView> {
                     add_final_padding: true,
                     child: TextButton(
                       onPressed: () async {
-                        await FirebaseAuth.instance.currentUser
-                            ?.unlink(PhoneAuthProvider().providerId)
-                            .then((value) {
-                          setState(() {});
-                          show_success_alert(
-                            context: context,
-                            message: 'Phone unlink success',
-                          );
-                        }).onError((error, stackTrace) {
-                          print(error);
-                          show_error_alert(
-                            context: context,
-                            message: 'Phone unlink error',
-                          );
-                        });
+                        unlink_alert(
+                          context: context,
+                          text_list:
+                              widget.text_list.get(source_language_index),
+                          callback: () async {
+                            await FirebaseAuth.instance.currentUser
+                                ?.unlink(PhoneAuthProvider().providerId)
+                                .then((value) {
+                              setState(() {});
+                              show_success_alert(
+                                context: context,
+                                message: 'Phone unlink success',
+                              );
+                            }).onError((error, stackTrace) {
+                              print(error);
+                              show_error_alert(
+                                context: context,
+                                message: 'Phone unlink error',
+                              );
+                            });
+                          },
+                        );
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -389,22 +396,29 @@ class _AccountViewState extends State<AccountView> {
                     background_color: widget.text_field_background_color,
                     add_final_padding: true,
                     child: TextButton(
-                      onPressed: () async {
-                        await FirebaseAuth.instance.currentUser
-                            ?.unlink(EmailAuthProvider.PROVIDER_ID)
-                            .then((value) {
-                          setState(() {});
-                          show_success_alert(
-                            context: context,
-                            message: 'Email unlink success',
-                          );
-                        }).onError((error, stackTrace) {
-                          print(error);
-                          show_error_alert(
-                            context: context,
-                            message: 'Email unlink error',
-                          );
-                        });
+                      onPressed: () {
+                        unlink_alert(
+                          context: context,
+                          text_list:
+                              widget.text_list.get(source_language_index),
+                          callback: () async {
+                            await FirebaseAuth.instance.currentUser
+                                ?.unlink(EmailAuthProvider.PROVIDER_ID)
+                                .then((value) {
+                              setState(() {});
+                              show_success_alert(
+                                context: context,
+                                message: 'Email unlink success',
+                              );
+                            }).onError((error, stackTrace) {
+                              print(error);
+                              show_error_alert(
+                                context: context,
+                                message: 'Email unlink error',
+                              );
+                            });
+                          },
+                        );
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -1012,13 +1026,8 @@ class _AccountViewState extends State<AccountView> {
                 splash_color: widget.second_button_color.withOpacity(0.2),
                 child: Center(
                   child: Text(
-                    is_edit_account(widget.auth_form_type)
-                        ? widget.text_list.get(source_language_index)[widget
-                                .text_list
-                                .get(source_language_index)
-                                .length -
-                            (is_edit_account(widget.auth_form_type) ? 6 : 5)]
-                        : widget.text_list.get(source_language_index).last,
+                    widget.text_list.get(source_language_index)[
+                        is_edit_account(widget.auth_form_type) ? 7 : 11],
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: (widget.first_button_color.colors.first ==
