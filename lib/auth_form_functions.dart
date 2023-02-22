@@ -13,10 +13,13 @@ import 'package:xapptor_ui/widgets/show_alert.dart';
 // Functions executed in Auth Screens.
 
 class AuthFormFunctions {
-  // Login
-
   ConfirmationResult? confirmation_result;
-  String verification_id = '';
+  String? verification_id = '';
+
+  AuthFormFunctions({
+    this.confirmation_result,
+    this.verification_id,
+  });
 
   send_verification_code({
     required BuildContext context,
@@ -157,6 +160,8 @@ class AuthFormFunctions {
     }
   }
 
+  // Login with sms verification code
+
   login_phone_number({
     required BuildContext context,
     required List<TextEditingController> input_controllers,
@@ -186,7 +191,7 @@ class AuthFormFunctions {
       );
     } else {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verification_id,
+        verificationId: verification_id!,
         smsCode: code_input_controller.text,
       );
 
@@ -258,6 +263,8 @@ class AuthFormFunctions {
       }
     }
   }
+
+  // Login with email and password
 
   login({
     required BuildContext context,
