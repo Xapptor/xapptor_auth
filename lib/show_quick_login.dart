@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/login_and_restore_view.dart';
-import 'package:xapptor_router/app_screen.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/is_portrait.dart';
 
@@ -9,11 +8,13 @@ show_quick_login({
   required BuildContext context,
   required AvailableLoginProviders available_login_providers,
   String message = "Re-Authentication",
+  Function? callback,
 }) {
-  AppScreen app_screen = search_screen('login');
-  LoginAndRestoreView login_widget = app_screen.child as LoginAndRestoreView;
+  LoginAndRestoreView login_widget =
+      search_screen('login').child as LoginAndRestoreView;
   login_widget.auth_form_type = AuthFormType.quick_login;
   login_widget.available_login_providers = available_login_providers;
+  login_widget.quick_login_callback = callback;
 
   showDialog(
     context: context,

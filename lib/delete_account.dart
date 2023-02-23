@@ -18,7 +18,7 @@ delete_account({
   bool email_linked = check_email_provider(user_providers: user_providers);
   bool phone_linked = check_phone_provider(user_providers: user_providers);
 
-  // bool email_linked = true;
+  // bool email_linked = false;
   // bool phone_linked = false;
 
   AuthFormFunctions auth_form_functions = AuthFormFunctions();
@@ -54,7 +54,7 @@ delete_account({
                   margin: const EdgeInsets.all(10),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelText: text_list[phone_linked ? 5 : 4],
+                      labelText: text_list[email_linked ? 4 : 5],
                       labelStyle: TextStyle(
                         color: Colors.grey,
                       ),
