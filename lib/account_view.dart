@@ -293,10 +293,16 @@ class _AccountViewState extends State<AccountView> {
       );
     }
 
-    List<UserInfo> user_providers =
-        FirebaseAuth.instance.currentUser!.providerData;
-    bool email_linked = check_email_provider(user_providers: user_providers);
-    bool phone_linked = check_phone_provider(user_providers: user_providers);
+    bool email_linked = false;
+    bool phone_linked = false;
+    List<UserInfo> user_providers = [];
+
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      user_providers = user.providerData;
+      email_linked = check_email_provider(user_providers: user_providers);
+      phone_linked = check_phone_provider(user_providers: user_providers);
+    }
 
     return AuthContainer(
       translation_stream_list: translation_stream_list,
@@ -338,6 +344,7 @@ class _AccountViewState extends State<AccountView> {
                           context: context,
                           text_list:
                               widget.text_list.get(source_language_index),
+                          auth_provider_name: 'phone',
                           callback: () async {
                             await FirebaseAuth.instance.currentUser
                                 ?.unlink(PhoneAuthProvider().providerId)
@@ -401,6 +408,7 @@ class _AccountViewState extends State<AccountView> {
                           context: context,
                           text_list:
                               widget.text_list.get(source_language_index),
+                          auth_provider_name: 'email',
                           callback: () async {
                             await FirebaseAuth.instance.currentUser
                                 ?.unlink(EmailAuthProvider.PROVIDER_ID)
@@ -652,6 +660,10 @@ class _AccountViewState extends State<AccountView> {
                               available_login_providers:
                                   AvailableLoginProviders.phone,
                               message: 'Link Phone',
+                              callback: () {
+                                phone_linked = true;
+                                setState(() {});
+                              },
                             );
                           },
                           style: TextButton.styleFrom(
@@ -1027,7 +1039,7 @@ class _AccountViewState extends State<AccountView> {
                 child: Center(
                   child: Text(
                     widget.text_list.get(source_language_index)[
-                        is_edit_account(widget.auth_form_type) ? 7 : 11],
+                        is_edit_account(widget.auth_form_type) ? 7 : 7],
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: (widget.first_button_color.colors.first ==

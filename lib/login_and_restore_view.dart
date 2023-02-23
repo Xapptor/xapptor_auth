@@ -61,6 +61,7 @@ class LoginAndRestoreView extends StatefulWidget {
   final int source_language_index;
   final bool verify_email;
   AvailableLoginProviders available_login_providers;
+  Function? quick_login_callback;
 
   LoginAndRestoreView({
     required this.auth_form_type,
@@ -87,6 +88,7 @@ class LoginAndRestoreView extends StatefulWidget {
     this.source_language_index = 0,
     this.verify_email = true,
     this.available_login_providers = AvailableLoginProviders.email_and_phone,
+    this.quick_login_callback,
   });
 
   @override
@@ -897,7 +899,7 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
                 email_input_controller.text,
           );
 
-          List<TextEditingController> inputControllers = [
+          List<TextEditingController> input_controllers = [
             phone_input_controller,
             password_input_controller,
           ];
@@ -905,12 +907,13 @@ class _LoginAndRestoreViewState extends State<LoginAndRestoreView> {
           if (form_key.currentState!.validate()) {
             auth_form_functions.login_phone_number(
               context: context,
-              input_controllers: inputControllers,
+              input_controllers: input_controllers,
               prefs: prefs,
               verification_code_sent: verification_code_sent,
               update_verification_code_sent: update_verification_code_sent,
               persistence: Persistence.LOCAL,
               remember_me: remember_me,
+              callback: widget.quick_login_callback,
             );
           }
         }

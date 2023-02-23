@@ -205,6 +205,7 @@ class AuthFormFunctions {
             context: context,
             message: 'Phone linked successfully',
           );
+          if (callback != null) callback();
         }).onError((error, stackTrace) {
           print(error.toString());
 
