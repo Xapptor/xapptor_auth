@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_auth/auth_form_functions.dart';
 import 'package:xapptor_auth/check_provider.dart';
 import 'package:xapptor_logic/firebase_tasks.dart';
-import 'package:xapptor_ui/widgets/show_alert.dart';
+import 'package:xapptor_logic/show_alert.dart';
 
 delete_account({
   required BuildContext context,

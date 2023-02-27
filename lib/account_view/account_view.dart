@@ -8,6 +8,7 @@ import 'package:xapptor_auth/account_view/password_form_section.dart';
 import 'package:xapptor_auth/account_view/unlink_email_button.dart';
 import 'package:xapptor_auth/account_view/unlink_phone_button.dart';
 import 'package:xapptor_auth/account_view/update_source_language.dart';
+import 'package:xapptor_auth/account_view/user_id_button.dart';
 import 'package:xapptor_auth/account_view/user_info_form_section.dart';
 import 'package:xapptor_auth/account_view/init_state.dart';
 import 'package:xapptor_auth/auth_container.dart';
@@ -27,13 +28,11 @@ class AccountView extends StatefulWidget {
   final RichText tc_and_pp_text;
   final Function? first_button_action;
   final Function? second_button_action;
-  final Function? third_button_action;
   final TranslationTextListArray gender_values;
   final List<String>? country_values;
   final Color text_color;
   final LinearGradient first_button_color;
   final Color second_button_color;
-  final Color third_button_color;
   final String logo_path;
   final double image_border_radius;
   final Color topbar_color;
@@ -51,13 +50,11 @@ class AccountView extends StatefulWidget {
     required this.tc_and_pp_text,
     required this.first_button_action,
     required this.second_button_action,
-    required this.third_button_action,
     required this.gender_values,
     required this.country_values,
     required this.text_color,
     required this.first_button_color,
     required this.second_button_color,
-    required this.third_button_color,
     required this.logo_path,
     this.image_border_radius = 0,
     required this.topbar_color,
@@ -222,6 +219,7 @@ class AccountViewState extends State<AccountView> {
             SizedBox(
               height: sized_box_space,
             ),
+            user_id_button(),
             unlink_phone_button(phone_linked, user_providers),
             SizedBox(
               height: sized_box_space,
