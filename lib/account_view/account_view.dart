@@ -5,6 +5,7 @@ import 'package:xapptor_auth/account_view/link_email_button.dart';
 import 'package:xapptor_auth/account_view/link_phone_button.dart';
 import 'package:xapptor_auth/account_view/main_button.dart';
 import 'package:xapptor_auth/account_view/password_form_section.dart';
+import 'package:xapptor_auth/account_view/second_button.dart';
 import 'package:xapptor_auth/account_view/unlink_email_button.dart';
 import 'package:xapptor_auth/account_view/unlink_phone_button.dart';
 import 'package:xapptor_auth/account_view/update_source_language.dart';
@@ -13,7 +14,6 @@ import 'package:xapptor_auth/account_view/user_info_form_section.dart';
 import 'package:xapptor_auth/account_view/init_state.dart';
 import 'package:xapptor_auth/auth_container.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
-import 'package:xapptor_auth/delete_account.dart';
 import 'package:xapptor_auth/check_provider.dart';
 import 'package:xapptor_auth/get_auth_view_logo.dart';
 import 'package:xapptor_auth/get_over_18_date.dart';
@@ -141,47 +141,6 @@ class AccountViewState extends State<AccountView> {
 
   @override
   Widget build(BuildContext context) {
-    double screen_width = MediaQuery.of(context).size.width;
-
-    late TextButton second_button;
-
-    if (is_edit_account(widget.auth_form_type)) {
-      second_button = TextButton(
-        style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                screen_width,
-              ),
-            ),
-          ),
-        ),
-        onPressed: () {
-          if (widget.second_button_action != null) {
-            widget.second_button_action!();
-          } else {
-            if (is_edit_account(widget.auth_form_type)) {
-              delete_account(
-                context: context,
-                text_list: widget.text_list.get(source_language_index).sublist(
-                    widget.text_list.get(source_language_index).length - 9),
-              );
-            }
-          }
-        },
-        child: Text(
-          widget.text_list.get(source_language_index)[8],
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: is_edit_account(widget.auth_form_type)
-                ? Colors.red
-                : widget.second_button_color,
-            fontSize: 12,
-          ),
-        ),
-      );
-    }
-
     bool email_linked = false;
     bool phone_linked = false;
     List<UserInfo> user_providers = [];
@@ -221,38 +180,13 @@ class AccountViewState extends State<AccountView> {
             ),
             user_id_button(),
             unlink_phone_button(phone_linked, user_providers),
-            SizedBox(
-              height: sized_box_space,
-            ),
             unlink_email_button(email_linked, user_providers),
-            SizedBox(
-              height: sized_box_space,
-            ),
             email_form_section(email_linked),
-            SizedBox(
-              height: sized_box_space,
-            ),
             password_form_section(email_linked),
             link_phone_button(phone_linked),
             link_email_button(email_linked),
-            SizedBox(
-              height: sized_box_space,
-            ),
             user_info_form_section(),
-            is_edit_account(widget.auth_form_type)
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: sized_box_space,
-                      ),
-                      second_button,
-                      SizedBox(
-                        height: sized_box_space,
-                      ),
-                    ],
-                  )
-                : Container(),
+            second_button(),
             SizedBox(
               height: sized_box_space,
             ),

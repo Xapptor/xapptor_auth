@@ -151,8 +151,12 @@ _delete_account({
   required BuildContext context,
   required User user,
 }) async {
-  await delete_all_files_in_a_path(path: "users/${user.uid}");
-  await FirebaseFirestore.instance.collection("users").doc(user.uid).delete();
-  await user.delete();
-  Navigator.of(context).popUntil((route) => route.isFirst);
+  await user.delete().then((value) async {
+    await delete_all_files_in_a_path(path: "users/${user.uid}");
+    await FirebaseFirestore.instance.collection("users").doc(user.uid).delete();
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }).onError((error, stackTrace) {
+    print(error);
+    show_error_alert(context: context, message: error.toString());
+  });
 }
