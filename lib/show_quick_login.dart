@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
-import 'package:xapptor_auth/login_and_restore_view.dart';
+import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
+import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:xapptor_ui/widgets/is_portrait.dart';
 

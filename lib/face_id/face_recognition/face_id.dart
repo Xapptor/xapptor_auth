@@ -4,11 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:xapptor_auth/check_logo_image_width.dart';
 import 'package:xapptor_auth/face_id/compare_faces/compare_faces.dart';
 import 'package:xapptor_auth/face_id/face_recognition/check_liveness.dart';
 import 'package:xapptor_auth/face_id/face_recognition/feedback_layer.dart';
 import 'package:xapptor_logic/get_base64_from_remote_image.dart';
-import 'package:xapptor_logic/get_image_size.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'analize_for_face_changes.dart';
 import 'check_face_framing.dart';
@@ -344,20 +344,18 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
     });
   }
 
-  check_logo_image_width() async {
-    logo_image_width = await check_if_image_is_square(
-            image: Image.asset(widget.logo_image_path))
-        ? logo_height(context)
-        : logo_width(context);
-
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
     init_animation();
-    check_logo_image_width();
+    check_logo_image_width(
+      context: context,
+      logo_path: widget.logo_image_path,
+      callback: (new_logo_image_width) => setState(() {
+        logo_image_width = new_logo_image_width;
+      }),
+    );
+
     if (open_camera) {
       init_camera();
     }

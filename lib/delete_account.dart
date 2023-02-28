@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:xapptor_auth/auth_form_functions.dart';
+import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
+import 'package:xapptor_auth/auth_form_functions/send_verification_code.dart';
 import 'package:xapptor_auth/check_provider.dart';
 import 'package:xapptor_logic/firebase_tasks.dart';
-import 'package:xapptor_ui/widgets/show_alert.dart';
+import 'package:xapptor_logic/show_alert.dart';
 
 delete_account({
   required BuildContext context,
@@ -151,8 +152,12 @@ _delete_account({
   required BuildContext context,
   required User user,
 }) async {
-  await delete_all_files_in_a_path(path: "users/${user.uid}");
-  await FirebaseFirestore.instance.collection("users").doc(user.uid).delete();
-  await user.delete();
-  Navigator.of(context).popUntil((route) => route.isFirst);
+  await user.delete().then((value) async {
+    await delete_all_files_in_a_path(path: "users/${user.uid}");
+    await FirebaseFirestore.instance.collection("users").doc(user.uid).delete();
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }).onError((error, stackTrace) {
+    print(error);
+    show_error_alert(context: context, message: error.toString());
+  });
 }

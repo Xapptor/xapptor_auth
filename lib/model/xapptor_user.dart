@@ -12,6 +12,7 @@ class XapptorUser {
   String country;
   bool admin;
   bool owner;
+  List<Role> roles;
 
   XapptorUser({
     required this.id,
@@ -23,6 +24,7 @@ class XapptorUser {
     required this.country,
     required this.admin,
     required this.owner,
+    required this.roles,
   });
 
   XapptorUser.from_snapshot(
@@ -37,7 +39,18 @@ class XapptorUser {
         gender = snapshot['gender'],
         country = snapshot['country'],
         admin = snapshot['admin'] ?? false,
-        owner = snapshot['owner'] ?? false;
+        owner = snapshot['owner'] ?? false,
+        roles = snapshot['roles'] == null
+            ? []
+            : (snapshot['roles'] as Map<String, dynamic>)
+                .entries
+                .map(
+                  (e) => Role(
+                    organization_id: e.key,
+                    value: e.value,
+                  ),
+                )
+                .toList();
 
   Map<String, dynamic> to_json() {
     return {
@@ -48,6 +61,11 @@ class XapptorUser {
       'country': country,
       'admin': admin,
       'owner': owner,
+      'roles': Map.fromIterable(
+        roles,
+        key: (e) => e.organization_id,
+        value: (e) => e.value,
+      ),
     };
   }
 
@@ -62,6 +80,7 @@ class XapptorUser {
       country: '',
       admin: false,
       owner: false,
+      roles: [],
     );
   }
 }
@@ -78,4 +97,14 @@ Future<XapptorUser> get_xapptor_user() async {
     current_user.email!,
     user_snap.data() as Map<String, dynamic>,
   );
+}
+
+class Role {
+  String organization_id;
+  String value;
+
+  Role({
+    required this.organization_id,
+    required this.value,
+  });
 }

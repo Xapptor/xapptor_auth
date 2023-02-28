@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:xapptor_auth/auth_form_functions.dart';
+import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
+import 'package:xapptor_auth/auth_form_functions/login_phone_number.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
 
 show_authentication_alert_dialog({
