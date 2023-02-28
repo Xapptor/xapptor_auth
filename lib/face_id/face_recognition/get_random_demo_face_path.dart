@@ -9,6 +9,5 @@ String get_random_demo_face_path() {
 
   String demo_face_path =
       "assets/images/face_demos/${random_face_ethnicity}/${random_face_gender}.jpg";
-
   return demo_face_path;
 }
