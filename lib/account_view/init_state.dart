@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
-import 'package:xapptor_auth/account_view/check_logo_image_width.dart';
+import 'package:xapptor_auth/check_logo_image_width.dart';
 import 'package:xapptor_auth/account_view/fill_fields.dart';
 import 'package:xapptor_auth/account_view/update_text_list.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
@@ -10,7 +10,13 @@ import 'package:xapptor_translation/translation_stream.dart';
 extension InitState on AccountViewState {
   init_state() async {
     check_if_app_enabled();
-    check_logo_image_width();
+    check_logo_image_width(
+      context: context,
+      logo_path: widget.logo_path,
+      callback: (new_logo_image_width) => setState(() {
+        logo_image_width = new_logo_image_width;
+      }),
+    );
     prefs = await SharedPreferences.getInstance();
 
     translation_stream = TranslationStream(

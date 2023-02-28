@@ -3,7 +3,7 @@ import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:xapptor_auth/form_section_container.dart';
-import 'package:xapptor_auth/login_and_restore_view.dart';
+import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
 import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_ui/values/ui.dart';
 

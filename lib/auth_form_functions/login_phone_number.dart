@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/auth_form_functions/send_verification_code.dart';
-import 'package:xapptor_auth/login_and_restore_view.dart';
+import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
 import 'package:xapptor_auth/model/xapptor_user.dart';
 import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_logic/show_alert.dart';

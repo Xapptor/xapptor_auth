@@ -5,7 +5,7 @@ import 'package:xapptor_auth/account_view/show_edit_account_alert_dialog.dart';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/auth_form_functions/register.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
-import 'package:xapptor_auth/login_and_restore_view.dart';
+import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
 import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_logic/show_alert.dart';
 
