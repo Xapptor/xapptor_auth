@@ -1,4 +1,4 @@
-import 'package:xapptor_auth/enums.dart';
+import 'package:xapptor_auth/face_id/enums.dart';
 
 String get_random_demo_face_path() {
   String random_face_ethnicity =
