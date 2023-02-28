@@ -410,6 +410,7 @@ class AuthFormFunctions {
                   country: country_value,
                   admin: false,
                   owner: false,
+                  roles: [],
                 );
 
                 FirebaseFirestore.instance
