@@ -85,16 +85,17 @@ class XapptorUser {
   }
 }
 
-Future<XapptorUser> get_xapptor_user() async {
+Future<XapptorUser> get_xapptor_user({String? id}) async {
   User current_user = await FirebaseAuth.instance.currentUser!;
 
-  DocumentSnapshot user_snap = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(current_user.uid)
-      .get();
+  String user_id = id ?? current_user.uid;
+  String user_email = id == null ? current_user.email! : '';
+
+  DocumentSnapshot user_snap =
+      await FirebaseFirestore.instance.collection('users').doc(user_id).get();
   return XapptorUser.from_snapshot(
-    current_user.uid,
-    current_user.email!,
+    user_id,
+    user_email,
     user_snap.data() as Map<String, dynamic>,
   );
 }
