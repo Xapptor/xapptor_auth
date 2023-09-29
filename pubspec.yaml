@@ -4,29 +4,27 @@ repository: https://github.com/Xapptor/xapptor_auth
 version: 0.0.3
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=3.1.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  firebase_auth: ^4.2.6
-  cloud_firestore: ^4.3.2
-  firebase_storage: ^11.0.11
+  firebase_auth: ^4.10.0
+  cloud_firestore: ^4.9.2
+  firebase_storage: ^11.2.7
 
   sign_in_button: ^3.1.0
-  google_sign_in: ^5.3.1
-  sign_in_with_apple: ^3.3.0
+  google_sign_in: ^6.1.5
+  sign_in_with_apple: ^5.0.0
 
   universal_platform: ^1.0.0+1
   shared_preferences: ^2.0.15
-  intl: ^0.17.0
-  http: ^0.13.4
-  crypto: ^3.0.1
-  google_mlkit_face_detection: ^0.3.0
-  camera: ^0.9.4+14
-  camera_web: ^0.2.1+2
+  intl: ^0.18.1
+  http: ^1.1.0
+  crypto: ^3.0.3
+  google_mlkit_face_detection: ^0.8.0
+  camera: ^0.10.5+4
 
   # xapptor_api_key:
   #   path: ../xapptor_api_key
