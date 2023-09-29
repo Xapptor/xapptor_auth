@@ -24,32 +24,20 @@ InputImage convert_camera_image_to_input_image({
   final Size image_size = Size(image.width.toDouble(), image.height.toDouble());
 
   final InputImageRotation image_rotation =
-      InputImageRotationValue.fromRawValue(camera.sensorOrientation) ??
-          InputImageRotation.rotation0deg;
+      InputImageRotationValue.fromRawValue(camera.sensorOrientation) ?? InputImageRotation.rotation0deg;
 
-  final InputImageFormat input_image_format =
-      image.format.raw ?? InputImageFormat.nv21;
+  final InputImageFormat input_image_format = image.format.raw ?? InputImageFormat.nv21;
 
-  final plane_data = image.planes.map(
-    (Plane plane) {
-      return InputImagePlaneMetadata(
-        bytesPerRow: plane.bytesPerRow,
-        height: plane.height,
-        width: plane.width,
-      );
-    },
-  ).toList();
-
-  final input_image_data = InputImageData(
+  final input_image_data = InputImageMetadata(
     size: image_size,
-    imageRotation: image_rotation,
-    inputImageFormat: input_image_format,
-    planeData: plane_data,
+    rotation: image_rotation,
+    format: input_image_format,
+    bytesPerRow: image.planes.first.bytesPerRow,
   );
 
   InputImage input_image = InputImage.fromBytes(
     bytes: image.planes.first.bytes,
-    inputImageData: input_image_data,
+    metadata: input_image_data,
   );
   return input_image;
 }
