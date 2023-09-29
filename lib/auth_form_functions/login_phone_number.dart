@@ -28,8 +28,9 @@ extension LoginPhoneNumber on AuthFormFunctions {
     TextEditingController code_input_controller = input_controllers[1];
 
     // Set persistence in Web.
-    if (UniversalPlatform.isWeb)
+    if (UniversalPlatform.isWeb) {
       await FirebaseAuth.instance.setPersistence(persistence);
+    }
 
     if (!verification_code_sent.value) {
       send_verification_code(

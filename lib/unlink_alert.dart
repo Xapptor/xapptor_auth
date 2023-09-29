@@ -19,7 +19,7 @@ unlink_alert({
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text(
+              child: const Text(
                 'Cancel',
               ),
             ),
@@ -31,7 +31,7 @@ unlink_alert({
                 Navigator.pop(context);
                 callback();
               },
-              child: Text(
+              child: const Text(
                 'Yes',
               ),
             ),

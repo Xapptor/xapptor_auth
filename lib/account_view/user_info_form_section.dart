@@ -85,7 +85,7 @@ extension UserInfoFormSection on AccountViewState {
               SizedBox(
                 height: sized_box_space,
               ),
-              Container(
+              SizedBox(
                 width: screen_width,
                 child: ElevatedButton(
                   style: ButtonStyle(
@@ -255,12 +255,12 @@ extension UserInfoFormSection on AccountViewState {
                                     ),
                                   ),
                                 ),
-                                Spacer(flex: 1),
+                                const Spacer(flex: 1),
                                 Expanded(
                                   flex: 12,
                                   child: widget.tc_and_pp_text,
                                 ),
-                                Spacer(flex: 1),
+                                const Spacer(flex: 1),
                               ],
                             ),
                           ),

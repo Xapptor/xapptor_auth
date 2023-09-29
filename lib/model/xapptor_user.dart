@@ -61,11 +61,7 @@ class XapptorUser {
       'country': country,
       'admin': admin,
       'owner': owner,
-      'roles': Map.fromIterable(
-        roles,
-        key: (e) => e.organization_id,
-        value: (e) => e.value,
-      ),
+      'roles': { for (var e in roles) e.organization_id : e.value },
     };
   }
 
@@ -86,7 +82,7 @@ class XapptorUser {
 }
 
 Future<XapptorUser> get_xapptor_user({String? id}) async {
-  User current_user = await FirebaseAuth.instance.currentUser!;
+  User current_user = FirebaseAuth.instance.currentUser!;
 
   String user_id = id ?? current_user.uid;
   String user_email = id == null ? current_user.email! : '';

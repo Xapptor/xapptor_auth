@@ -30,11 +30,11 @@ check_face_framing({
     FaceLandmark? right_cheek = face.landmarks[FaceLandmarkType.rightCheek];
     FaceLandmark? bottom_mouth = face.landmarks[FaceLandmarkType.bottomMouth];
 
-    Point left_eye_position = left_eye?.position ?? Point(0, 0);
-    Point nose_base_position = nose_base?.position ?? Point(0, 0);
-    Point left_cheek_position = left_cheek?.position ?? Point(0, 0);
-    Point right_cheek_position = right_cheek?.position ?? Point(0, 0);
-    Point bottom_mouth_position = bottom_mouth?.position ?? Point(0, 0);
+    Point left_eye_position = left_eye?.position ?? const Point(0, 0);
+    Point nose_base_position = nose_base?.position ?? const Point(0, 0);
+    Point left_cheek_position = left_cheek?.position ?? const Point(0, 0);
+    Point right_cheek_position = right_cheek?.position ?? const Point(0, 0);
+    Point bottom_mouth_position = bottom_mouth?.position ?? const Point(0, 0);
 
     double distance_between_cheeks =
         (right_cheek_position.x - left_cheek_position.x).abs().toDouble();

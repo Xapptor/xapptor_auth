@@ -11,17 +11,17 @@ extension ShowEmailVerificationAlertDialog on AuthFormFunctions {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("You haven't verified your email yet"),
-          content: Text("Would you like to send an email verification?"),
+          title: const Text("You haven't verified your email yet"),
+          content: const Text("Would you like to send an email verification?"),
           actions: <Widget>[
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("Accept"),
+              child: const Text("Accept"),
               onPressed: () async {
                 await user.sendEmailVerification().then((value) {
                   Navigator.of(context).pop();

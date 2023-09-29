@@ -24,7 +24,7 @@ extension EmailFormSection on LoginAndRestoreViewState {
                   : Expanded(
                       flex: current_phone_code_flex,
                       child: Container(
-                        margin: EdgeInsets.only(top: 10),
+                        margin: const EdgeInsets.only(top: 10),
                         child: CountryPhoneCodesPicker(
                           current_phone_code: current_phone_code,
                           text_color: widget.text_color,
@@ -32,7 +32,7 @@ extension EmailFormSection on LoginAndRestoreViewState {
                         ),
                       ),
                     ),
-              use_email_signin ? Container() : Spacer(flex: 1),
+              use_email_signin ? Container() : const Spacer(flex: 1),
               Expanded(
                 flex: 12,
                 child: TextFormField(

@@ -10,25 +10,31 @@ check_liveness({
 
   // Adding probabilities
 
-  if (face.smilingProbability != null)
+  if (face.smilingProbability != null) {
     smiling_probability_list.add(face.smilingProbability!);
+  }
 
-  if (face.leftEyeOpenProbability != null)
+  if (face.leftEyeOpenProbability != null) {
     left_eye_open_probability_list.add(face.leftEyeOpenProbability!);
+  }
 
-  if (face.rightEyeOpenProbability != null)
+  if (face.rightEyeOpenProbability != null) {
     right_eye_open_probability_list.add(face.rightEyeOpenProbability!);
+  }
 
   // Check list length
 
-  if (smiling_probability_list.length > 20)
+  if (smiling_probability_list.length > 20) {
     smiling_probability_list.removeAt(0);
+  }
 
-  if (left_eye_open_probability_list.length > 20)
+  if (left_eye_open_probability_list.length > 20) {
     left_eye_open_probability_list.removeAt(0);
+  }
 
-  if (right_eye_open_probability_list.length > 20)
+  if (right_eye_open_probability_list.length > 20) {
     right_eye_open_probability_list.removeAt(0);
+  }
 
   update_function(
     smiling_probability_list,

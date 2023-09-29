@@ -7,12 +7,12 @@ import 'package:xapptor_router/app_screens.dart';
 
 extension CheckLogin on LoginAndRestoreViewState {
   check_login() async {
-    Timer(Duration(milliseconds: 300), () async {
+    Timer(const Duration(milliseconds: 300), () async {
       if (FirebaseAuth.instance.currentUser != null) {
         print("User is logged in");
         open_screen("home");
       } else {
-        var google_signin_account = await google_signin.currentUser;
+        var google_signin_account = google_signin.currentUser;
         if (google_signin_account != null) {
           signin_with_google(google_signin_account);
         } else {

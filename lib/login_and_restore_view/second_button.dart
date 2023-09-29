@@ -28,9 +28,7 @@ extension SecondButton on LoginAndRestoreViewState {
                   auth_form_functions.send_verification_code(
                     context: context,
                     phone_input_controller: TextEditingController(
-                      text: current_phone_code.value.dial_code +
-                          ' ' +
-                          email_input_controller.text,
+                      text: '${current_phone_code.value.dial_code} ${email_input_controller.text}',
                     ),
                     code_input_controller: password_input_controller,
                     prefs: prefs,

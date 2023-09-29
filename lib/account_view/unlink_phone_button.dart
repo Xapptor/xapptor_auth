@@ -47,19 +47,19 @@ extension UnlinkPhoneButton on AccountViewState {
                 },
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
-                  minimumSize: Size(50, 30),
+                  minimumSize: const Size(50, 30),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   alignment: Alignment.centerLeft,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(
+                    const Icon(
                       FontAwesomeIcons.linkSlash,
                       size: 16,
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 8),
+                      margin: const EdgeInsets.only(left: 8),
                       child: Text(
                         'Unlink Phone',
                         style: TextStyle(

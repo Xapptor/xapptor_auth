@@ -17,7 +17,7 @@ Future<bool> compare_faces({
   required String remote_service_endpoint_api_key,
   required String remote_service_endpoint_region,
 }) async {
-  print("Service Location: " + service_location.name);
+  print("Service Location: ${service_location.name}");
   switch (service_location) {
     case ServiceLocation.local:
       return await compare_faces_with_local_service(

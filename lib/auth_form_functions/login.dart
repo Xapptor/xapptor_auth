@@ -23,8 +23,9 @@ extension Login on AuthFormFunctions {
 
     if (form_key.currentState!.validate()) {
       // Set persistence in Web.
-      if (UniversalPlatform.isWeb)
+      if (UniversalPlatform.isWeb) {
         await FirebaseAuth.instance.setPersistence(persistence);
+      }
 
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(
@@ -59,7 +60,7 @@ extension Login on AuthFormFunctions {
 
         return null;
       }).catchError((error) {
-        print("Login error: " + error.toString());
+        print("Login error: $error");
         show_error_alert(
           context: context,
           message: 'The password or email are invalid',

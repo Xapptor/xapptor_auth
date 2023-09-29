@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:xapptor_auth/face_id/face_recognition/convert_image_to_input_image.dart';
 import 'package:xapptor_logic/get_temporary_file_from_local.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -45,18 +44,15 @@ Future<bool> compare_faces_with_local_service({
 
   bool face_match = false;
 
-  if (source_faces.length > 0) {
-    source_face_offset_distances =
-        get_face_offset_distances(face: source_faces.first);
+  if (source_faces.isNotEmpty) {
+    source_face_offset_distances = get_face_offset_distances(face: source_faces.first);
   }
 
-  if (target_faces.length > 0) {
-    target_face_offset_distances =
-        get_face_offset_distances(face: target_faces.first);
+  if (target_faces.isNotEmpty) {
+    target_face_offset_distances = get_face_offset_distances(face: target_faces.first);
   }
 
-  if (source_face_offset_distances.isNotEmpty &&
-      target_face_offset_distances.isNotEmpty) {
+  if (source_face_offset_distances.isNotEmpty && target_face_offset_distances.isNotEmpty) {
     face_match = validate_face_id(
       offset_distances_source: source_face_offset_distances,
       offset_distances_target: target_face_offset_distances,
@@ -80,17 +76,17 @@ List<int> get_face_offset_distances({
   FaceLandmark? right_mouth = face.landmarks[FaceLandmarkType.rightMouth];
   FaceLandmark? bottom_mouth = face.landmarks[FaceLandmarkType.bottomMouth];
 
-  Point<int> left_eye_position = left_eye?.position ?? Point(0, 0);
-  Point<int> right_eye_position = right_eye?.position ?? Point(0, 0);
+  Point<int> left_eye_position = left_eye?.position ?? const Point(0, 0);
+  Point<int> right_eye_position = right_eye?.position ?? const Point(0, 0);
 
-  Point<int> nose_base_position = nose_base?.position ?? Point(0, 0);
+  Point<int> nose_base_position = nose_base?.position ?? const Point(0, 0);
 
-  Point<int> left_cheek_position = left_cheek?.position ?? Point(0, 0);
-  Point<int> right_cheek_position = right_cheek?.position ?? Point(0, 0);
+  Point<int> left_cheek_position = left_cheek?.position ?? const Point(0, 0);
+  Point<int> right_cheek_position = right_cheek?.position ?? const Point(0, 0);
 
-  Point<int> left_mouth_position = left_mouth?.position ?? Point(0, 0);
-  Point<int> right_mouth_position = right_mouth?.position ?? Point(0, 0);
-  Point<int> bottom_mouth_position = bottom_mouth?.position ?? Point(0, 0);
+  Point<int> left_mouth_position = left_mouth?.position ?? const Point(0, 0);
+  Point<int> right_mouth_position = right_mouth?.position ?? const Point(0, 0);
+  Point<int> bottom_mouth_position = bottom_mouth?.position ?? const Point(0, 0);
 
   List<Point> offset_list_1 = [
     left_eye_position,
@@ -121,17 +117,13 @@ List<int> get_face_offset_distances({
     left_mouth_position,
   ];
 
-  List<int> offset_distances_1 =
-      get_offset_distances(offset_list: offset_list_1);
+  List<int> offset_distances_1 = get_offset_distances(offset_list: offset_list_1);
 
-  List<int> offset_distances_2 =
-      get_offset_distances(offset_list: offset_list_2);
+  List<int> offset_distances_2 = get_offset_distances(offset_list: offset_list_2);
 
-  List<int> offset_distances_3 =
-      get_offset_distances(offset_list: offset_list_3);
+  List<int> offset_distances_3 = get_offset_distances(offset_list: offset_list_3);
 
-  List<int> offset_distances =
-      offset_distances_1 + offset_distances_2 + offset_distances_3;
+  List<int> offset_distances = offset_distances_1 + offset_distances_2 + offset_distances_3;
 
   return offset_distances;
 }
@@ -141,8 +133,7 @@ List<int> get_offset_distances({
 }) {
   List<int> offset_distances = [];
   for (var i = 0; i < offset_list.length; i += 2) {
-    offset_distances
-        .add((offset_list[i].distanceTo(offset_list[i + 1]).round()));
+    offset_distances.add((offset_list[i].distanceTo(offset_list[i + 1]).round()));
   }
   return offset_distances;
 }
@@ -154,15 +145,13 @@ bool validate_face_id({
   List<bool> similarity_list = [];
 
   for (var i = 0; i < offset_distances_source.length; i++) {
-    similarity_list.add(
-        (offset_distances_source[i] - offset_distances_target[i]).abs() < 25);
+    similarity_list.add((offset_distances_source[i] - offset_distances_target[i]).abs() < 25);
   }
 
   double valid_face_percentage =
-      (100 * similarity_list.where((item) => item == true).length) /
-          offset_distances_source.length;
+      (100 * similarity_list.where((item) => item == true).length) / offset_distances_source.length;
 
-  print("Similarity: " + valid_face_percentage.toString());
+  print("Similarity: $valid_face_percentage");
   bool valid_face = valid_face_percentage == 100;
   return valid_face;
 }

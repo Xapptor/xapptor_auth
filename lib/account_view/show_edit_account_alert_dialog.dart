@@ -14,10 +14,10 @@ extension ShowEditAccountAlertDialog on AccountViewState {
       useRootNavigator: false,
       builder: (BuildContext dialog_context) {
         return AlertDialog(
-          title: Text("Do you want to save the changes?"),
+          title: const Text("Do you want to save the changes?"),
           actions: <Widget>[
             TextButton(
-              child: Text("Discard"),
+              child: const Text("Discard"),
               onPressed: () {
                 Navigator.of(context).pop();
                 editing_email = false;
@@ -26,13 +26,13 @@ extension ShowEditAccountAlertDialog on AccountViewState {
               },
             ),
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("Accept"),
+              child: const Text("Accept"),
               onPressed: () {
                 if (editing_email ||
                     editing_password ||

@@ -23,14 +23,6 @@ extension UserIDButton on AccountViewState {
                   context: context,
                 );
               },
-              child: Text(
-                "User ID: ${user.uid}",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                ),
-              ),
               style: ButtonStyle(
                 foregroundColor: MaterialStateProperty.all<Color>(
                   Colors.grey.withOpacity(0.3),
@@ -43,10 +35,18 @@ extension UserIDButton on AccountViewState {
                   ),
                 ),
               ),
+              child: Text(
+                "User ID: ${user.uid}",
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
+              ),
             ),
           ),
         ),
-        Spacer(flex: 1),
+        const Spacer(flex: 1),
       ],
     );
   }

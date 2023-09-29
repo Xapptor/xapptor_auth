@@ -56,10 +56,10 @@ delete_account({
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: text_list[email_linked ? 4 : 5],
-                      labelStyle: TextStyle(
+                      labelStyle: const TextStyle(
                         color: Colors.grey,
                       ),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         color: Colors.grey,
                       ),
                     ),
@@ -87,7 +87,7 @@ delete_account({
               },
               child: Text(
                 text_list[text_list.length - 3],
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),

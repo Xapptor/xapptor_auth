@@ -40,10 +40,10 @@ Future<bool> compare_faces_with_remote_service({
 
   List<dynamic> face_matches = response_body["FaceMatches"] as List<dynamic>;
 
-  if (face_matches.length > 0) {
+  if (face_matches.isNotEmpty) {
     similarity = face_matches[0]["Similarity"];
     face_match = similarity > 98;
   }
-  print("Similarity: " + similarity.toString());
+  print("Similarity: $similarity");
   return face_match;
 }

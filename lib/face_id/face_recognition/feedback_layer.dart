@@ -3,7 +3,7 @@ import 'package:xapptor_ui/values/ui.dart';
 import 'get_random_demo_face_path.dart';
 
 class FeedbackLayer extends StatefulWidget {
-  FeedbackLayer({
+  FeedbackLayer({super.key, 
     required this.main_color,
     required this.texts,
     required this.on_main_button_pressed,
@@ -120,7 +120,7 @@ class _FeedbackLayerState extends State<FeedbackLayer> {
               ),
             ),
           ),
-          Spacer(flex: 1),
+          const Spacer(flex: 1),
           Expanded(
             flex: 2,
             child: ElevatedButton(
@@ -146,14 +146,14 @@ class _FeedbackLayerState extends State<FeedbackLayer> {
               ),
               child: Text(
                 widget.texts[2],
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                 ),
               ),
             ),
           ),
-          Spacer(flex: 2),
+          const Spacer(flex: 2),
         ],
       ),
     );
@@ -161,7 +161,7 @@ class _FeedbackLayerState extends State<FeedbackLayer> {
 }
 
 class SelfieExample extends StatelessWidget {
-  const SelfieExample({
+  const SelfieExample({super.key, 
     required this.demo_face_path,
     required this.description_text,
     required this.main_color,

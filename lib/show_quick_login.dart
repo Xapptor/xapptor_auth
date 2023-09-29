@@ -32,7 +32,7 @@ show_quick_login({
           width: screen_width * (portrait ? 1 : 0.3),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.6),
-            borderRadius: BorderRadius.all(
+            borderRadius: const BorderRadius.all(
               Radius.circular(10),
             ),
           ),

@@ -39,7 +39,7 @@ class LoginAndRestoreView extends StatefulWidget {
   AvailableLoginProviders available_login_providers;
   Function? quick_login_callback;
 
-  LoginAndRestoreView({
+  LoginAndRestoreView({super.key, 
     required this.auth_form_type,
     required this.text_list,
     required this.first_button_action,
@@ -116,13 +116,15 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
       print(error);
       return null;
     }
+    return null;
   }
 
   @override
   void initState() {
     source_language_index = widget.source_language_index;
-    if (widget.available_login_providers == AvailableLoginProviders.phone)
+    if (widget.available_login_providers == AvailableLoginProviders.phone) {
       use_email_signin = false;
+    }
 
     super.initState();
     init_state();

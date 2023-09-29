@@ -26,7 +26,7 @@ extension UpdateUserPassword on AuthFormFunctions {
         user.updatePassword(password_input_controller.text).then((_) {
           show_user_info_saved_message(context);
         }).catchError((error) {
-          print("Password can't be changed " + error.toString());
+          print("Password can't be changed $error");
         });
       } else {
         show_neutral_alert(

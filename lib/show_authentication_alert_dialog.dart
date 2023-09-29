@@ -86,13 +86,13 @@ show_authentication_alert_dialog({
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("Accept"),
+              child: const Text("Accept"),
               onPressed: () async {
                 if (phone_number_auth) {
                   await auth_form_functions.login_phone_number(
@@ -122,7 +122,7 @@ show_authentication_alert_dialog({
                     callback();
                   }).catchError((onError) {
                     print(onError);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("The password is invalid"),
                       duration: Duration(milliseconds: 1500),
                     ));

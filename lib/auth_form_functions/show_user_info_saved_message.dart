@@ -8,7 +8,7 @@ extension ShowUserInfoSavedMessage on AuthFormFunctions {
     show_success_alert(
       context: context,
       message: 'User info saved successfully',
-      delay: Duration(seconds: 1),
+      delay: const Duration(seconds: 1),
     );
   }
 }

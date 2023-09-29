@@ -8,6 +8,6 @@ String get_random_demo_face_path() {
       FaceGenderExt.get_random_face_gender().name.toLowerCase();
 
   String demo_face_path =
-      "assets/images/face_demos/${random_face_ethnicity}/${random_face_gender}.jpg";
+      "assets/images/face_demos/$random_face_ethnicity/$random_face_gender.jpg";
   return demo_face_path;
 }

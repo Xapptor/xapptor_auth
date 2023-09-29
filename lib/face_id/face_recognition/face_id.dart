@@ -24,7 +24,7 @@ enum FaceIDProcess {
 }
 
 class FaceID extends StatefulWidget {
-  const FaceID({
+  const FaceID({super.key, 
     required this.face_id_process,
     this.front_camera = true,
     required this.main_color,
@@ -54,7 +54,7 @@ class FaceID extends StatefulWidget {
 
 class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
   late List<CameraDescription> cameras;
-  CameraController? camera_controller = null;
+  CameraController? camera_controller;
 
   final face_detector = FaceDetector(
     options: FaceDetectorOptions(
@@ -135,7 +135,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
   init_animation() async {
     animation_controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1400),
+      duration: const Duration(milliseconds: 1400),
     );
 
     Animation<double> animation_curve = CurvedAnimation(
@@ -164,7 +164,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
 
       init_timer();
 
-      if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS)
+      if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS) {
         camera_controller!.startImageStream((CameraImage camera_image) async {
           InputImage input_image = convert_camera_image_to_input_image(
             image: camera_image,
@@ -172,6 +172,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
           );
           process_image(input_image);
         });
+      }
     });
   }
 
@@ -191,7 +192,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
 
     final faces = await face_detector.processImage(input_image);
 
-    if (faces.length > 0) {
+    if (faces.isNotEmpty) {
       Face first_face = faces.first;
 
       if (liveness_test_passed) {
@@ -222,8 +223,9 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                   analize_for_face_changes(right_eye_open_probability_list);
 
               if (left_eye_open_probability_test_passed &&
-                  right_eye_open_probability_test_passed)
+                  right_eye_open_probability_test_passed) {
                 liveness_test_passed = true;
+              }
             });
       }
 
@@ -276,10 +278,10 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
       show_loader = false;
       show_comparison_result = true;
       setState(() {});
-      Timer(Duration(milliseconds: 300), () {
+      Timer(const Duration(milliseconds: 300), () {
         comparison_result_animate = true;
         setState(() {});
-        Timer(Duration(milliseconds: 3500), () {
+        Timer(const Duration(milliseconds: 3500), () {
           Navigator.pop(context);
         });
       });
@@ -289,7 +291,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
   face_id_process() async {
     await camera_controller!.stopImageStream();
 
-    Timer(Duration(milliseconds: 500), () {
+    Timer(const Duration(milliseconds: 500), () {
       camera_controller!.takePicture().then((file) async {
         User current_user = FirebaseAuth.instance.currentUser!;
         Uint8List source_bytes = await file.readAsBytes();
@@ -391,7 +393,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
               color: Colors.white,
               child: Column(
                 children: [
-                  Spacer(flex: 1),
+                  const Spacer(flex: 1),
                   Expanded(
                     flex: 26,
                     child: FractionallySizedBox(
@@ -415,7 +417,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                                     Container(
                                       height: screen_width / 7,
                                       width: screen_width / 7,
-                                      margin: EdgeInsets.only(bottom: 20),
+                                      margin: const EdgeInsets.only(bottom: 20),
                                       child: CircularProgressIndicator(
                                         color: widget.main_color,
                                         strokeWidth: screen_width / 60,
@@ -439,7 +441,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                                     widthFactor: 0.2,
                                     child: AnimatedContainer(
                                       curve: Curves.easeInOutCubicEmphasized,
-                                      duration: Duration(milliseconds: 900),
+                                      duration: const Duration(milliseconds: 900),
                                       decoration: BoxDecoration(
                                         color: widget.main_color.withOpacity(
                                             comparison_result_animate ? 1 : 0),
@@ -470,7 +472,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                                               ),
                                       ),
                                       CustomPaint(
-                                        size: Size(
+                                        size: const Size(
                                           double.infinity,
                                           double.infinity,
                                         ),
@@ -517,7 +519,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                                               ),
                                               child: Text(
                                                 frame_toast_text,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 28,
                                                   color: Colors.white,
                                                 ),
@@ -529,7 +531,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  Spacer(flex: 1),
+                  const Spacer(flex: 1),
                   Expanded(
                     flex: 3,
                     child: Container(
@@ -545,7 +547,7 @@ class _FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  Spacer(flex: 1),
+                  const Spacer(flex: 1),
                 ],
               ),
             ),

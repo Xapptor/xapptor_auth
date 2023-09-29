@@ -10,18 +10,18 @@ import 'package:xapptor_ui/values/ui.dart';
 extension PasswordFormSection on LoginAndRestoreViewState {
   Widget password_form_section() {
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: 300),
-      reverseDuration: Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 300),
+      reverseDuration: const Duration(milliseconds: 200),
       child: (!is_login(widget.auth_form_type) &&
                   !is_quick_login(widget.auth_form_type)) ||
               (widget.phone_signin_text_list != null &&
                   !use_email_signin &&
                   !verification_code_sent.value)
           ? Container(
-              key: ValueKey<int>(1),
+              key: const ValueKey<int>(1),
             )
           : Container(
-              key: ValueKey<int>(0),
+              key: const ValueKey<int>(0),
               child: Column(
                 children: [
                   SizedBox(
@@ -97,14 +97,14 @@ extension PasswordFormSection on LoginAndRestoreViewState {
                           child: Row(
                             children: <Widget>[
                               Container(
+                                margin: const EdgeInsets.only(
+                                  right: 10,
+                                ),
                                 child: Icon(
                                   remember_me
                                       ? Icons.check_box
                                       : Icons.check_box_outline_blank,
                                   color: widget.text_color,
-                                ),
-                                margin: EdgeInsets.only(
-                                  right: 10,
                                 ),
                               ),
                               Text(

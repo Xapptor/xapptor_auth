@@ -54,8 +54,8 @@ extension QuickLoginWidgets on LoginAndRestoreViewState {
                         Container(
                           height: 38,
                           width: 38,
-                          margin: EdgeInsets.only(right: 5),
-                          padding: EdgeInsets.all(3),
+                          margin: const EdgeInsets.only(right: 5),
+                          padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
                             color: use_email_signin
                                 ? widget.text_color
@@ -83,8 +83,8 @@ extension QuickLoginWidgets on LoginAndRestoreViewState {
                         Container(
                           height: 38,
                           width: 38,
-                          margin: EdgeInsets.only(right: 5),
-                          padding: EdgeInsets.all(3),
+                          margin: const EdgeInsets.only(right: 5),
+                          padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
                             color: !use_email_signin
                                 ? widget.text_color

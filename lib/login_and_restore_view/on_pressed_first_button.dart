@@ -28,9 +28,7 @@ extension OnPressedFirstButton on LoginAndRestoreViewState {
           );
         } else {
           TextEditingController phone_input_controller = TextEditingController(
-            text: current_phone_code.value.dial_code +
-                ' ' +
-                email_input_controller.text,
+            text: '${current_phone_code.value.dial_code} ${email_input_controller.text}',
           );
 
           List<TextEditingController> input_controllers = [
