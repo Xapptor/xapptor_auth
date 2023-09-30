@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,11 +32,6 @@ extension Login on AuthFormFunctions {
         password: password_input_controller.text,
       )
           .then((UserCredential value) async {
-        User user = value.user!;
-        String uid = user.uid;
-
-        DocumentSnapshot snapshot_user = await FirebaseFirestore.instance.collection("users").doc(uid).get();
-
         if (verify_email) {
           if (value.user!.emailVerified) {
             if (remember_me) prefs.setString("email", value.user!.email!);

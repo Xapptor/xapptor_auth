@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'dart:math';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 check_face_framing({
@@ -15,8 +15,8 @@ check_face_framing({
     int min_face_distance_2 = 800;
     int max_face_distance_2 = 1000;
 
-    int nose_min_x = 300;
-    int nose_max_x = 400;
+    // int nose_min_x = 300;
+    // int nose_max_x = 400;
 
     int nose_min_y_1 = 620;
     int nose_max_y_1 = 720;
@@ -36,28 +36,21 @@ check_face_framing({
     Point right_cheek_position = right_cheek?.position ?? const Point(0, 0);
     Point bottom_mouth_position = bottom_mouth?.position ?? const Point(0, 0);
 
-    double distance_between_cheeks =
-        (right_cheek_position.x - left_cheek_position.x).abs().toDouble();
+    double distance_between_cheeks = (right_cheek_position.x - left_cheek_position.x).abs().toDouble();
 
-    double distance_between_mouth_and_eye =
-        (bottom_mouth_position.y - left_eye_position.y).abs().toDouble();
+    double distance_between_mouth_and_eye = (bottom_mouth_position.y - left_eye_position.y).abs().toDouble();
 
-    double face_distance =
-        (distance_between_cheeks + distance_between_mouth_and_eye).abs();
+    double face_distance = (distance_between_cheeks + distance_between_mouth_and_eye).abs();
 
-    bool face_distance_result_1 = face_distance >= min_face_distance_1 &&
-        face_distance <= max_face_distance_1;
+    bool face_distance_result_1 = face_distance >= min_face_distance_1 && face_distance <= max_face_distance_1;
 
-    bool face_distance_result_2 = face_distance >= min_face_distance_2 &&
-        face_distance <= max_face_distance_2;
+    bool face_distance_result_2 = face_distance >= min_face_distance_2 && face_distance <= max_face_distance_2;
 
     update_face_distance_result_2(face_distance_result_2);
 
-    bool nose_base_y_position_result_1 = nose_base_position.y >= nose_min_y_1 &&
-        nose_base_position.y <= nose_max_y_1;
+    bool nose_base_y_position_result_1 = nose_base_position.y >= nose_min_y_1 && nose_base_position.y <= nose_max_y_1;
 
-    bool nose_base_y_position_result_2 = nose_base_position.y >= nose_min_y_2 &&
-        nose_base_position.y <= nose_max_y_2;
+    bool nose_base_y_position_result_2 = nose_base_position.y >= nose_min_y_2 && nose_base_position.y <= nose_max_y_2;
 
     if (!pass_first_face_detection) {
       if (face_distance_result_1 && nose_base_y_position_result_1) {
@@ -88,9 +81,7 @@ check_face_framing({
           update_framing_values(
             false,
             false,
-            face_distance < min_face_distance_2
-                ? "Move Closer"
-                : "Frame Your Face",
+            face_distance < min_face_distance_2 ? "Move Closer" : "Frame Your Face",
             true,
           );
         }

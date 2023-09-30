@@ -51,8 +51,6 @@ class _FeedbackLayerState extends State<FeedbackLayer> {
 
   @override
   Widget build(BuildContext context) {
-    double screen_height = MediaQuery.of(context).size.height;
-    double screen_width = MediaQuery.of(context).size.width;
     int middle_space_flex = 22;
 
     return Container(
