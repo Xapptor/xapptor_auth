@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/account_view/fill_fields.dart';
@@ -10,9 +12,7 @@ import 'package:xapptor_ui/values/ui.dart';
 
 extension PasswordFormSection on AccountViewState {
   Widget password_form_section(bool email_linked) {
-    return is_edit_account(widget.auth_form_type) &&
-            !email_linked &&
-            !linking_email
+    return is_edit_account(widget.auth_form_type) && !email_linked && !linking_email
         ? Container()
         : Container(
             margin: EdgeInsets.only(bottom: sized_box_space),
@@ -41,12 +41,9 @@ extension PasswordFormSection on AccountViewState {
                         on_pressed_first_button();
                       },
                       style: TextStyle(color: widget.text_color),
-                      enabled: is_edit_account(widget.auth_form_type)
-                          ? editing_password
-                          : true,
+                      enabled: is_edit_account(widget.auth_form_type) ? editing_password : true,
                       decoration: InputDecoration(
-                        labelText:
-                            widget.text_list.get(source_language_index)[2],
+                        labelText: widget.text_list.get(source_language_index)[2],
                         labelStyle: TextStyle(
                           color: widget.text_color,
                         ),
@@ -57,9 +54,7 @@ extension PasswordFormSection on AccountViewState {
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            password_visible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                            password_visible ? Icons.visibility : Icons.visibility_off,
                             color: widget.text_color,
                           ),
                           onPressed: () {
@@ -83,12 +78,9 @@ extension PasswordFormSection on AccountViewState {
                       style: TextStyle(
                         color: widget.text_color,
                       ),
-                      enabled: is_edit_account(widget.auth_form_type)
-                          ? editing_password
-                          : true,
+                      enabled: is_edit_account(widget.auth_form_type) ? editing_password : true,
                       decoration: InputDecoration(
-                        labelText:
-                            widget.text_list.get(source_language_index)[3],
+                        labelText: widget.text_list.get(source_language_index)[3],
                         labelStyle: TextStyle(
                           color: widget.text_color,
                         ),

@@ -36,8 +36,7 @@ extension Login on AuthFormFunctions {
         User user = value.user!;
         String uid = user.uid;
 
-        DocumentSnapshot snapshot_user =
-            await FirebaseFirestore.instance.collection("users").doc(uid).get();
+        DocumentSnapshot snapshot_user = await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
         if (verify_email) {
           if (value.user!.emailVerified) {
@@ -60,7 +59,7 @@ extension Login on AuthFormFunctions {
 
         return null;
       }).catchError((error) {
-        print("Login error: $error");
+        debugPrint("Login error: $error");
         show_error_alert(
           context: context,
           message: 'The password or email are invalid',

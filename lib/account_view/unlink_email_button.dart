@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
@@ -10,9 +12,7 @@ import 'package:xapptor_ui/values/ui.dart';
 
 extension UnlinkEmailButton on AccountViewState {
   Widget unlink_email_button(bool email_linked, List<UserInfo> user_providers) {
-    return is_edit_account(widget.auth_form_type) &&
-            email_linked &&
-            user_providers.length > 1
+    return is_edit_account(widget.auth_form_type) && email_linked && user_providers.length > 1
         ? Container(
             margin: EdgeInsets.only(bottom: sized_box_space),
             child: form_section_container(
@@ -27,16 +27,14 @@ extension UnlinkEmailButton on AccountViewState {
                     text_list: widget.text_list.get(source_language_index),
                     auth_provider_name: 'email',
                     callback: () async {
-                      await FirebaseAuth.instance.currentUser
-                          ?.unlink(EmailAuthProvider.PROVIDER_ID)
-                          .then((value) {
+                      await FirebaseAuth.instance.currentUser?.unlink(EmailAuthProvider.PROVIDER_ID).then((value) {
                         setState(() {});
                         show_success_alert(
                           context: context,
                           message: 'Email unlink success',
                         );
                       }).onError((error, stackTrace) {
-                        print(error);
+                        debugPrint(error.toString());
                         show_error_alert(
                           context: context,
                           message: 'Email unlink error',

@@ -12,18 +12,16 @@ extension RestorePassword on AuthFormFunctions {
   }) async {
     if (form_key.currentState!.validate()) {
       try {
-        await FirebaseAuth.instance
-            .sendPasswordResetEmail(email: email_input_controller.text)
-            .then((value) {
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email_input_controller.text).then((value) {
           show_success_alert(
             context: context,
             message: 'Restore password email sent successfully',
           );
           open_screen("login");
         });
-      } catch (e) {
-        print("An error occured while trying to send password reset email");
-        print(e);
+      } catch (error) {
+        debugPrint("An error occured while trying to send password reset email");
+        debugPrint(error.toString());
       }
     }
   }

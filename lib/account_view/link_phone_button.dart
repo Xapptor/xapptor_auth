@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
@@ -26,8 +28,7 @@ extension LinkPhoneButton on AccountViewState {
                     onPressed: () {
                       show_quick_login(
                         context: context,
-                        available_login_providers:
-                            AvailableLoginProviders.phone,
+                        available_login_providers: AvailableLoginProviders.phone,
                         message: 'Link Phone',
                         callback: () {
                           phone_linked = true;

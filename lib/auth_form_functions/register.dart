@@ -22,16 +22,13 @@ extension Register on AuthFormFunctions {
     TextEditingController email_input_controller = input_controllers[2];
     TextEditingController confirm_email_input_controller = input_controllers[3];
     TextEditingController password_input_controller = input_controllers[4];
-    TextEditingController confirm_password_input_controller =
-        input_controllers[5];
+    TextEditingController confirm_password_input_controller = input_controllers[5];
 
     if (accept_terms) {
       if (birthday_label != "") {
         if (register_form_key.currentState!.validate()) {
-          if (email_input_controller.text ==
-              confirm_email_input_controller.text) {
-            if (password_input_controller.text ==
-                confirm_password_input_controller.text) {
+          if (email_input_controller.text == confirm_email_input_controller.text) {
+            if (password_input_controller.text == confirm_password_input_controller.text) {
               FirebaseAuth.instance
                   .createUserWithEmailAndPassword(
                 email: email_input_controller.text,
@@ -43,8 +40,7 @@ extension Register on AuthFormFunctions {
                   password: password_input_controller.text,
                 );
 
-                Timestamp birthday_timestamp =
-                    Timestamp.fromDate(selected_date);
+                Timestamp birthday_timestamp = Timestamp.fromDate(selected_date);
 
                 XapptorUser xapptor_user = XapptorUser(
                   id: current_user.user!.uid,
@@ -73,16 +69,15 @@ extension Register on AuthFormFunctions {
 
                   open_screen("login");
                 }).catchError((err) {
-                  print(err);
+                  debugPrint(err);
                 });
 
                 try {
                   await current_user.user!.sendEmailVerification();
                   return current_user.user!.uid;
-                } catch (e) {
-                  print(
-                      "An error occured while trying to send email verification");
-                  print(e);
+                } catch (error) {
+                  debugPrint("An error occured while trying to send email verification");
+                  debugPrint(error.toString());
                 }
                 return current_user;
               }).onError((error, stackTrace) {

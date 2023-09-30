@@ -18,10 +18,10 @@ class AuthContainer extends StatefulWidget {
   final bool has_back_button;
   final AuthFormType user_info_form_type;
   final List<TranslationStream> translation_stream_list;
-  final Function({required int new_source_language_index})
-      update_source_language;
+  final Function({required int new_source_language_index}) update_source_language;
 
-  const AuthContainer({super.key, 
+  const AuthContainer({
+    super.key,
     required this.child,
     required this.text_color,
     required this.topbar_color,
@@ -34,7 +34,7 @@ class AuthContainer extends StatefulWidget {
   });
 
   @override
-  _AuthContainerState createState() => _AuthContainerState();
+  State<AuthContainer> createState() => _AuthContainerState();
 }
 
 class _AuthContainerState extends State<AuthContainer> {
@@ -105,9 +105,7 @@ class _AuthContainerState extends State<AuthContainer> {
                                     ),
                                 PointerInterceptor(
                                   child: Container(
-                                    color: widget.custom_background != null
-                                        ? Colors.transparent
-                                        : Colors.white,
+                                    color: widget.custom_background != null ? Colors.transparent : Colors.white,
                                     child: FractionallySizedBox(
                                       widthFactor: portrait ? 0.9 : 0.3,
                                       child: widget.child,

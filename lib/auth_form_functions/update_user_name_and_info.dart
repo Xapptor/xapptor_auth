@@ -30,7 +30,7 @@ extension UpdateUserNameAndInfo on AuthFormFunctions {
       }).then((result) {
         show_user_info_saved_message(context);
       }).catchError((err) {
-        print(err);
+        debugPrint(err);
       });
     }
   }

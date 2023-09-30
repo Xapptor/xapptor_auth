@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
@@ -12,11 +14,8 @@ extension PasswordFormSection on LoginAndRestoreViewState {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       reverseDuration: const Duration(milliseconds: 200),
-      child: (!is_login(widget.auth_form_type) &&
-                  !is_quick_login(widget.auth_form_type)) ||
-              (widget.phone_signin_text_list != null &&
-                  !use_email_signin &&
-                  !verification_code_sent.value)
+      child: (!is_login(widget.auth_form_type) && !is_quick_login(widget.auth_form_type)) ||
+              (widget.phone_signin_text_list != null && !use_email_signin && !verification_code_sent.value)
           ? Container(
               key: const ValueKey<int>(1),
             )
@@ -39,12 +38,9 @@ extension PasswordFormSection on LoginAndRestoreViewState {
                           },
                           style: TextStyle(color: widget.text_color),
                           decoration: InputDecoration(
-                            labelText: widget.phone_signin_text_list != null &&
-                                    !use_email_signin
-                                ? widget.phone_signin_text_list!
-                                    .get(source_language_index)[1]
-                                : widget.text_list
-                                    .get(source_language_index)[1],
+                            labelText: widget.phone_signin_text_list != null && !use_email_signin
+                                ? widget.phone_signin_text_list!.get(source_language_index)[1]
+                                : widget.text_list.get(source_language_index)[1],
                             labelStyle: TextStyle(
                               color: widget.text_color,
                             ),
@@ -56,9 +52,7 @@ extension PasswordFormSection on LoginAndRestoreViewState {
                             suffixIcon: use_email_signin
                                 ? IconButton(
                                     icon: Icon(
-                                      password_visible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
+                                      password_visible ? Icons.visibility : Icons.visibility_off,
                                       color: widget.text_color,
                                     ),
                                     onPressed: () {
@@ -72,14 +66,11 @@ extension PasswordFormSection on LoginAndRestoreViewState {
                           controller: password_input_controller,
                           validator: (value) => FormFieldValidators(
                             value: value!,
-                            type: use_email_signin
-                                ? FormFieldValidatorsType.password
-                                : FormFieldValidatorsType.sms_code,
+                            type:
+                                use_email_signin ? FormFieldValidatorsType.password : FormFieldValidatorsType.sms_code,
                           ).validate(),
                           obscureText: use_email_signin && !password_visible,
-                          keyboardType: use_email_signin
-                              ? TextInputType.text
-                              : TextInputType.number,
+                          keyboardType: use_email_signin ? TextInputType.text : TextInputType.number,
                           inputFormatters: use_email_signin
                               ? null
                               : <TextInputFormatter>[
@@ -101,9 +92,7 @@ extension PasswordFormSection on LoginAndRestoreViewState {
                                   right: 10,
                                 ),
                                 child: Icon(
-                                  remember_me
-                                      ? Icons.check_box
-                                      : Icons.check_box_outline_blank,
+                                  remember_me ? Icons.check_box : Icons.check_box_outline_blank,
                                   color: widget.text_color,
                                 ),
                               ),

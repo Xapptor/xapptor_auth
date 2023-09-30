@@ -1,9 +1,12 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'get_random_demo_face_path.dart';
 
 class FeedbackLayer extends StatefulWidget {
-  FeedbackLayer({super.key, 
+  FeedbackLayer({
+    super.key,
     required this.main_color,
     required this.texts,
     required this.on_main_button_pressed,
@@ -24,7 +27,7 @@ class FeedbackLayer extends StatefulWidget {
   String demo_face_path_2;
 
   @override
-  _FeedbackLayerState createState() => _FeedbackLayerState();
+  State<FeedbackLayer> createState() => _FeedbackLayerState();
 }
 
 class _FeedbackLayerState extends State<FeedbackLayer> {
@@ -85,27 +88,25 @@ class _FeedbackLayerState extends State<FeedbackLayer> {
               ? Spacer(flex: middle_space_flex)
               : Expanded(
                   flex: middle_space_flex,
-                  child: Container(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: SelfieExample(
-                            demo_face_path: widget.demo_face_path_1,
-                            description_text: widget.texts[3],
-                            main_color: widget.main_color,
-                          ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: SelfieExample(
+                          demo_face_path: widget.demo_face_path_1,
+                          description_text: widget.texts[3],
+                          main_color: widget.main_color,
                         ),
-                        Expanded(
-                          flex: 1,
-                          child: SelfieExample(
-                            demo_face_path: widget.demo_face_path_2,
-                            description_text: widget.texts[4],
-                            main_color: widget.main_color,
-                          ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: SelfieExample(
+                          demo_face_path: widget.demo_face_path_2,
+                          description_text: widget.texts[4],
+                          main_color: widget.main_color,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
           Expanded(
@@ -161,7 +162,8 @@ class _FeedbackLayerState extends State<FeedbackLayer> {
 }
 
 class SelfieExample extends StatelessWidget {
-  const SelfieExample({super.key, 
+  const SelfieExample({
+    super.key,
     required this.demo_face_path,
     required this.description_text,
     required this.main_color,

@@ -48,11 +48,8 @@ extension LoginPhoneNumber on AuthFormFunctions {
         smsCode: code_input_controller.text,
       );
 
-      if (FirebaseAuth.instance.currentUser != null &&
-          FirebaseAuth.instance.currentUser?.phoneNumber == null) {
-        await FirebaseAuth.instance.currentUser
-            ?.linkWithCredential(credential)
-            .then((value) {
+      if (FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser?.phoneNumber == null) {
+        await FirebaseAuth.instance.currentUser?.linkWithCredential(credential).then((value) {
           Navigator.pop(context);
           show_success_alert(
             context: context,
@@ -60,7 +57,7 @@ extension LoginPhoneNumber on AuthFormFunctions {
           );
           if (callback != null) callback();
         }).onError((error, stackTrace) {
-          print(error.toString());
+          debugPrint(error.toString());
 
           if (error.toString().contains('requires recent authentication')) {
             show_quick_login(
@@ -76,9 +73,7 @@ extension LoginPhoneNumber on AuthFormFunctions {
         });
       } else {
         if (confirmation_result != null) {
-          await confirmation_result!
-              .confirm(code_input_controller.text)
-              .then((UserCredential user_credential) {
+          await confirmation_result!.confirm(code_input_controller.text).then((UserCredential user_credential) {
             complete_login_phone_number(
               user_credential: user_credential,
               phone_input_controller: phone_input_controller,
@@ -95,9 +90,7 @@ extension LoginPhoneNumber on AuthFormFunctions {
             );
           });
         } else {
-          await FirebaseAuth.instance
-              .signInWithCredential(credential)
-              .then((UserCredential user_credential) {
+          await FirebaseAuth.instance.signInWithCredential(credential).then((UserCredential user_credential) {
             complete_login_phone_number(
               user_credential: user_credential,
               phone_input_controller: phone_input_controller,
@@ -130,10 +123,7 @@ extension LoginPhoneNumber on AuthFormFunctions {
     XapptorUser xapptor_user = XapptorUser.empty();
     xapptor_user.id = user_credential.user!.uid;
 
-    var user = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(xapptor_user.id)
-        .get();
+    var user = await FirebaseFirestore.instance.collection('users').doc(xapptor_user.id).get();
     if (user.exists) {
       if (remember_me) {
         save_phone_prefs(
@@ -182,10 +172,8 @@ extension LoginPhoneNumber on AuthFormFunctions {
     required SharedPreferences prefs,
   }) {
     if (phone_input_controller.text.contains(' ')) {
-      prefs.setString(
-          "phone_number", phone_input_controller.text.split(' ').last);
-      prefs.setString(
-          "phone_code", phone_input_controller.text.split(' ').first);
+      prefs.setString("phone_number", phone_input_controller.text.split(' ').last);
+      prefs.setString("phone_code", phone_input_controller.text.split(' ').first);
     }
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
@@ -14,18 +16,14 @@ extension OnPressedFirstButton on AccountViewState {
     if (widget.first_button_action == null) {
       if (is_edit_account(widget.auth_form_type)) {
         if (linking_email) {
-          if (email_input_controller.text ==
-              confirm_email_input_controller.text) {
-            if (password_input_controller.text ==
-                confirm_password_input_controller.text) {
+          if (email_input_controller.text == confirm_email_input_controller.text) {
+            if (password_input_controller.text == confirm_password_input_controller.text) {
               final credential = EmailAuthProvider.credential(
                 email: email_input_controller.text,
                 password: password_input_controller.text,
               );
 
-              await FirebaseAuth.instance.currentUser
-                  ?.linkWithCredential(credential)
-                  .then((value) {
+              await FirebaseAuth.instance.currentUser?.linkWithCredential(credential).then((value) {
                 show_success_alert(
                   context: context,
                   message: 'Email linked successfully',
@@ -34,11 +32,9 @@ extension OnPressedFirstButton on AccountViewState {
                 editing_password = false;
                 setState(() {});
               }).onError((error, stackTrace) {
-                print(error.toString());
+                debugPrint(error.toString());
 
-                if (error
-                    .toString()
-                    .contains('requires recent authentication')) {
+                if (error.toString().contains('requires recent authentication')) {
                   show_quick_login(
                     context: context,
                     available_login_providers: AvailableLoginProviders.phone,
@@ -93,9 +89,7 @@ extension OnPressedFirstButton on AccountViewState {
           register_form_key: user_info_view_form_key,
           input_controllers: inputControllers,
           selected_date: selected_date,
-          gender_value: widget.gender_values
-              .get(source_language_index)
-              .indexOf(gender_value),
+          gender_value: widget.gender_values.get(source_language_index).indexOf(gender_value),
           country_value: country_value ?? "",
           birthday_label: birthday_label,
         );

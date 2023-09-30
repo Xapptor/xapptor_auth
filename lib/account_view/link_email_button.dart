@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
@@ -7,9 +9,7 @@ import 'package:xapptor_ui/values/ui.dart';
 
 extension LinkEmailButton on AccountViewState {
   Widget link_email_button(bool email_linked) {
-    return is_edit_account(widget.auth_form_type) &&
-            !email_linked &&
-            !linking_email
+    return is_edit_account(widget.auth_form_type) && !email_linked && !linking_email
         ? Container(
             margin: EdgeInsets.only(bottom: sized_box_space),
             child: form_section_container(

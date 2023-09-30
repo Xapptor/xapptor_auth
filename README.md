@@ -81,7 +81,7 @@ UserInfoView(
                     ),
                     recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                        launch("https://www.domain.com/#/privacy_policy");
+                        launchUrl("https://www.domain.com/#/privacy_policy");
                     },
                 ),
             ],

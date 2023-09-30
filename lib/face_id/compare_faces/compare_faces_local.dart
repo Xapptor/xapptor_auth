@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:xapptor_auth/face_id/face_recognition/convert_image_to_input_image.dart';
 import 'package:xapptor_logic/get_temporary_file_from_local.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -151,7 +151,7 @@ bool validate_face_id({
   double valid_face_percentage =
       (100 * similarity_list.where((item) => item == true).length) / offset_distances_source.length;
 
-  print("Similarity: $valid_face_percentage");
+  debugPrint("Similarity: $valid_face_percentage");
   bool valid_face = valid_face_percentage == 100;
   return valid_face;
 }
