@@ -19,7 +19,7 @@ InputImage convert_camera_image_to_input_image({
   for (Plane plane in image.planes) {
     all_bytes.putUint8List(plane.bytes);
   }
-  final bytes = all_bytes.done().buffer.asUint8List();
+  //final bytes = all_bytes.done().buffer.asUint8List();
 
   final Size image_size = Size(image.width.toDouble(), image.height.toDouble());
 
