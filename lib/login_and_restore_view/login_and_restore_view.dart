@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:async';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
@@ -40,6 +42,7 @@ class LoginAndRestoreView extends StatefulWidget {
   Function? quick_login_callback;
 
   LoginAndRestoreView({
+    super.key,
     required this.auth_form_type,
     required this.text_list,
     required this.first_button_action,
@@ -113,16 +116,18 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
         return google_signin_account;
       }
     } catch (error) {
-      print(error);
+      debugPrint(error.toString());
       return null;
     }
+    return null;
   }
 
   @override
   void initState() {
     source_language_index = widget.source_language_index;
-    if (widget.available_login_providers == AvailableLoginProviders.phone)
+    if (widget.available_login_providers == AvailableLoginProviders.phone) {
       use_email_signin = false;
+    }
 
     super.initState();
     init_state();
@@ -143,8 +148,7 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
     setState(() {});
   }
 
-  ValueNotifier<CountryPhoneCode> current_phone_code =
-      ValueNotifier(country_phone_code_list.first);
+  ValueNotifier<CountryPhoneCode> current_phone_code = ValueNotifier(country_phone_code_list.first);
 
   @override
   Widget build(BuildContext context) {

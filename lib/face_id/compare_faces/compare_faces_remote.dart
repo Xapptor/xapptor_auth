@@ -1,6 +1,6 @@
-import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
 // AWS Rekognition Compare Faces
 
@@ -40,10 +40,10 @@ Future<bool> compare_faces_with_remote_service({
 
   List<dynamic> face_matches = response_body["FaceMatches"] as List<dynamic>;
 
-  if (face_matches.length > 0) {
+  if (face_matches.isNotEmpty) {
     similarity = face_matches[0]["Similarity"];
     face_match = similarity > 98;
   }
-  print("Similarity: " + similarity.toString());
+  debugPrint("Similarity: $similarity");
   return face_match;
 }

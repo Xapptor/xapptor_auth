@@ -45,7 +45,7 @@ class AccountView extends StatefulWidget {
   final bool? edit_icon_use_text_field_background_color;
   final int source_language_index;
 
-  const AccountView({
+  const AccountView({super.key, 
     required this.text_list,
     required this.tc_and_pp_text,
     required this.first_button_action,
@@ -73,7 +73,7 @@ class AccountView extends StatefulWidget {
 }
 
 class AccountViewState extends State<AccountView> {
-  final GlobalKey<ScaffoldState> scaffold_key = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffold_key = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> user_info_view_form_key = GlobalKey<FormState>();
   final GlobalKey<FormState> email_form_key = GlobalKey<FormState>();
   final GlobalKey<FormState> password_form_key = GlobalKey<FormState>();

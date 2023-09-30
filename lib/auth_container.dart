@@ -18,10 +18,10 @@ class AuthContainer extends StatefulWidget {
   final bool has_back_button;
   final AuthFormType user_info_form_type;
   final List<TranslationStream> translation_stream_list;
-  final Function({required int new_source_language_index})
-      update_source_language;
+  final Function({required int new_source_language_index}) update_source_language;
 
   const AuthContainer({
+    super.key,
     required this.child,
     required this.text_color,
     required this.topbar_color,
@@ -34,12 +34,12 @@ class AuthContainer extends StatefulWidget {
   });
 
   @override
-  _AuthContainerState createState() => _AuthContainerState();
+  State<AuthContainer> createState() => _AuthContainerState();
 }
 
 class _AuthContainerState extends State<AuthContainer> {
   final GlobalKey<FormState> login_form_key = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> scaffold_key = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffold_key = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -64,7 +64,7 @@ class _AuthContainerState extends State<AuthContainer> {
             has_back_button: widget.has_back_button,
             actions: <Widget>[
               Container(
-                margin: EdgeInsets.only(right: 20),
+                margin: const EdgeInsets.only(right: 20),
                 width: 150,
                 child: widget.has_language_picker
                     ? LanguagePicker(
@@ -105,9 +105,7 @@ class _AuthContainerState extends State<AuthContainer> {
                                     ),
                                 PointerInterceptor(
                                   child: Container(
-                                    color: widget.custom_background != null
-                                        ? Colors.transparent
-                                        : Colors.white,
+                                    color: widget.custom_background != null ? Colors.transparent : Colors.white,
                                     child: FractionallySizedBox(
                                       widthFactor: portrait ? 0.9 : 0.3,
                                       child: widget.child,

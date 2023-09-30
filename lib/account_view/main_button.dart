@@ -10,7 +10,7 @@ extension MainButton on AccountViewState {
     double screen_width = MediaQuery.of(context).size.width;
     bool portrait = is_portrait(context);
 
-    return Container(
+    return SizedBox(
       height: 50,
       width: screen_width / (portrait ? 2 : 8),
       child: CustomCard(

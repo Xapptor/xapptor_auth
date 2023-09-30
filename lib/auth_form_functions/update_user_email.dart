@@ -23,14 +23,14 @@ extension UpdateUserEmail on AuthFormFunctions {
         user.updateEmail(email_input_controller.text).then((result) async {
           try {
             await user.sendEmailVerification();
-          } catch (e) {
-            print("An error occured while trying to send email verification");
-            print(e);
+          } catch (error) {
+            debugPrint("An error occured while trying to send email verification");
+            debugPrint(error.toString());
           }
 
           show_user_info_saved_message(context);
         }).catchError((err) {
-          print(err);
+          debugPrint(err);
         });
       } else {
         show_neutral_alert(

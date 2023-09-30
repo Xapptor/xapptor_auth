@@ -61,11 +61,7 @@ class XapptorUser {
       'country': country,
       'admin': admin,
       'owner': owner,
-      'roles': Map.fromIterable(
-        roles,
-        key: (e) => e.organization_id,
-        value: (e) => e.value,
-      ),
+      'roles': { for (var e in roles) e.organization_id : e.value },
     };
   }
 
@@ -85,16 +81,17 @@ class XapptorUser {
   }
 }
 
-Future<XapptorUser> get_xapptor_user() async {
-  User current_user = await FirebaseAuth.instance.currentUser!;
+Future<XapptorUser> get_xapptor_user({String? id}) async {
+  User current_user = FirebaseAuth.instance.currentUser!;
 
-  DocumentSnapshot user_snap = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(current_user.uid)
-      .get();
+  String user_id = id ?? current_user.uid;
+  String user_email = id == null ? current_user.email! : '';
+
+  DocumentSnapshot user_snap =
+      await FirebaseFirestore.instance.collection('users').doc(user_id).get();
   return XapptorUser.from_snapshot(
-    current_user.uid,
-    current_user.email!,
+    user_id,
+    user_email,
     user_snap.data() as Map<String, dynamic>,
   );
 }

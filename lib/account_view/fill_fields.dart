@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
@@ -13,11 +15,8 @@ extension FillFields on AccountViewState {
     password_input_controller.text = "Aa00000000";
     confirm_password_input_controller.text = "Aa00000000";
     birthday_label = birthday;
-    gender_value =
-        widget.gender_values.get(source_language_index)[gender_index];
-    country_value = widget.country_values != null
-        ? validate_picker_value(country, widget.country_values!)
-        : "";
+    gender_value = widget.gender_values.get(source_language_index)[gender_index];
+    country_value = widget.country_values != null ? validate_picker_value(country, widget.country_values!) : "";
     selected_date = date;
 
     password_visible = false;
@@ -31,10 +30,7 @@ extension FillFields on AccountViewState {
   fetch_fields() async {
     if (FirebaseAuth.instance.currentUser != null) {
       User auth_user = FirebaseAuth.instance.currentUser!;
-      DocumentSnapshot user = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(auth_user.uid)
-          .get();
+      DocumentSnapshot user = await FirebaseFirestore.instance.collection("users").doc(auth_user.uid).get();
 
       Map user_data = user.data() as Map;
 

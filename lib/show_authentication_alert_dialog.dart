@@ -20,12 +20,9 @@ show_authentication_alert_dialog({
     String? phone_number = FirebaseAuth.instance.currentUser!.phoneNumber;
     bool phone_number_auth = phone_number != null && email.isEmpty;
 
-    String alert_title = phone_number_auth
-        ? "Enter sms verification code"
-        : "Enter current password";
+    String alert_title = phone_number_auth ? "Enter sms verification code" : "Enter current password";
 
-    String textfield_label =
-        phone_number_auth ? "Verification code" : "Password";
+    String textfield_label = phone_number_auth ? "Verification code" : "Password";
 
     late TextEditingController phone_input_controller;
     late SharedPreferences prefs;
@@ -86,13 +83,13 @@ show_authentication_alert_dialog({
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("Accept"),
+              child: const Text("Accept"),
               onPressed: () async {
                 if (phone_number_auth) {
                   await auth_form_functions.login_phone_number(
@@ -121,8 +118,8 @@ show_authentication_alert_dialog({
                       .then((UserCredential userCredential) async {
                     callback();
                   }).catchError((onError) {
-                    print(onError);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    debugPrint(onError);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("The password is invalid"),
                       duration: Duration(milliseconds: 1500),
                     ));

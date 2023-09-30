@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/account_view/fill_fields.dart';
@@ -9,9 +11,7 @@ import 'package:xapptor_ui/values/ui.dart';
 
 extension EmailFormSection on AccountViewState {
   Widget email_form_section(bool email_linked) {
-    return is_edit_account(widget.auth_form_type) &&
-            !email_linked &&
-            !linking_email
+    return is_edit_account(widget.auth_form_type) && !email_linked && !linking_email
         ? Container()
         : Container(
             margin: EdgeInsets.only(bottom: sized_box_space),
@@ -34,12 +34,9 @@ extension EmailFormSection on AccountViewState {
                   children: [
                     TextFormField(
                       style: TextStyle(color: widget.text_color),
-                      enabled: is_edit_account(widget.auth_form_type)
-                          ? editing_email
-                          : true,
+                      enabled: is_edit_account(widget.auth_form_type) ? editing_email : true,
                       decoration: InputDecoration(
-                        labelText:
-                            widget.text_list.get(source_language_index)[0],
+                        labelText: widget.text_list.get(source_language_index)[0],
                         labelStyle: TextStyle(
                           color: widget.text_color,
                         ),
@@ -71,8 +68,7 @@ extension EmailFormSection on AccountViewState {
                                 ? editing_email
                                 : true,
                             decoration: InputDecoration(
-                              labelText: widget.text_list
-                                  .get(source_language_index)[1],
+                              labelText: widget.text_list.get(source_language_index)[1],
                               labelStyle: TextStyle(
                                 color: widget.text_color,
                               ),

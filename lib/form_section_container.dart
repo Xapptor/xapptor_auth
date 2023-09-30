@@ -33,13 +33,13 @@ form_section_container({
           child: child,
         ),
       ),
-      add_final_padding ? Spacer(flex: 1) : Container(),
+      add_final_padding ? const Spacer(flex: 1) : Container(),
       icon == null || icon_color == null || icon_on_press == null
           ? Container()
           : Expanded(
               flex: 1,
               child: IconButton(
-                padding: EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
                 icon: Icon(
                   icon,
                   color: icon_color,

@@ -24,7 +24,7 @@ extension MainButton on LoginAndRestoreViewState {
                   : 1)];
     }
 
-    return Container(
+    return SizedBox(
       height: 50,
       width: screen_width / (portrait ? 2 : 8),
       child: CustomCard(

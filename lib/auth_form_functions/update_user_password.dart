@@ -15,18 +15,16 @@ extension UpdateUserPassword on AuthFormFunctions {
     required bool password_verification_enabled,
   }) async {
     TextEditingController password_input_controller = input_controllers[0];
-    TextEditingController confirm_password_input_controller =
-        input_controllers[1];
+    TextEditingController confirm_password_input_controller = input_controllers[1];
 
     if (password_form_key.currentState!.validate()) {
-      if (password_input_controller.text ==
-          confirm_password_input_controller.text) {
+      if (password_input_controller.text == confirm_password_input_controller.text) {
         User user = FirebaseAuth.instance.currentUser!;
 
         user.updatePassword(password_input_controller.text).then((_) {
           show_user_info_saved_message(context);
         }).catchError((error) {
-          print("Password can't be changed " + error.toString());
+          debugPrint("Password can't be changed $error");
         });
       } else {
         show_neutral_alert(

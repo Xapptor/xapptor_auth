@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
@@ -26,8 +28,7 @@ extension LinkPhoneButton on AccountViewState {
                     onPressed: () {
                       show_quick_login(
                         context: context,
-                        available_login_providers:
-                            AvailableLoginProviders.phone,
+                        available_login_providers: AvailableLoginProviders.phone,
                         message: 'Link Phone',
                         callback: () {
                           phone_linked = true;
@@ -37,19 +38,19 @@ extension LinkPhoneButton on AccountViewState {
                     },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
-                      minimumSize: Size(50, 30),
+                      minimumSize: const Size(50, 30),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       alignment: Alignment.centerLeft,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(
+                        const Icon(
                           FontAwesomeIcons.link,
                           size: 16,
                         ),
                         Container(
-                          margin: EdgeInsets.only(left: 8),
+                          margin: const EdgeInsets.only(left: 8),
                           child: Text(
                             'Link Phone',
                             style: TextStyle(

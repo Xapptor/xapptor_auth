@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
@@ -24,7 +26,7 @@ extension EmailFormSection on LoginAndRestoreViewState {
                   : Expanded(
                       flex: current_phone_code_flex,
                       child: Container(
-                        margin: EdgeInsets.only(top: 10),
+                        margin: const EdgeInsets.only(top: 10),
                         child: CountryPhoneCodesPicker(
                           current_phone_code: current_phone_code,
                           text_color: widget.text_color,
@@ -32,7 +34,7 @@ extension EmailFormSection on LoginAndRestoreViewState {
                         ),
                       ),
                     ),
-              use_email_signin ? Container() : Spacer(flex: 1),
+              use_email_signin ? Container() : const Spacer(flex: 1),
               Expanded(
                 flex: 12,
                 child: TextFormField(
@@ -41,15 +43,10 @@ extension EmailFormSection on LoginAndRestoreViewState {
                   },
                   style: TextStyle(color: widget.text_color),
                   decoration: InputDecoration(
-                    labelText: widget.phone_signin_text_list != null &&
-                            !use_email_signin
-                        ? widget.phone_signin_text_list!
-                            .get(source_language_index)[0]
+                    labelText: widget.phone_signin_text_list != null && !use_email_signin
+                        ? widget.phone_signin_text_list!.get(source_language_index)[0]
                         : widget.text_list.get(source_language_index)[
-                            is_login(widget.auth_form_type) ||
-                                    is_quick_login(widget.auth_form_type)
-                                ? 0
-                                : 1],
+                            is_login(widget.auth_form_type) || is_quick_login(widget.auth_form_type) ? 0 : 1],
                     labelStyle: TextStyle(
                       color: widget.text_color,
                     ),
@@ -61,18 +58,12 @@ extension EmailFormSection on LoginAndRestoreViewState {
                     errorMaxLines: 2,
                   ),
                   controller: email_input_controller,
-                  inputFormatters: use_email_signin
-                      ? null
-                      : [FilteringTextInputFormatter.digitsOnly],
+                  inputFormatters: use_email_signin ? null : [FilteringTextInputFormatter.digitsOnly],
                   validator: (value) => FormFieldValidators(
                     value: value!,
-                    type: use_email_signin
-                        ? FormFieldValidatorsType.email
-                        : FormFieldValidatorsType.phone,
+                    type: use_email_signin ? FormFieldValidatorsType.email : FormFieldValidatorsType.phone,
                   ).validate(),
-                  keyboardType: use_email_signin
-                      ? TextInputType.emailAddress
-                      : TextInputType.number,
+                  keyboardType: use_email_signin ? TextInputType.emailAddress : TextInputType.number,
                 ),
               ),
             ],

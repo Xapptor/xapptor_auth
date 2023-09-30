@@ -56,10 +56,10 @@ delete_account({
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: text_list[email_linked ? 4 : 5],
-                      labelStyle: TextStyle(
+                      labelStyle: const TextStyle(
                         color: Colors.grey,
                       ),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         color: Colors.grey,
                       ),
                     ),
@@ -87,7 +87,7 @@ delete_account({
               },
               child: Text(
                 text_list[text_list.length - 3],
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
@@ -120,20 +120,18 @@ _check_signin_method({
         user: user,
       );
     }).catchError((error) {
-      print(error);
+      debugPrint(error);
       show_error_alert(context: context, message: text_list.last);
     });
   } else if (phone_linked) {
     if (auth_form_functions.confirmation_result != null) {
-      auth_form_functions.confirmation_result!
-          .confirm(password_input_controller.text)
-          .then((value) {
+      auth_form_functions.confirmation_result!.confirm(password_input_controller.text).then((value) {
         _delete_account(
           context: context,
           user: user,
         );
       }).onError((error, stackTrace) {
-        print(error);
+        debugPrint(error.toString());
         show_error_alert(context: context, message: text_list.last);
       });
     } else {
@@ -157,7 +155,7 @@ _delete_account({
     await FirebaseFirestore.instance.collection("users").doc(user.uid).delete();
     Navigator.of(context).popUntil((route) => route.isFirst);
   }).onError((error, stackTrace) {
-    print(error);
+    debugPrint(error.toString());
     show_error_alert(context: context, message: error.toString());
   });
 }

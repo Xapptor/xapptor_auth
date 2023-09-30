@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/account_view/fill_fields.dart';
@@ -12,9 +14,7 @@ extension UserInfoFormSection on AccountViewState {
   Widget user_info_form_section() {
     double screen_width = MediaQuery.of(context).size.width;
 
-    Color dropdown_color = widget.text_color == Colors.white
-        ? widget.text_field_background_color!
-        : Colors.white;
+    Color dropdown_color = widget.text_color == Colors.white ? widget.text_field_background_color! : Colors.white;
 
     return Container(
       margin: EdgeInsets.only(bottom: sized_box_space),
@@ -37,9 +37,7 @@ extension UserInfoFormSection on AccountViewState {
             children: [
               TextFormField(
                 style: TextStyle(color: widget.text_color),
-                enabled: is_edit_account(widget.auth_form_type)
-                    ? editing_name_and_info
-                    : true,
+                enabled: is_edit_account(widget.auth_form_type) ? editing_name_and_info : true,
                 decoration: InputDecoration(
                   labelText: widget.text_list.get(source_language_index)[4],
                   labelStyle: TextStyle(
@@ -62,9 +60,7 @@ extension UserInfoFormSection on AccountViewState {
               ),
               TextFormField(
                 style: TextStyle(color: widget.text_color),
-                enabled: is_edit_account(widget.auth_form_type)
-                    ? editing_name_and_info
-                    : true,
+                enabled: is_edit_account(widget.auth_form_type) ? editing_name_and_info : true,
                 decoration: InputDecoration(
                   labelText: widget.text_list.get(source_language_index)[5],
                   labelStyle: TextStyle(
@@ -85,7 +81,7 @@ extension UserInfoFormSection on AccountViewState {
               SizedBox(
                 height: sized_box_space,
               ),
-              Container(
+              SizedBox(
                 width: screen_width,
                 child: ElevatedButton(
                   style: ButtonStyle(
@@ -109,16 +105,13 @@ extension UserInfoFormSection on AccountViewState {
                       ),
                     ),
                   ),
-                  onPressed: is_edit_account(widget.auth_form_type) &&
-                          !editing_name_and_info
+                  onPressed: is_edit_account(widget.auth_form_type) && !editing_name_and_info
                       ? null
                       : () {
                           select_date();
                         },
                   child: Text(
-                    birthday_label != ""
-                        ? birthday_label
-                        : widget.text_list.get(source_language_index)[6],
+                    birthday_label != "" ? birthday_label : widget.text_list.get(source_language_index)[6],
                     style: TextStyle(
                       color: widget.text_color,
                     ),
@@ -134,9 +127,7 @@ extension UserInfoFormSection on AccountViewState {
                   color: widget.text_color,
                 ),
                 isExpanded: true,
-                value: gender_value == ""
-                    ? widget.gender_values.get(source_language_index)[0]
-                    : gender_value,
+                value: gender_value == "" ? widget.gender_values.get(source_language_index)[0] : gender_value,
                 iconSize: 24,
                 elevation: 16,
                 style: TextStyle(
@@ -147,8 +138,7 @@ extension UserInfoFormSection on AccountViewState {
                   color: widget.text_color,
                 ),
                 dropdownColor: dropdown_color,
-                onChanged: is_edit_account(widget.auth_form_type) &&
-                        !editing_name_and_info
+                onChanged: is_edit_account(widget.auth_form_type) && !editing_name_and_info
                     ? null
                     : (new_value) {
                         if (is_edit_account(widget.auth_form_type)) {
@@ -163,9 +153,7 @@ extension UserInfoFormSection on AccountViewState {
                           });
                         }
                       },
-                items: widget.gender_values
-                    .get(source_language_index)
-                    .map<DropdownMenuItem<String>>((String value) {
+                items: widget.gender_values.get(source_language_index).map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -182,9 +170,7 @@ extension UserInfoFormSection on AccountViewState {
                         color: widget.text_color,
                       ),
                       isExpanded: true,
-                      value: country_value == ""
-                          ? widget.country_values![0]
-                          : country_value,
+                      value: country_value == "" ? widget.country_values![0] : country_value,
                       iconSize: 24,
                       elevation: 16,
                       style: TextStyle(
@@ -195,8 +181,7 @@ extension UserInfoFormSection on AccountViewState {
                         color: widget.text_color,
                       ),
                       dropdownColor: dropdown_color,
-                      onChanged: is_edit_account(widget.auth_form_type) &&
-                              !editing_name_and_info
+                      onChanged: is_edit_account(widget.auth_form_type) && !editing_name_and_info
                           ? null
                           : (new_value) {
                               if (is_edit_account(widget.auth_form_type)) {
@@ -211,8 +196,7 @@ extension UserInfoFormSection on AccountViewState {
                                 });
                               }
                             },
-                      items: widget.country_values!
-                          .map<DropdownMenuItem<String>>((String value) {
+                      items: widget.country_values!.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -226,43 +210,36 @@ extension UserInfoFormSection on AccountViewState {
                         SizedBox(
                           height: sized_box_space,
                         ),
-                        Container(
-                          child: TextButton(
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    MediaQuery.of(context).size.width,
-                                  ),
+                        TextButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  MediaQuery.of(context).size.width,
                                 ),
                               ),
                             ),
-                            onPressed: () {
-                              accept_terms = !accept_terms;
-                              setState(() {});
-                            },
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 2,
-                                  child: Container(
-                                    child: Icon(
-                                      accept_terms
-                                          ? Icons.check_box_outlined
-                                          : Icons.check_box_outline_blank,
-                                      color: widget.text_color,
-                                    ),
-                                  ),
+                          ),
+                          onPressed: () {
+                            accept_terms = !accept_terms;
+                            setState(() {});
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 2,
+                                child: Icon(
+                                  accept_terms ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                                  color: widget.text_color,
                                 ),
-                                Spacer(flex: 1),
-                                Expanded(
-                                  flex: 12,
-                                  child: widget.tc_and_pp_text,
-                                ),
-                                Spacer(flex: 1),
-                              ],
-                            ),
+                              ),
+                              const Spacer(flex: 1),
+                              Expanded(
+                                flex: 12,
+                                child: widget.tc_and_pp_text,
+                              ),
+                              const Spacer(flex: 1),
+                            ],
                           ),
                         ),
                         SizedBox(

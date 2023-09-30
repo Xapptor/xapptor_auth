@@ -16,12 +16,10 @@ extension SendVerificationCode on AuthFormFunctions {
     required bool remember_me,
     required Function? callback,
   }) async {
-    // print(phone_input_controller.text);
+    // debugPrint(phone_input_controller.text);
 
     if (UniversalPlatform.isWeb) {
-      await FirebaseAuth.instance
-          .signInWithPhoneNumber(phone_input_controller.text)
-          .then((value) {
+      await FirebaseAuth.instance.signInWithPhoneNumber(phone_input_controller.text).then((value) {
         confirmation_result = value;
         verification_id = confirmation_result!.verificationId;
         update_verification_code_sent();
@@ -30,7 +28,7 @@ extension SendVerificationCode on AuthFormFunctions {
           message: 'Verification code sent',
         );
       }).onError((error, stackTrace) {
-        print(error);
+        debugPrint(error.toString());
 
         if (error.toString().contains('blocked')) {
           show_error_alert(
@@ -48,8 +46,7 @@ extension SendVerificationCode on AuthFormFunctions {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phone_input_controller.text,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          UserCredential user_credential =
-              await FirebaseAuth.instance.signInWithCredential(credential);
+          UserCredential user_credential = await FirebaseAuth.instance.signInWithCredential(credential);
 
           complete_login_phone_number(
             user_credential: user_credential,

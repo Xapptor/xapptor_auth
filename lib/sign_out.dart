@@ -7,15 +7,15 @@ sign_out({
   Function? callback,
 }) async {
   await FirebaseAuth.instance.signOut().then((value) async {
-    GoogleSignIn _google_signin = GoogleSignIn(
+    GoogleSignIn google_signin = GoogleSignIn(
       scopes: [
         'email',
         'https://www.googleapis.com/auth/contacts.readonly',
       ],
     );
 
-    if (_google_signin.clientId != null) {
-      await _google_signin.signOut();
+    if (google_signin.clientId != null) {
+      await google_signin.signOut();
     }
 
     if (callback != null) {

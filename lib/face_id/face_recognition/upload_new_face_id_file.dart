@@ -25,9 +25,9 @@ upload_new_face_id_file({
   Reference face_id_ref = FirebaseStorage.instance
       .ref()
       .child('users')
-      .child('/' + current_user.uid)
+      .child('/${current_user.uid}')
       .child('/face_id')
-      .child('/${timeStamp}.jpg');
+      .child('/$timeStamp.jpg');
 
   final metadata = SettableMetadata(
     contentType: 'image/jpeg',
@@ -48,7 +48,7 @@ check_user_face_id_files_length({
   ListResult result = await FirebaseStorage.instance
       .ref()
       .child('users')
-      .child('/' + current_user.uid)
+      .child('/${current_user.uid}')
       .child('/face_id')
       .listAll();
 
@@ -72,7 +72,7 @@ Future<String> get_random_face_id_file_url({
   ListResult result = await FirebaseStorage.instance
       .ref()
       .child('users')
-      .child('/' + current_user.uid)
+      .child('/${current_user.uid}')
       .child('/face_id')
       .listAll();
 

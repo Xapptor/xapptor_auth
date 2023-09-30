@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_ui/values/country_phone_codes.dart';
 
@@ -10,8 +12,7 @@ extension CheckRememberMe on LoginAndRestoreViewState {
         setState(() {});
       }
     } else {
-      if (prefs.getString("phone_number") != null ||
-          prefs.getString("phone_code") != null) {
+      if (prefs.getString("phone_number") != null || prefs.getString("phone_code") != null) {
         if (prefs.getString("phone_number") != null) {
           email_input_controller.text = prefs.getString("phone_number")!;
         }
