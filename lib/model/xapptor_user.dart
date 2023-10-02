@@ -28,13 +28,11 @@ class XapptorUser {
   });
 
   XapptorUser.from_snapshot(
-    String id,
-    String email,
+    this.id,
+    this.email,
     Map<dynamic, dynamic> snapshot,
-  )   : id = id,
-        firstname = snapshot['firstname'],
+  )   : firstname = snapshot['firstname'],
         lastname = snapshot['lastname'],
-        email = email,
         birthday = (snapshot['birthday'] as Timestamp).toDate(),
         gender = snapshot['gender'],
         country = snapshot['country'],
@@ -61,7 +59,7 @@ class XapptorUser {
       'country': country,
       'admin': admin,
       'owner': owner,
-      'roles': { for (var e in roles) e.organization_id : e.value },
+      'roles': {for (var e in roles) e.organization_id: e.value},
     };
   }
 
@@ -87,8 +85,7 @@ Future<XapptorUser> get_xapptor_user({String? id}) async {
   String user_id = id ?? current_user.uid;
   String user_email = id == null ? current_user.email! : '';
 
-  DocumentSnapshot user_snap =
-      await FirebaseFirestore.instance.collection('users').doc(user_id).get();
+  DocumentSnapshot user_snap = await FirebaseFirestore.instance.collection('users').doc(user_id).get();
   return XapptorUser.from_snapshot(
     user_id,
     user_email,
