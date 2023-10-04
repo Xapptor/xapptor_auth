@@ -45,7 +45,8 @@ class AccountView extends StatefulWidget {
   final bool? edit_icon_use_text_field_background_color;
   final int source_language_index;
 
-  const AccountView({super.key, 
+  const AccountView({
+    super.key,
     required this.text_list,
     required this.tc_and_pp_text,
     required this.first_button_action,
@@ -101,17 +102,14 @@ class AccountViewState extends State<AccountView> {
   TextEditingController firstname_input_controller = TextEditingController();
   TextEditingController last_name_input_controller = TextEditingController();
   TextEditingController email_input_controller = TextEditingController();
-  TextEditingController confirm_email_input_controller =
-      TextEditingController();
+  TextEditingController confirm_email_input_controller = TextEditingController();
   TextEditingController password_input_controller = TextEditingController();
-  TextEditingController confirm_password_input_controller =
-      TextEditingController();
+  TextEditingController confirm_password_input_controller = TextEditingController();
 
   String gender_value = "";
   String? country_value = "";
 
-  static DateTime first_date = DateTime(
-      DateTime.now().year - 150, DateTime.now().month, DateTime.now().day);
+  static DateTime first_date = DateTime(DateTime.now().year - 150, DateTime.now().month, DateTime.now().day);
   DateTime selected_date = get_over_18_date();
 
   late SharedPreferences prefs;
