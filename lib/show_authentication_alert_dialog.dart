@@ -39,97 +39,101 @@ show_authentication_alert_dialog({
 
       verification_code_sent = ValueNotifier<bool>(false);
 
-      await auth_form_functions.login_phone_number(
-        context: context,
-        input_controllers: [
-          phone_input_controller,
-          password_input_controller,
-        ],
-        prefs: prefs,
-        verification_code_sent: verification_code_sent,
-        update_verification_code_sent: () {
-          verification_code_sent.value = true;
-        },
-        persistence: Persistence.LOCAL,
-        remember_me: true,
-        callback: () {},
-      );
+      if (context.mounted) {
+        await auth_form_functions.login_phone_number(
+          context: context,
+          input_controllers: [
+            phone_input_controller,
+            password_input_controller,
+          ],
+          prefs: prefs,
+          verification_code_sent: verification_code_sent,
+          update_verification_code_sent: () {
+            verification_code_sent.value = true;
+          },
+          persistence: Persistence.LOCAL,
+          remember_me: true,
+          callback: () {},
+        );
+      }
     }
 
-    showDialog(
-      context: context,
-      useRootNavigator: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(alert_title),
-          content: TextFormField(
-            decoration: InputDecoration(
-              labelText: textfield_label,
-              labelStyle: TextStyle(
-                color: text_color,
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        useRootNavigator: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(alert_title),
+            content: TextFormField(
+              decoration: InputDecoration(
+                labelText: textfield_label,
+                labelStyle: TextStyle(
                   color: text_color,
                 ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: text_color,
+                  ),
+                ),
               ),
+              controller: password_input_controller,
+              validator: (value) => FormFieldValidators(
+                value: value!,
+                type: FormFieldValidatorsType.password,
+              ).validate(),
+              obscureText: true,
             ),
-            controller: password_input_controller,
-            validator: (value) => FormFieldValidators(
-              value: value!,
-              type: FormFieldValidatorsType.password,
-            ).validate(),
-            obscureText: true,
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text("Accept"),
-              onPressed: () async {
-                if (phone_number_auth) {
-                  await auth_form_functions.login_phone_number(
-                    context: context,
-                    input_controllers: [
-                      phone_input_controller,
-                      password_input_controller,
-                    ],
-                    prefs: prefs,
-                    verification_code_sent: verification_code_sent,
-                    update_verification_code_sent: () {
-                      verification_code_sent.value = true;
-                    },
-                    persistence: Persistence.LOCAL,
-                    remember_me: true,
-                    callback: () {
+            actions: <Widget>[
+              TextButton(
+                child: const Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text("Accept"),
+                onPressed: () async {
+                  if (phone_number_auth) {
+                    await auth_form_functions.login_phone_number(
+                      context: context,
+                      input_controllers: [
+                        phone_input_controller,
+                        password_input_controller,
+                      ],
+                      prefs: prefs,
+                      verification_code_sent: verification_code_sent,
+                      update_verification_code_sent: () {
+                        verification_code_sent.value = true;
+                      },
+                      persistence: Persistence.LOCAL,
+                      remember_me: true,
+                      callback: () {
+                        callback();
+                      },
+                    );
+                  } else {
+                    await FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                      email: email,
+                      password: password_input_controller.text,
+                    )
+                        .then((UserCredential userCredential) async {
                       callback();
-                    },
-                  );
-                } else {
-                  await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                    email: email,
-                    password: password_input_controller.text,
-                  )
-                      .then((UserCredential userCredential) async {
-                    callback();
-                  }).catchError((onError) {
-                    debugPrint(onError);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("The password is invalid"),
-                      duration: Duration(milliseconds: 1500),
-                    ));
-                  });
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
+                    }).catchError((onError) {
+                      debugPrint(onError);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("The password is invalid"),
+                        duration: Duration(milliseconds: 1500),
+                      ));
+                    });
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }

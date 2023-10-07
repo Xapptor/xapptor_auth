@@ -27,8 +27,7 @@ extension UpdateUserEmail on AuthFormFunctions {
             debugPrint("An error occured while trying to send email verification");
             debugPrint(error.toString());
           }
-
-          show_user_info_saved_message(context);
+          if (context.mounted) show_user_info_saved_message(context);
         }).catchError((err) {
           debugPrint(err);
         });
