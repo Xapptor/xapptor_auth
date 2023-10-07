@@ -33,15 +33,17 @@ extension LoginPhoneNumber on AuthFormFunctions {
     }
 
     if (!verification_code_sent.value) {
-      send_verification_code(
-        context: context,
-        phone_input_controller: phone_input_controller,
-        code_input_controller: code_input_controller,
-        prefs: prefs,
-        update_verification_code_sent: update_verification_code_sent,
-        remember_me: remember_me,
-        callback: callback,
-      );
+      if (context.mounted) {
+        send_verification_code(
+          context: context,
+          phone_input_controller: phone_input_controller,
+          code_input_controller: code_input_controller,
+          prefs: prefs,
+          update_verification_code_sent: update_verification_code_sent,
+          remember_me: remember_me,
+          callback: callback,
+        );
+      }
     } else {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verification_id!,

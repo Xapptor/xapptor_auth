@@ -21,9 +21,7 @@ sign_out({
     if (callback != null) {
       callback();
     } else {
-      Navigator.of(context).popUntil((route) {
-        return route.isFirst;
-      });
+      if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
     }
   });
 }

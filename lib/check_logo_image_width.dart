@@ -7,9 +7,11 @@ check_logo_image_width({
   required String logo_path,
   required Function(double logo_image_width) callback,
 }) async {
-  double logo_image_width =
-      await check_if_image_is_square(image: Image.asset(logo_path))
-          ? logo_height(context)
-          : logo_width(context);
-  callback(logo_image_width);
+  if (context.mounted) {
+    double height_value = logo_height(context);
+    double width_value = logo_width(context);
+    Image image = Image.asset(logo_path);
+    bool image_is_square = await check_if_image_is_square(image: image);
+    callback(image_is_square ? height_value : width_value);
+  }
 }

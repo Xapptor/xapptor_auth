@@ -38,65 +38,66 @@ delete_account({
       callback: () {},
     );
   }
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(text_list[email_linked
-            ? 2
-            : phone_linked
-                ? 3
-                : 1]),
-        actions: [
-          !email_linked && !phone_linked
-              ? Container()
-              : Container(
-                  margin: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      labelText: text_list[email_linked ? 4 : 5],
-                      labelStyle: const TextStyle(
-                        color: Colors.grey,
+  if (context.mounted) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(text_list[email_linked
+              ? 2
+              : phone_linked
+                  ? 3
+                  : 1]),
+          actions: [
+            !email_linked && !phone_linked
+                ? Container()
+                : Container(
+                    margin: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: text_list[email_linked ? 4 : 5],
+                        labelStyle: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                        hintStyle: const TextStyle(
+                          color: Colors.grey,
+                        ),
                       ),
-                      hintStyle: const TextStyle(
-                        color: Colors.grey,
-                      ),
+                      controller: password_input_controller,
+                      maxLines: null,
                     ),
-                    controller: password_input_controller,
-                    maxLines: null,
                   ),
-                ),
-          Container(
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: TextButton(
-              onPressed: () async {
-                _check_signin_method(
-                  context: context,
-                  text_list: text_list,
-                  user: user,
-                  email_linked: email_linked,
-                  phone_linked: phone_linked,
-                  password_input_controller: password_input_controller,
-                  auth_form_functions: auth_form_functions,
-                );
-              },
-              child: Text(
-                text_list[text_list.length - 3],
-                style: const TextStyle(
-                  color: Colors.white,
+            Container(
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: TextButton(
+                onPressed: () async {
+                  _check_signin_method(
+                    context: context,
+                    text_list: text_list,
+                    user: user,
+                    email_linked: email_linked,
+                    phone_linked: phone_linked,
+                    password_input_controller: password_input_controller,
+                    auth_form_functions: auth_form_functions,
+                  );
+                },
+                child: Text(
+                  text_list[text_list.length - 3],
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      );
-    },
-  );
+          ],
+        );
+      },
+    );
+  }
 }
 
 _check_signin_method({
@@ -153,7 +154,7 @@ _delete_account({
   await user.delete().then((value) async {
     await delete_all_files_in_a_path(path: "users/${user.uid}");
     await FirebaseFirestore.instance.collection("users").doc(user.uid).delete();
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
   }).onError((error, stackTrace) {
     debugPrint(error.toString());
     show_error_alert(context: context, message: error.toString());
