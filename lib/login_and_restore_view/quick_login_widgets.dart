@@ -15,7 +15,7 @@ import 'package:xapptor_auth/login_and_restore_view/third_button.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-extension QuickLoginWidgets on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   Widget quick_login_widgets() {
     int current_phone_code_length =
         current_phone_code.value.name.split(',').first.length + current_phone_code.value.dial_code.length;

@@ -6,7 +6,7 @@ import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart'
 import 'package:xapptor_auth/login_and_restore_view/third_party_signin_method_shape.dart';
 import 'package:xapptor_auth/signin_with_apple.dart';
 
-extension AppleButton on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   apple_button() async {
     double screen_width = MediaQuery.of(context).size.width;
 

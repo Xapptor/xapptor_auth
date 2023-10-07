@@ -11,7 +11,7 @@ import 'package:xapptor_auth/login_and_restore_view/available_login_providers.da
 import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_logic/show_alert.dart';
 
-extension OnPressedFirstButton on AccountViewState {
+extension StateExtension on AccountViewState {
   on_pressed_first_button() async {
     if (widget.first_button_action == null) {
       if (is_edit_account(widget.auth_form_type)) {

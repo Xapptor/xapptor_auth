@@ -4,7 +4,7 @@ import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/delete_account.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
-extension SecondButton on AccountViewState {
+extension StateExtension on AccountViewState {
   Widget second_button() {
     double screen_width = MediaQuery.of(context).size.width;
 
@@ -34,10 +34,7 @@ extension SecondButton on AccountViewState {
                         context: context,
                         text_list: widget.text_list
                             .get(source_language_index)
-                            .sublist(widget.text_list
-                                    .get(source_language_index)
-                                    .length -
-                                9),
+                            .sublist(widget.text_list.get(source_language_index).length - 9),
                       );
                     }
                   }
@@ -46,9 +43,7 @@ extension SecondButton on AccountViewState {
                   widget.text_list.get(source_language_index)[8],
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: is_edit_account(widget.auth_form_type)
-                        ? Colors.red
-                        : widget.second_button_color,
+                    color: is_edit_account(widget.auth_form_type) ? Colors.red : widget.second_button_color,
                     fontSize: 12,
                   ),
                 ),

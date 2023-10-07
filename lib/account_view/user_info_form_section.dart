@@ -10,7 +10,7 @@ import 'package:xapptor_auth/form_section_container.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
-extension UserInfoFormSection on AccountViewState {
+extension StateExtension on AccountViewState {
   Widget user_info_form_section() {
     double screen_width = MediaQuery.of(context).size.width;
 

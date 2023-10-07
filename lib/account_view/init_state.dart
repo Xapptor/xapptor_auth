@@ -9,7 +9,7 @@ import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/check_if_app_enabled.dart';
 import 'package:xapptor_translation/translation_stream.dart';
 
-extension InitState on AccountViewState {
+extension StateExtension on AccountViewState {
   init_state() async {
     check_if_app_enabled();
     check_logo_image_width(

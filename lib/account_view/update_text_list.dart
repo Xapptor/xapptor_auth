@@ -2,7 +2,7 @@
 
 import 'package:xapptor_auth/account_view/account_view.dart';
 
-extension UpdateTextList on AccountViewState {
+extension StateExtension on AccountViewState {
   update_text_list({
     required int index,
     required String new_text,

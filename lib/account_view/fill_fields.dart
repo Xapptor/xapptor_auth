@@ -6,7 +6,7 @@ import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/account_view/validate_picker_value.dart';
 import 'package:xapptor_logic/timestamp_to_date.dart';
 
-extension FillFields on AccountViewState {
+extension StateExtension on AccountViewState {
   fill_fields() async {
     firstname_input_controller.text = firstname;
     last_name_input_controller.text = lastname;

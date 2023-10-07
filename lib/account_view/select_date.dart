@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/get_over_18_date.dart';
 
-extension SelectDate on AccountViewState {
+extension StateExtension on AccountViewState {
   Future select_date() async {
     final DateTime? picked = await showDatePicker(
       context: context,

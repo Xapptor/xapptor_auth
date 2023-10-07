@@ -9,7 +9,7 @@ import 'package:xapptor_auth/login_and_restore_view/on_pressed_first_button.dart
 import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
-extension PasswordFormSection on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   Widget password_form_section() {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
