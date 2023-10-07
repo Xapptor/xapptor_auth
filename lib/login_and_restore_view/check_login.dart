@@ -8,7 +8,7 @@ import 'package:xapptor_auth/signin_with_google.dart';
 import 'package:xapptor_router/app_screens.dart';
 import 'package:flutter/foundation.dart';
 
-extension CheckLogin on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   check_login() async {
     Timer(const Duration(milliseconds: 300), () async {
       if (FirebaseAuth.instance.currentUser != null) {

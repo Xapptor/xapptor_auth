@@ -7,7 +7,7 @@ import 'package:xapptor_auth/auth_form_functions/update_user_name_and_info.dart'
 import 'package:xapptor_auth/auth_form_functions/update_user_password.dart';
 import 'package:xapptor_auth/show_authentication_alert_dialog.dart';
 
-extension ShowEditAccountAlertDialog on AccountViewState {
+extension StateExtension on AccountViewState {
   show_edit_account_alert_dialog(BuildContext context) {
     showDialog(
       context: context,
@@ -34,9 +34,7 @@ extension ShowEditAccountAlertDialog on AccountViewState {
             TextButton(
               child: const Text("Accept"),
               onPressed: () {
-                if (editing_email ||
-                    editing_password ||
-                    editing_name_and_info) {
+                if (editing_email || editing_password || editing_name_and_info) {
                   Navigator.of(dialog_context).pop();
                   show_authentication_alert_dialog(
                     context: context,
@@ -58,13 +56,10 @@ extension ShowEditAccountAlertDialog on AccountViewState {
                           name_and_info_form_key: user_info_view_form_key,
                           input_controllers: inputControllers,
                           selected_date: selected_date,
-                          gender_value: widget.gender_values
-                              .get(source_language_index)
-                              .indexOf(gender_value),
+                          gender_value: widget.gender_values.get(source_language_index).indexOf(gender_value),
                           country_value: country_value ?? "",
                           user_id: uid,
-                          password_verification_enabled:
-                              password_verification_enabled,
+                          password_verification_enabled: password_verification_enabled,
                         );
                       }
 
@@ -81,8 +76,7 @@ extension ShowEditAccountAlertDialog on AccountViewState {
                           input_controllers: inputControllers,
                           user_id: uid,
                           email: email_input_controller.text,
-                          password_verification_enabled:
-                              password_verification_enabled,
+                          password_verification_enabled: password_verification_enabled,
                         );
                       }
 
@@ -98,8 +92,7 @@ extension ShowEditAccountAlertDialog on AccountViewState {
                           email_form_key: user_info_view_form_key,
                           input_controllers: inputControllers,
                           user_id: uid,
-                          password_verification_enabled:
-                              password_verification_enabled,
+                          password_verification_enabled: password_verification_enabled,
                         );
                       }
                     },

@@ -6,11 +6,10 @@ import 'package:xapptor_auth/auth_form_functions/restore_password.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 
-extension OnPressedFirstButton on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   on_pressed_first_button() {
     if (widget.first_button_action == null) {
-      if (is_login(widget.auth_form_type) ||
-          is_quick_login(widget.auth_form_type)) {
+      if (is_login(widget.auth_form_type) || is_quick_login(widget.auth_form_type)) {
         if (use_email_signin) {
           List<TextEditingController> inputControllers = [
             email_input_controller,

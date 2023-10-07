@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:xapptor_auth/form_section_container.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
-extension LinkEmailButton on AccountViewState {
+extension StateExtension on AccountViewState {
   Widget link_email_button(bool email_linked) {
     return is_edit_account(widget.auth_form_type) && !email_linked && !linking_email
         ? Container(

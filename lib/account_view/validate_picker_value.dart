@@ -1,6 +1,6 @@
 import 'package:xapptor_auth/account_view/account_view.dart';
 
-extension ValidatePickerValue on AccountViewState {
+extension StateExtension on AccountViewState {
   String validate_picker_value(String value, List<String> list) {
     bool match = false;
     for (var list_item in list) {

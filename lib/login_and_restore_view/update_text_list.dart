@@ -2,7 +2,7 @@
 
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 
-extension UpdateTextList on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   update_text_list({
     required int index,
     required String new_text,

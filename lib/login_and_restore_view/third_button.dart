@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 
-extension ThirdButton on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   Widget third_button() {
     return !use_email_signin
         ? Container()

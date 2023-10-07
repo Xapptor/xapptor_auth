@@ -10,7 +10,7 @@ import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:xapptor_ui/widgets/country_phone_codes_picker.dart';
 
-extension EmailFormSection on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   Widget email_form_section(int current_phone_code_flex) {
     return form_section_container(
       outline_border: widget.outline_border,

@@ -3,7 +3,7 @@
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_ui/values/country_phone_codes.dart';
 
-extension CheckRememberMe on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   check_remember_me() async {
     if (use_email_signin) {
       if (prefs.getString("email") != null) {

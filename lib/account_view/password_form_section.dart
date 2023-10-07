@@ -10,7 +10,7 @@ import 'package:xapptor_auth/form_section_container.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
-extension PasswordFormSection on AccountViewState {
+extension StateExtension on AccountViewState {
   Widget password_form_section(bool email_linked) {
     return is_edit_account(widget.auth_form_type) && !email_linked && !linking_email
         ? Container()

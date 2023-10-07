@@ -7,7 +7,7 @@ import 'package:xapptor_auth/login_and_restore_view/quick_login_widgets.dart';
 import 'package:xapptor_auth/login_and_restore_view/update_source_language.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
-extension ReturnWidget on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   Widget return_widget() {
     Widget return_widget = Container();
 

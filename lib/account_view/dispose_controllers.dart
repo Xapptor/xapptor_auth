@@ -1,6 +1,6 @@
 import 'package:xapptor_auth/account_view/account_view.dart';
 
-extension DisposeControllers on AccountViewState {
+extension StateExtension on AccountViewState {
   dispose_controllers() {
     firstname_input_controller.dispose();
     last_name_input_controller.dispose();

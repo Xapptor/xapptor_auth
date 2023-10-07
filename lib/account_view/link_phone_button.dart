@@ -9,7 +9,7 @@ import 'package:xapptor_auth/login_and_restore_view/available_login_providers.da
 import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
-extension LinkPhoneButton on AccountViewState {
+extension StateExtension on AccountViewState {
   Widget link_phone_button(bool phone_linked) {
     return is_edit_account(widget.auth_form_type) && !phone_linked
         ? Container(

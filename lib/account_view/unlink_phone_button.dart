@@ -10,7 +10,7 @@ import 'package:xapptor_auth/unlink_alert.dart';
 import 'package:xapptor_logic/show_alert.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
-extension UnlinkPhoneButton on AccountViewState {
+extension StateExtension on AccountViewState {
   Widget unlink_phone_button(bool phone_linked, List<UserInfo> user_providers) {
     return is_edit_account(widget.auth_form_type) && phone_linked && user_providers.length > 1
         ? Container(

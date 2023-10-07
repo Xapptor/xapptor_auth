@@ -4,7 +4,7 @@ import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_logic/copy_to_clipboard.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
-extension UserIDButton on AccountViewState {
+extension StateExtension on AccountViewState {
   Widget user_id_button() {
     User? user = FirebaseAuth.instance.currentUser;
 

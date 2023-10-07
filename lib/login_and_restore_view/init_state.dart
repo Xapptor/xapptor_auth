@@ -5,7 +5,7 @@ import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart'
 import 'package:xapptor_auth/login_and_restore_view/update_text_list.dart';
 import 'package:xapptor_translation/translation_stream.dart';
 
-extension InitState on LoginAndRestoreViewState {
+extension StateExtension on LoginAndRestoreViewState {
   init_state() async {
     check_if_app_enabled();
 
