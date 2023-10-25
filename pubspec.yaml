@@ -15,17 +15,17 @@ dependencies:
   cloud_firestore: ^4.9.2
   firebase_storage: ^11.2.7
 
-  sign_in_button: ^3.1.0
+  sign_in_button: ^3.2.0
   google_sign_in: ^6.1.5
   sign_in_with_apple: ^5.0.0
 
   universal_platform: ^1.0.0+1
-  shared_preferences: ^2.2.1
+  shared_preferences: ^2.2.2
   intl: ^0.18.1
   http: ^1.1.0
   crypto: ^3.0.3
   google_mlkit_face_detection: ^0.8.0
-  camera: ^0.10.5+4
+  camera: ^0.10.5+5
   font_awesome_flutter: ^10.5.0
   pointer_interceptor: ^0.9.3+6
 
