@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 face_id_container({
   required Widget child,
 }) =>
-    WillPopScope(
-      onWillPop: () async => false,
+    PopScope(
+      canPop: false,
       child: Container(
         color: Colors.white,
         child: SafeArea(

@@ -54,8 +54,8 @@ class _AuthContainerState extends State<AuthContainer> {
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: WillPopScope(
-        onWillPop: () async => widget.has_back_button,
+      child: PopScope(
+        canPop: widget.has_back_button,
         child: Scaffold(
           key: scaffold_key,
           appBar: TopBar(
