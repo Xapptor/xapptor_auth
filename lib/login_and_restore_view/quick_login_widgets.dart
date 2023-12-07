@@ -37,124 +37,121 @@ extension StateExtension on LoginAndRestoreViewState {
       child: Column(
         mainAxisSize: is_quick_login(widget.auth_form_type) ? MainAxisSize.min : MainAxisSize.max,
         children: [
-          (is_login(widget.auth_form_type) || is_quick_login(widget.auth_form_type)) &&
-                  widget.phone_signin_text_list != null &&
-                  (widget.available_login_providers == AvailableLoginProviders.all ||
-                      widget.available_login_providers == AvailableLoginProviders.email_and_phone)
-              ? Column(
+          if ((is_login(widget.auth_form_type) || is_quick_login(widget.auth_form_type)) &&
+              widget.phone_signin_text_list != null &&
+              (widget.available_login_providers == AvailableLoginProviders.all ||
+                  widget.available_login_providers == AvailableLoginProviders.email_and_phone))
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 38,
-                          width: 38,
-                          margin: const EdgeInsets.only(right: 5),
-                          padding: const EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color: use_email_signin ? widget.text_color : Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              use_email_signin = !use_email_signin;
-                              email_input_controller.clear();
-                              password_input_controller.clear();
-                              check_remember_me();
-                              setState(() {});
-                            },
-                            icon: Icon(
-                              FontAwesomeIcons.envelope,
-                              color: use_email_signin ? Colors.white : widget.text_color,
-                              size: 30,
-                            ),
-                          ),
+                    Container(
+                      height: 38,
+                      width: 38,
+                      margin: const EdgeInsets.only(right: 5),
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: use_email_signin ? widget.text_color : Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          use_email_signin = !use_email_signin;
+                          email_input_controller.clear();
+                          password_input_controller.clear();
+                          check_remember_me();
+                          setState(() {});
+                        },
+                        icon: Icon(
+                          FontAwesomeIcons.envelope,
+                          color: use_email_signin ? Colors.white : widget.text_color,
+                          size: 30,
                         ),
-                        Container(
-                          height: 38,
-                          width: 38,
-                          margin: const EdgeInsets.only(right: 5),
-                          padding: const EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color: !use_email_signin ? widget.text_color : Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              use_email_signin = !use_email_signin;
-                              email_input_controller.clear();
-                              password_input_controller.clear();
-                              check_remember_me();
-                              setState(() {});
-                            },
-                            icon: Icon(
-                              FontAwesomeIcons.commentSms,
-                              color: !use_email_signin ? Colors.white : widget.text_color,
-                              size: 30,
-                            ),
-                          ),
+                      ),
+                    ),
+                    Container(
+                      height: 38,
+                      width: 38,
+                      margin: const EdgeInsets.only(right: 5),
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: !use_email_signin ? widget.text_color : Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          use_email_signin = !use_email_signin;
+                          email_input_controller.clear();
+                          password_input_controller.clear();
+                          check_remember_me();
+                          setState(() {});
+                        },
+                        icon: Icon(
+                          FontAwesomeIcons.commentSms,
+                          color: !use_email_signin ? Colors.white : widget.text_color,
+                          size: 30,
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: sized_box_space * 0.7,
-                    ),
-                  ],
-                )
-              : Container(),
-          email_form_section(current_phone_code_flex),
-          password_form_section(),
-          !is_login(widget.auth_form_type)
-              ? Container()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    !use_email_signin && !verification_code_sent.value
-                        ? Container()
-                        : SizedBox(
-                            height: sized_box_space,
-                          ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        second_button(),
-                        third_button(),
-                      ],
-                    ),
-                    SizedBox(
-                      height: sized_box_space,
+                      ),
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: sized_box_space * 0.7,
+                ),
+              ],
+            ),
+          email_form_section(current_phone_code_flex),
+          password_form_section(),
+          if (is_login(widget.auth_form_type))
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                !use_email_signin && !verification_code_sent.value
+                    ? Container()
+                    : SizedBox(
+                        height: sized_box_space,
+                      ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    second_button(),
+                    third_button(),
+                  ],
+                ),
+              ],
+            ),
+          SizedBox(
+            height: sized_box_space,
+          ),
           main_button(),
           SizedBox(
             height: sized_box_space,
           ),
-          (widget.available_login_providers == AvailableLoginProviders.all ||
-                  widget.available_login_providers == AvailableLoginProviders.apple ||
-                  widget.available_login_providers == AvailableLoginProviders.google)
-              ? Column(
-                  children: [
-                    Text(
-                      "Or",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: widget.text_color,
-                      ),
-                    ),
-                    SizedBox(
-                      height: sized_box_space,
-                    ),
-                    google_button(),
-                    SizedBox(
-                      height: sized_box_space,
-                    ),
-                    apple_button(),
-                  ],
-                )
-              : Container(),
+          if (widget.available_login_providers == AvailableLoginProviders.all ||
+              widget.available_login_providers == AvailableLoginProviders.apple ||
+              widget.available_login_providers == AvailableLoginProviders.google)
+            Column(
+              children: [
+                Text(
+                  "Or",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: widget.text_color,
+                  ),
+                ),
+                SizedBox(
+                  height: sized_box_space,
+                ),
+                google_button(),
+                SizedBox(
+                  height: sized_box_space,
+                ),
+                apple_button(),
+              ],
+            ),
         ],
       ),
     );
