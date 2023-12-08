@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/auth_form_functions/login_phone_number.dart';
-import 'package:xapptor_logic/show_alert.dart';
+import 'package:xapptor_ui/utils/show_alert.dart';
 
 extension SendVerificationCode on AuthFormFunctions {
   send_verification_code({
