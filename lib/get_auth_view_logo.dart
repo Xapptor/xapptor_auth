@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:xapptor_ui/widgets/webview/webview.dart';
 
@@ -8,36 +8,20 @@ Widget get_auth_view_logo({
   required double logo_image_width,
   required double image_border_radius,
 }) {
-  return Container(
-    //color: Colors.lightGreen,
-    child: logo_path.contains("http")
-        ? Container(
-            height: logo_height(context),
-            width: logo_image_width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                image_border_radius,
-              ),
-            ),
-            child: Webview(
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(image_border_radius),
+    child: SizedBox(
+      height: logo_height(context),
+      width: logo_image_width,
+      child: logo_path.contains("http")
+          ? Webview(
               id: "20",
               src: logo_path,
+            )
+          : Image.asset(
+              logo_path,
+              fit: BoxFit.contain,
             ),
-          )
-        : Container(
-            height: logo_height(context),
-            width: logo_image_width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                image_border_radius,
-              ),
-              image: DecorationImage(
-                fit: BoxFit.contain,
-                image: AssetImage(
-                  logo_path,
-                ),
-              ),
-            ),
-          ),
+    ),
   );
 }

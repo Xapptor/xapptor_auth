@@ -57,7 +57,7 @@ class AccountView extends StatefulWidget {
     required this.first_button_color,
     required this.second_button_color,
     required this.logo_path,
-    this.image_border_radius = 0,
+    required this.image_border_radius,
     required this.topbar_color,
     required this.has_language_picker,
     required this.custom_background,

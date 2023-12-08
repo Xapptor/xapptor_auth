@@ -12,14 +12,6 @@ import 'package:xapptor_translation/translation_stream.dart';
 extension StateExtension on AccountViewState {
   init_state() async {
     check_if_app_enabled();
-    check_logo_image_width(
-      context: context,
-      logo_path: widget.logo_path,
-      callback: (new_logo_image_width) => setState(() {
-        logo_image_width = new_logo_image_width;
-      }),
-    );
-    prefs = await SharedPreferences.getInstance();
 
     translation_stream = TranslationStream(
       translation_text_list_array: widget.text_list,
@@ -47,12 +39,20 @@ extension StateExtension on AccountViewState {
     }
 
     if (is_register(widget.auth_form_type)) {
-      setState(() {
-        gender_value = widget.gender_values.get(source_language_index)[0];
-        country_value = widget.country_values?[0];
-      });
+      gender_value = widget.gender_values.get(source_language_index)[0];
+      country_value = widget.country_values?[0];
+      setState(() {});
     }
 
     if (is_edit_account(widget.auth_form_type)) fetch_fields();
+
+    check_logo_image_width(
+      context: context,
+      logo_path: widget.logo_path,
+      callback: (new_logo_image_width) => setState(() {
+        logo_image_width = new_logo_image_width;
+      }),
+    );
+    prefs = await SharedPreferences.getInstance();
   }
 }
