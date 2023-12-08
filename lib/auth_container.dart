@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_translation/translation_stream.dart';
@@ -75,7 +76,17 @@ class _AuthContainerState extends State<AuthContainer> {
                     : Container(),
               ),
             ],
-            custom_leading: null,
+            custom_leading: widget.has_back_button
+                ? IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      FontAwesomeIcons.angleLeft,
+                      color: Colors.white,
+                    ),
+                  )
+                : null,
             logo_path: null,
           ),
           body: Container(
