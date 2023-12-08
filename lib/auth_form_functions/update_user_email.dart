@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/auth_form_functions/show_user_info_saved_message.dart';
-import 'package:xapptor_logic/show_alert.dart';
+import 'package:xapptor_ui/utils/show_alert.dart';
 
 extension UpdateUserEmail on AuthFormFunctions {
   update_user_email({

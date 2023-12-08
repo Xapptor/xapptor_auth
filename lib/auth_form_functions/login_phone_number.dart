@@ -8,7 +8,7 @@ import 'package:xapptor_auth/auth_form_functions/send_verification_code.dart';
 import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
 import 'package:xapptor_auth/model/xapptor_user.dart';
 import 'package:xapptor_auth/show_quick_login.dart';
-import 'package:xapptor_logic/show_alert.dart';
+import 'package:xapptor_ui/utils/show_alert.dart';
 import 'package:xapptor_router/app_screens.dart';
 
 extension LoginPhoneNumber on AuthFormFunctions {

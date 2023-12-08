@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
-import 'package:xapptor_logic/show_alert.dart';
+import 'package:xapptor_ui/utils/show_alert.dart';
 import 'package:xapptor_router/app_screens.dart';
 
 extension RestorePassword on AuthFormFunctions {
