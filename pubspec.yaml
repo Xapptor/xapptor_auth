@@ -11,9 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_auth: ^4.10.0
-  cloud_firestore: ^4.9.2
-  firebase_storage: ^11.2.7
+  firebase_auth: ^4.16.0
+  cloud_firestore: ^4.14.0
+  firebase_storage: ^11.6.0
 
   sign_in_button: ^3.2.0
   google_sign_in: ^6.1.5
@@ -22,12 +22,12 @@ dependencies:
   universal_platform: ^1.0.0+1
   shared_preferences: ^2.2.2
   intl: ^0.18.1
-  http: ^1.1.0
+  http: ^1.1.2
   crypto: ^3.0.3
   google_mlkit_face_detection: ^0.8.0
   camera: ^0.10.5+5
-  font_awesome_flutter: ^10.5.0
-  pointer_interceptor: ^0.9.3+6
+  font_awesome_flutter: ^10.6.0
+  pointer_interceptor: ^0.10.1
 
   # xapptor_api_key:
   #   path: ../xapptor_api_key
@@ -50,7 +50,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.3
+  flutter_lints: ^3.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
