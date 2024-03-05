@@ -20,7 +20,7 @@ extension UpdateUserEmail on AuthFormFunctions {
       if (email_input_controller.text == confirm_email_input_controller.text) {
         User user = FirebaseAuth.instance.currentUser!;
 
-        user.updateEmail(email_input_controller.text).then((result) async {
+        user.verifyBeforeUpdateEmail(email_input_controller.text).then((result) async {
           try {
             await user.sendEmailVerification();
           } catch (error) {
