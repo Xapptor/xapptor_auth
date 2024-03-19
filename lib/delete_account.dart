@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -43,11 +45,13 @@ delete_account({
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(text_list[email_linked
-              ? 2
-              : phone_linked
-                  ? 3
-                  : 1]),
+          title: Text(
+            text_list[email_linked
+                ? 2
+                : phone_linked
+                    ? 3
+                    : 1],
+          ),
           actions: [
             !email_linked && !phone_linked
                 ? Container()
