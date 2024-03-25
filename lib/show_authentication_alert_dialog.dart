@@ -122,10 +122,12 @@ show_authentication_alert_dialog({
                       callback();
                     }).catchError((onError) {
                       debugPrint(onError);
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("The password is invalid"),
-                        duration: Duration(milliseconds: 1500),
-                      ));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("The password is invalid"),
+                          duration: Duration(milliseconds: 1500),
+                        ),
+                      );
                     });
                   }
                 },
