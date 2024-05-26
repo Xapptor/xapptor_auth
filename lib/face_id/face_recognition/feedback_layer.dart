@@ -129,13 +129,13 @@ class _FeedbackLayerState extends State<FeedbackLayer> {
                 }
               },
               style: ButtonStyle(
-                elevation: MaterialStateProperty.all<double>(
+                elevation: WidgetStateProperty.all<double>(
                   0,
                 ),
-                backgroundColor: MaterialStateProperty.all<Color>(
+                backgroundColor: WidgetStateProperty.all<Color>(
                   widget.main_button_enabled ? widget.main_color : Colors.grey,
                 ),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
                       outline_border_radius,

@@ -8,7 +8,7 @@ extension StateExtension on LoginAndRestoreViewState {
         ? Container()
         : TextButton(
             style: ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
                     MediaQuery.of(context).size.width,

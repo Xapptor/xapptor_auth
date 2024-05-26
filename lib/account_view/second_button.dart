@@ -17,7 +17,7 @@ extension StateExtension on AccountViewState {
               ),
               TextButton(
                 style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                         screen_width,
