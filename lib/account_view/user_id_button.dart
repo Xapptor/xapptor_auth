@@ -26,10 +26,10 @@ extension StateExtension on AccountViewState {
                       );
                     },
                     style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all<Color>(
+                      foregroundColor: WidgetStateProperty.all<Color>(
                         Colors.grey.withOpacity(0.3),
                       ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(
                             Radius.circular(outline_border_radius),
