@@ -23,7 +23,7 @@ extension StateExtension on FaceIDState {
 
       init_timer();
 
-      if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS) {
+      if (UniversalPlatform.isMobile) {
         camera_controller!.startImageStream((CameraImage camera_image) async {
           InputImage input_image = convert_camera_image_to_input_image(
             image: camera_image,

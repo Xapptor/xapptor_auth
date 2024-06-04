@@ -10,13 +10,16 @@ check_if_app_enabled() async {
   bool app_enabled = false;
   DocumentSnapshot metadata_app = await FirebaseFirestore.instance.collection('metadata').doc('app').get();
 
+  String platform = "";
   if (UniversalPlatform.isAndroid) {
-    app_enabled = metadata_app["enabled"]["android"];
+    platform = "android";
   } else if (UniversalPlatform.isIOS) {
-    app_enabled = metadata_app["enabled"]["ios"];
+    platform = "ios";
   } else if (UniversalPlatform.isWeb) {
-    app_enabled = metadata_app["enabled"]["web"];
+    platform = "web";
   }
+  app_enabled = metadata_app["enabled"][platform];
+
   debugPrint("app_enabled: $app_enabled");
   if (!app_enabled) exit(0);
 }
