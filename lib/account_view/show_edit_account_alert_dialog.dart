@@ -15,7 +15,7 @@ extension StateExtension on AccountViewState {
       builder: (BuildContext dialog_context) {
         return AlertDialog(
           title: const Text("Do you want to save the changes?"),
-          actions: <Widget>[
+          actions: [
             TextButton(
               child: const Text("Discard"),
               onPressed: () {

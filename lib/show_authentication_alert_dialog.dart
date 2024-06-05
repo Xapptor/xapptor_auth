@@ -84,7 +84,7 @@ show_authentication_alert_dialog({
               ).validate(),
               obscureText: true,
             ),
-            actions: <Widget>[
+            actions: [
               TextButton(
                 child: const Text("Cancel"),
                 onPressed: () {

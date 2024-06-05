@@ -63,7 +63,7 @@ class _AuthContainerState extends State<AuthContainer> {
             context: context,
             background_color: widget.topbar_color,
             has_back_button: widget.has_back_button,
-            actions: <Widget>[
+            actions: [
               Container(
                 margin: const EdgeInsets.only(right: 20),
                 width: 150,

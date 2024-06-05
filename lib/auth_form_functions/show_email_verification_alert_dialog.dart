@@ -13,7 +13,7 @@ extension ShowEmailVerificationAlertDialog on AuthFormFunctions {
         return AlertDialog(
           title: const Text("You haven't verified your email yet"),
           content: const Text("Would you like to send an email verification?"),
-          actions: <Widget>[
+          actions: [
             TextButton(
               child: const Text("Cancel"),
               onPressed: () {

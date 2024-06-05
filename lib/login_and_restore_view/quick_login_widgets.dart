@@ -116,7 +116,7 @@ extension StateExtension on LoginAndRestoreViewState {
                       ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
+                  children: [
                     second_button(),
                     third_button(),
                   ],

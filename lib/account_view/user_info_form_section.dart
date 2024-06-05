@@ -225,7 +225,7 @@ extension StateExtension on AccountViewState {
                             setState(() {});
                           },
                           child: Row(
-                            children: <Widget>[
+                            children: [
                               Expanded(
                                 flex: 2,
                                 child: Icon(
