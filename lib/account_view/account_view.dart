@@ -163,7 +163,7 @@ class AccountViewState extends State<AccountView> {
         key: user_info_view_form_key,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             SizedBox(
               height: sized_box_space,
             ),

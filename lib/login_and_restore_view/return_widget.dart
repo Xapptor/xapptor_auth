@@ -25,7 +25,7 @@ extension StateExtension on LoginAndRestoreViewState {
         update_source_language: update_source_language,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             SizedBox(
               height: sized_box_space,
             ),

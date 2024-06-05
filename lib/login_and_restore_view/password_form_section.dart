@@ -86,7 +86,7 @@ extension StateExtension on LoginAndRestoreViewState {
                             setState(() {});
                           },
                           child: Row(
-                            children: <Widget>[
+                            children: [
                               Container(
                                 margin: const EdgeInsets.only(
                                   right: 10,
