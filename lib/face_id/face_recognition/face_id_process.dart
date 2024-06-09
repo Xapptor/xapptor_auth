@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_auth/face_id/compare_faces/compare_faces.dart';
 import 'package:xapptor_auth/face_id/face_recognition/comparison_result_callback.dart';
 import 'package:xapptor_auth/face_id/face_recognition/face_id.dart';
-import 'package:xapptor_logic/get_base64_from_remote_image.dart';
+import 'package:xapptor_logic/image/get_data_from_remote_image.dart';
 import 'upload_new_face_id_file.dart';
 import 'package:xapptor_api_key/initial_values.dart';
 
@@ -29,8 +29,11 @@ extension StateExtension on FaceIDState {
             callback: comparison_result_callback,
           );
         } else {
-          Uint8List target_bytes =
-              await get_bytes_from_remote_image(await get_random_face_id_file_url(current_user: current_user));
+          Uint8List target_bytes = await get_bytes_from_remote_image(
+            await get_random_face_id_file_url(
+              current_user: current_user,
+            ),
+          );
 
           Uint8List d_t_b = [] as Uint8List;
 

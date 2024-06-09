@@ -1,4 +1,4 @@
-import 'package:xapptor_logic/random_number_with_range.dart';
+import 'package:xapptor_logic/random/random_number_with_range.dart';
 import 'compare_faces_local.dart';
 import 'compare_faces_remote.dart';
 import 'package:flutter/foundation.dart';
