@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/auth_form_functions/send_verification_code.dart';
 import 'package:xapptor_auth/check_provider.dart';
-import 'package:xapptor_logic/firebase_tasks.dart';
+import 'package:xapptor_logic/firebase_tasks/delete.dart';
 import 'package:xapptor_ui/utils/show_alert.dart';
 
 delete_account({

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:xapptor_logic/get_image_size.dart';
+import 'package:xapptor_logic/image/get_image_size.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
 check_logo_image_width({

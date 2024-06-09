@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:xapptor_auth/face_id/face_recognition/convert_image_to_input_image.dart';
-import 'package:xapptor_logic/get_temporary_file_from_local.dart';
+import 'package:xapptor_logic/file/get_temporary_file_from_local.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 Future<bool> compare_faces_with_local_service({

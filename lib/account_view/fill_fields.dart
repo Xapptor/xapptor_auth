@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/account_view/validate_picker_value.dart';
-import 'package:xapptor_logic/timestamp_to_date.dart';
+import 'package:xapptor_logic/date/timestamp_to_date_string.dart';
 
 extension StateExtension on AccountViewState {
   fill_fields() async {
