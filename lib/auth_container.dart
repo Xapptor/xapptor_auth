@@ -4,9 +4,9 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_translation/translation_stream.dart';
 import 'package:xapptor_ui/widgets/app_version_container.dart';
-import 'package:xapptor_ui/widgets/topbar.dart';
+import 'package:xapptor_ui/widgets/top_and_bottom/topbar.dart';
 import 'package:xapptor_translation/language_picker.dart';
-import 'package:xapptor_ui/widgets/is_portrait.dart';
+import 'package:xapptor_ui/utils/is_portrait.dart';
 
 // Contains User Info Forms.
 
