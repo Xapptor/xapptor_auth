@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_auth/login_and_restore_view/on_pressed_first_button.dart';
-import 'package:xapptor_ui/widgets/custom_card.dart';
-import 'package:xapptor_ui/widgets/is_portrait.dart';
+import 'package:xapptor_ui/widgets/card/custom_card.dart';
+import 'package:xapptor_ui/utils/is_portrait.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
   Widget main_button() {
