@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/auth_form_functions/show_user_info_saved_message.dart';
+import 'package:xapptor_db/xapptor_db.dart';
 
 extension UpdateUserNameAndInfo on AuthFormFunctions {
   update_user_name_and_info({
@@ -23,7 +24,7 @@ extension UpdateUserNameAndInfo on AuthFormFunctions {
     Timestamp birthday_timestamp = Timestamp.fromDate(selected_date);
 
     if (name_and_info_form_key.currentState!.validate()) {
-      FirebaseFirestore.instance.collection("users").doc(user_id).update({
+      XapptorDB.instance.collection("users").doc(user_id).update({
         "firstname": firstname_input_controller.text,
         "lastname": lastname_input_controller.text,
         "birthday": birthday_timestamp,

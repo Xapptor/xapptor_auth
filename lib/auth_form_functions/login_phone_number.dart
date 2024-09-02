@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:xapptor_db/xapptor_db.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -127,7 +127,7 @@ extension LoginPhoneNumber on AuthFormFunctions {
     XapptorUser xapptor_user = XapptorUser.empty();
     xapptor_user.id = user_credential.user!.uid;
 
-    var user = await FirebaseFirestore.instance.collection('users').doc(xapptor_user.id).get();
+    var user = await XapptorDB.instance.collection('users').doc(xapptor_user.id).get();
     if (user.exists) {
       if (remember_me) {
         save_phone_prefs(
@@ -146,11 +146,7 @@ extension LoginPhoneNumber on AuthFormFunctions {
         open_screen("home");
       }
     } else {
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(user_credential.user!.uid)
-          .set(xapptor_user.to_json())
-          .then((value) {
+      XapptorDB.instance.collection("users").doc(user_credential.user!.uid).set(xapptor_user.to_json()).then((value) {
         if (remember_me) {
           save_phone_prefs(
             phone_input_controller: phone_input_controller,

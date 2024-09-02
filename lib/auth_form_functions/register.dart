@@ -7,6 +7,7 @@ import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/model/xapptor_user.dart';
 import 'package:xapptor_ui/utils/show_alert.dart';
 import 'package:xapptor_router/app_screens.dart';
+import 'package:xapptor_db/xapptor_db.dart';
 
 extension Register on AuthFormFunctions {
   register({
@@ -57,7 +58,7 @@ extension Register on AuthFormFunctions {
                   roles: [],
                 );
 
-                FirebaseFirestore.instance
+                XapptorDB.instance
                     .collection("users")
                     .doc(current_user.user!.uid)
                     .set(xapptor_user.to_json())

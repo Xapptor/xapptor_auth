@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/account_view/validate_picker_value.dart';
 import 'package:xapptor_logic/date/timestamp_to_date_string.dart';
+import 'package:xapptor_db/xapptor_db.dart';
 
 extension StateExtension on AccountViewState {
   fill_fields() async {
@@ -30,7 +31,7 @@ extension StateExtension on AccountViewState {
   fetch_fields() async {
     if (FirebaseAuth.instance.currentUser != null) {
       User auth_user = FirebaseAuth.instance.currentUser!;
-      DocumentSnapshot user = await FirebaseFirestore.instance.collection("users").doc(auth_user.uid).get();
+      DocumentSnapshot user = await XapptorDB.instance.collection("users").doc(auth_user.uid).get();
 
       Map user_data = user.data() as Map;
 
