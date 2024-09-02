@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xapptor_auth/get_over_18_date.dart';
+import 'package:xapptor_db/xapptor_db.dart';
 
 class XapptorUser {
   String id;
@@ -85,7 +86,7 @@ Future<XapptorUser> get_xapptor_user({String? id}) async {
   String user_id = id ?? current_user.uid;
   String user_email = id == null ? current_user.email! : '';
 
-  DocumentSnapshot user_snap = await FirebaseFirestore.instance.collection('users').doc(user_id).get();
+  DocumentSnapshot user_snap = await XapptorDB.instance.collection('users').doc(user_id).get();
   return XapptorUser.from_snapshot(
     user_id,
     user_email,

@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:xapptor_db/xapptor_db.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -157,7 +157,7 @@ _delete_account({
 }) async {
   await user.delete().then((value) async {
     await delete_all_files_in_a_path(path: "users/${user.uid}");
-    await FirebaseFirestore.instance.collection("users").doc(user.uid).delete();
+    await XapptorDB.instance.collection("users").doc(user.uid).delete();
     if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
   }).onError((error, stackTrace) {
     debugPrint(error.toString());
