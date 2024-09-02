@@ -7,20 +7,23 @@ import 'package:xapptor_db/xapptor_db.dart';
 // Check if the app is enabled in the current platform.
 // Search param in metadata collection of Firebase Firestore.
 
-check_if_app_enabled() async {
+Future<bool> check_if_app_enabled() async {
   bool app_enabled = false;
   DocumentSnapshot metadata_app = await XapptorDB.instance.collection('metadata').doc('app').get();
 
-  String platform = "";
-  if (UniversalPlatform.isAndroid) {
-    platform = "android";
-  } else if (UniversalPlatform.isIOS) {
-    platform = "ios";
-  } else if (UniversalPlatform.isWeb) {
-    platform = "web";
+  if (metadata_app.data() != null) {
+    String platform = "";
+    if (UniversalPlatform.isAndroid) {
+      platform = "android";
+    } else if (UniversalPlatform.isIOS) {
+      platform = "ios";
+    } else if (UniversalPlatform.isWeb) {
+      platform = "web";
+    }
+    app_enabled = metadata_app["enabled"][platform];
   }
-  app_enabled = metadata_app["enabled"][platform];
-
   debugPrint("app_enabled: $app_enabled");
-  if (!app_enabled) exit(0);
+
+  if (!UniversalPlatform.isWeb && !app_enabled) exit(0);
+  return app_enabled;
 }
