@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+AvailableLoginProviders current_login_providers = AvailableLoginProviders.email_and_phone;
+
 class LoginAndRestoreView extends StatefulWidget {
   AuthFormType auth_form_type;
   final TranslationTextListArray text_list;
@@ -102,16 +104,16 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
   double logo_image_width = 0;
 
-  GoogleSignIn google_signin = GoogleSignIn(
-    scopes: [
-      'email',
-      'https://www.googleapis.com/auth/contacts.readonly',
-    ],
-  );
+  GoogleSignIn? google_signin;
+
+  List<String> google_signin_scopes = [
+    'email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+  ];
 
   Future<GoogleSignInAccount?> handle_google_signin() async {
     try {
-      GoogleSignInAccount? google_signin_account = await google_signin.signIn();
+      GoogleSignInAccount? google_signin_account = await google_signin?.signIn();
       if (google_signin_account != null) {
         return google_signin_account;
       }
@@ -124,7 +126,17 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
   @override
   void initState() {
+    current_login_providers = widget.available_login_providers;
+
+    if (widget.available_login_providers == AvailableLoginProviders.all ||
+        widget.available_login_providers == AvailableLoginProviders.google) {
+      google_signin = GoogleSignIn(
+        scopes: google_signin_scopes,
+      );
+    }
+
     source_language_index = widget.source_language_index;
+
     if (widget.available_login_providers == AvailableLoginProviders.phone) {
       use_email_signin = false;
     }

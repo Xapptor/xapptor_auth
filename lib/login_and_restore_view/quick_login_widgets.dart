@@ -1,17 +1,19 @@
 // ignore_for_file: invalid_use_of_protected_member
 
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/login_and_restore_view/apple_button.dart';
 import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
 import 'package:xapptor_auth/login_and_restore_view/check_remember_me.dart';
 import 'package:xapptor_auth/login_and_restore_view/email_form_section.dart';
-import 'package:xapptor_auth/login_and_restore_view/google_button.dart';
+import 'package:xapptor_auth/login_and_restore_view/google_button/google_button.dart';
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_auth/login_and_restore_view/main_button.dart';
 import 'package:xapptor_auth/login_and_restore_view/password_form_section.dart';
 import 'package:xapptor_auth/login_and_restore_view/second_button.dart';
 import 'package:xapptor_auth/login_and_restore_view/third_button.dart';
+import 'package:xapptor_auth/signin_with_google.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -145,7 +147,15 @@ extension StateExtension on LoginAndRestoreViewState {
                 SizedBox(
                   height: sized_box_space,
                 ),
-                google_button(),
+                google_button(
+                  on_pressed: () async {
+                    // This in only call on Mobile, for Web the button is "renderButton()" and it's rendered from the web SDK
+                    GoogleSignInAccount? google_signin_account = await handle_google_signin();
+                    if (google_signin_account != null) {
+                      signin_with_google(google_signin_account);
+                    }
+                  },
+                ),
                 SizedBox(
                   height: sized_box_space,
                 ),
