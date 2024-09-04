@@ -41,8 +41,8 @@ extension StateExtension on LoginAndRestoreViewState {
         children: [
           if ((is_login(widget.auth_form_type) || is_quick_login(widget.auth_form_type)) &&
               widget.phone_signin_text_list != null &&
-              (widget.available_login_providers == AvailableLoginProviders.all ||
-                  widget.available_login_providers == AvailableLoginProviders.email_and_phone))
+              (current_login_providers == AvailableLoginProviders.all ||
+                  current_login_providers == AvailableLoginProviders.email_and_phone))
             Column(
               children: [
                 Row(
@@ -132,9 +132,9 @@ extension StateExtension on LoginAndRestoreViewState {
           SizedBox(
             height: sized_box_space,
           ),
-          if (widget.available_login_providers == AvailableLoginProviders.all ||
-              widget.available_login_providers == AvailableLoginProviders.apple ||
-              widget.available_login_providers == AvailableLoginProviders.google)
+          if (current_login_providers == AvailableLoginProviders.all ||
+              current_login_providers == AvailableLoginProviders.apple ||
+              current_login_providers == AvailableLoginProviders.google)
             Column(
               children: [
                 Text(
