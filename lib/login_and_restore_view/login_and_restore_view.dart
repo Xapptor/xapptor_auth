@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 AvailableLoginProviders current_login_providers = AvailableLoginProviders.email_and_phone;
+GoogleSignIn? google_signin;
 
 class LoginAndRestoreView extends StatefulWidget {
   AuthFormType auth_form_type;
@@ -103,8 +104,6 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
   AuthFormFunctions auth_form_functions = AuthFormFunctions();
 
   double logo_image_width = 0;
-
-  GoogleSignIn? google_signin;
 
   List<String> google_signin_scopes = [
     'email',
