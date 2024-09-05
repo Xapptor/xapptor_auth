@@ -34,21 +34,20 @@ form_section_container({
         ),
       ),
       if (add_final_padding) const Spacer(flex: 1),
-      icon == null || icon_color == null || icon_on_press == null
-          ? const SizedBox()
-          : Expanded(
-              flex: 1,
-              child: IconButton(
-                padding: const EdgeInsets.all(0),
-                icon: Icon(
-                  icon,
-                  color: icon_color,
-                ),
-                onPressed: () {
-                  icon_on_press();
-                },
-              ),
-            )
+      if (icon != null && icon_color != null && icon_on_press != null)
+        Expanded(
+          flex: 1,
+          child: IconButton(
+            padding: const EdgeInsets.all(0),
+            icon: Icon(
+              icon,
+              color: icon_color,
+            ),
+            onPressed: () {
+              icon_on_press();
+            },
+          ),
+        ),
     ],
   );
 }

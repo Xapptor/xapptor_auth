@@ -53,24 +53,23 @@ delete_account({
                     : 1],
           ),
           actions: [
-            !email_linked && !phone_linked
-                ? const SizedBox()
-                : Container(
-                    margin: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        labelText: text_list[email_linked ? 4 : 5],
-                        labelStyle: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                        hintStyle: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                      controller: password_input_controller,
-                      maxLines: null,
+            if (email_linked || phone_linked)
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: text_list[email_linked ? 4 : 5],
+                    labelStyle: const TextStyle(
+                      color: Colors.grey,
+                    ),
+                    hintStyle: const TextStyle(
+                      color: Colors.grey,
                     ),
                   ),
+                  controller: password_input_controller,
+                  maxLines: null,
+                ),
+              ),
             Container(
               margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
