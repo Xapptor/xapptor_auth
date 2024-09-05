@@ -126,15 +126,14 @@ class _AuthContainerState extends State<AuthContainer> {
                               ],
                             ),
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: is_login(widget.user_info_form_type)
-                                ? AppVersionContainer(
-                                    text_color: widget.topbar_color,
-                                    background_color: Colors.white,
-                                  )
-                                : const SizedBox(),
-                          ),
+                          if (is_login(widget.user_info_form_type))
+                            Expanded(
+                              flex: 1,
+                              child: AppVersionContainer(
+                                text_color: widget.topbar_color,
+                                background_color: Colors.white,
+                              ),
+                            ),
                         ],
                       ),
                     ),

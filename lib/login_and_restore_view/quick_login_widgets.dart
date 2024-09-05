@@ -111,11 +111,10 @@ extension StateExtension on LoginAndRestoreViewState {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                !use_email_signin && !verification_code_sent.value
-                    ? const SizedBox()
-                    : SizedBox(
-                        height: sized_box_space,
-                      ),
+                if (use_email_signin || verification_code_sent.value)
+                  SizedBox(
+                    height: sized_box_space,
+                  ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
