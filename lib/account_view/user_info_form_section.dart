@@ -163,91 +163,89 @@ extension StateExtension on AccountViewState {
               SizedBox(
                 height: sized_box_space,
               ),
-              widget.country_values != null
-                  ? DropdownButton<String>(
-                      icon: Icon(
-                        Icons.arrow_drop_down,
-                        color: widget.text_color,
-                      ),
-                      isExpanded: true,
-                      value: country_value == "" ? widget.country_values![0] : country_value,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(
-                        color: widget.text_color,
-                      ),
-                      underline: Container(
-                        height: 1,
-                        color: widget.text_color,
-                      ),
-                      dropdownColor: dropdown_color,
-                      onChanged: is_edit_account(widget.auth_form_type) && !editing_name_and_info
-                          ? null
-                          : (new_value) {
-                              if (is_edit_account(widget.auth_form_type)) {
-                                if (editing_name_and_info) {
-                                  setState(() {
-                                    country_value = new_value!;
-                                  });
-                                }
-                              } else {
-                                setState(() {
-                                  country_value = new_value!;
-                                });
-                              }
-                            },
-                      items: widget.country_values!.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    )
-                  : Container(),
-              is_register(widget.auth_form_type)
-                  ? Column(
-                      children: [
-                        SizedBox(
-                          height: sized_box_space,
-                        ),
-                        TextButton(
-                          style: ButtonStyle(
-                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  MediaQuery.of(context).size.width,
-                                ),
-                              ),
+              if (widget.country_values != null)
+                DropdownButton<String>(
+                  icon: Icon(
+                    Icons.arrow_drop_down,
+                    color: widget.text_color,
+                  ),
+                  isExpanded: true,
+                  value: country_value == "" ? widget.country_values![0] : country_value,
+                  iconSize: 24,
+                  elevation: 16,
+                  style: TextStyle(
+                    color: widget.text_color,
+                  ),
+                  underline: Container(
+                    height: 1,
+                    color: widget.text_color,
+                  ),
+                  dropdownColor: dropdown_color,
+                  onChanged: is_edit_account(widget.auth_form_type) && !editing_name_and_info
+                      ? null
+                      : (new_value) {
+                          if (is_edit_account(widget.auth_form_type)) {
+                            if (editing_name_and_info) {
+                              setState(() {
+                                country_value = new_value!;
+                              });
+                            }
+                          } else {
+                            setState(() {
+                              country_value = new_value!;
+                            });
+                          }
+                        },
+                  items: widget.country_values!.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              if (is_register(widget.auth_form_type))
+                Column(
+                  children: [
+                    SizedBox(
+                      height: sized_box_space,
+                    ),
+                    TextButton(
+                      style: ButtonStyle(
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              MediaQuery.of(context).size.width,
                             ),
                           ),
-                          onPressed: () {
-                            accept_terms = !accept_terms;
-                            setState(() {});
-                          },
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Icon(
-                                  accept_terms ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                                  color: widget.text_color,
-                                ),
-                              ),
-                              const Spacer(flex: 1),
-                              Expanded(
-                                flex: 12,
-                                child: widget.tc_and_pp_text,
-                              ),
-                              const Spacer(flex: 1),
-                            ],
+                        ),
+                      ),
+                      onPressed: () {
+                        accept_terms = !accept_terms;
+                        setState(() {});
+                      },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Icon(
+                              accept_terms ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                              color: widget.text_color,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: sized_box_space,
-                        ),
-                      ],
-                    )
-                  : Container(),
+                          const Spacer(flex: 1),
+                          Expanded(
+                            flex: 12,
+                            child: widget.tc_and_pp_text,
+                          ),
+                          const Spacer(flex: 1),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: sized_box_space,
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
