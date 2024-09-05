@@ -5,7 +5,7 @@ import 'package:xapptor_auth/delete_account.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
 extension StateExtension on AccountViewState {
-  Widget second_button() {
+  Widget? second_button() {
     double screen_width = MediaQuery.of(context).size.width;
 
     return is_edit_account(widget.auth_form_type)
@@ -53,6 +53,6 @@ extension StateExtension on AccountViewState {
               ),
             ],
           )
-        : Container();
+        : null;
   }
 }

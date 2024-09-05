@@ -73,7 +73,7 @@ class _AuthContainerState extends State<AuthContainer> {
                         language_picker_items_text_color: widget.text_color,
                         update_source_language: widget.update_source_language,
                       )
-                    : Container(),
+                    : null,
               ),
             ],
             custom_leading: widget.has_back_button
@@ -133,7 +133,7 @@ class _AuthContainerState extends State<AuthContainer> {
                                     text_color: widget.topbar_color,
                                     background_color: Colors.white,
                                   )
-                                : Container(),
+                                : const SizedBox(),
                           ),
                         ],
                       ),

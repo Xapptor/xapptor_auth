@@ -21,20 +21,19 @@ extension StateExtension on LoginAndRestoreViewState {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              use_email_signin
-                  ? Container()
-                  : Expanded(
-                      flex: current_phone_code_flex,
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        child: CountryPhoneCodesPicker(
-                          current_phone_code: current_phone_code,
-                          text_color: widget.text_color,
-                          setState: setState,
-                        ),
-                      ),
+              if (!use_email_signin)
+                Expanded(
+                  flex: current_phone_code_flex,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    child: CountryPhoneCodesPicker(
+                      current_phone_code: current_phone_code,
+                      text_color: widget.text_color,
+                      setState: setState,
                     ),
-              use_email_signin ? Container() : const Spacer(flex: 1),
+                  ),
+                ),
+              if (!use_email_signin) const Spacer(flex: 1),
               Expanded(
                 flex: 12,
                 child: TextFormField(

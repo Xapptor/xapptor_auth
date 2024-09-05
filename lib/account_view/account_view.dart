@@ -192,7 +192,7 @@ class AccountViewState extends State<AccountView> {
             SizedBox(
               height: sized_box_space,
             ),
-          ],
+          ].where((widget) => widget != null).cast<Widget>().toList(),
         ),
       ),
     );

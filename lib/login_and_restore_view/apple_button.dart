@@ -7,7 +7,7 @@ import 'package:xapptor_auth/login_and_restore_view/third_party_signin_method_sh
 import 'package:xapptor_auth/signin_with_apple.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
-  Widget apple_button() {
+  Widget? apple_button() {
     double screen_width = MediaQuery.of(context).size.width;
 
     return widget.available_login_providers == AvailableLoginProviders.all ||
@@ -37,6 +37,6 @@ extension StateExtension on LoginAndRestoreViewState {
               );
             },
           )
-        : Container();
+        : null;
   }
 }

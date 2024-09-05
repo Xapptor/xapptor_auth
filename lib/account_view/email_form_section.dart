@@ -10,9 +10,9 @@ import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
 extension StateExtension on AccountViewState {
-  Widget email_form_section(bool email_linked) {
+  Widget? email_form_section(bool email_linked) {
     return is_edit_account(widget.auth_form_type) && !email_linked && !linking_email
-        ? Container()
+        ? null
         : Container(
             margin: EdgeInsets.only(bottom: sized_box_space),
             child: Form(
@@ -56,36 +56,32 @@ extension StateExtension on AccountViewState {
                     SizedBox(
                       height: sized_box_space,
                     ),
-                    is_register(widget.auth_form_type) ||
-                            is_edit_account(
-                              widget.auth_form_type,
-                            )
-                        ? TextFormField(
-                            style: TextStyle(color: widget.text_color),
-                            enabled: is_edit_account(
-                              widget.auth_form_type,
-                            )
-                                ? editing_email
-                                : true,
-                            decoration: InputDecoration(
-                              labelText: widget.text_list.get(source_language_index)[1],
-                              labelStyle: TextStyle(
-                                color: widget.text_color,
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: widget.text_color,
-                                ),
-                              ),
+                    if (is_register(widget.auth_form_type) || is_edit_account(widget.auth_form_type))
+                      TextFormField(
+                        style: TextStyle(color: widget.text_color),
+                        enabled: is_edit_account(
+                          widget.auth_form_type,
+                        )
+                            ? editing_email
+                            : true,
+                        decoration: InputDecoration(
+                          labelText: widget.text_list.get(source_language_index)[1],
+                          labelStyle: TextStyle(
+                            color: widget.text_color,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: widget.text_color,
                             ),
-                            controller: confirm_email_input_controller,
-                            validator: (value) => FormFieldValidators(
-                              value: value!,
-                              type: FormFieldValidatorsType.email,
-                            ).validate(),
-                            keyboardType: TextInputType.emailAddress,
-                          )
-                        : Container(),
+                          ),
+                        ),
+                        controller: confirm_email_input_controller,
+                        validator: (value) => FormFieldValidators(
+                          value: value!,
+                          type: FormFieldValidatorsType.email,
+                        ).validate(),
+                        keyboardType: TextInputType.emailAddress,
+                      ),
                   ],
                 ),
               ),

@@ -54,7 +54,7 @@ delete_account({
           ),
           actions: [
             !email_linked && !phone_linked
-                ? Container()
+                ? const SizedBox()
                 : Container(
                     margin: const EdgeInsets.all(10),
                     child: TextFormField(

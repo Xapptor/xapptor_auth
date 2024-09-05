@@ -9,7 +9,7 @@ import 'package:xapptor_ui/values/ui.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
   Widget return_widget() {
-    Widget return_widget = Container();
+    Widget return_widget;
 
     if (is_quick_login(widget.auth_form_type)) {
       return_widget = quick_login_widgets();
@@ -35,24 +35,23 @@ extension StateExtension on LoginAndRestoreViewState {
               logo_image_width: logo_image_width,
               image_border_radius: widget.image_border_radius,
             ),
-            is_login(widget.auth_form_type)
-                ? Container()
-                : Column(
-                    children: [
-                      SizedBox(
-                        height: sized_box_space,
-                      ),
-                      Text(
-                        widget.text_list.get(source_language_index)[0],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: widget.text_color,
-                        ),
-                      ),
-                    ],
+            if (!is_login(widget.auth_form_type))
+              Column(
+                children: [
+                  SizedBox(
+                    height: sized_box_space,
                   ),
+                  Text(
+                    widget.text_list.get(source_language_index)[0],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: widget.text_color,
+                    ),
+                  ),
+                ],
+              ),
             SizedBox(
               height: sized_box_space,
             ),

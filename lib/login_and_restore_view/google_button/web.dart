@@ -5,12 +5,12 @@ import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart'
 import 'unsupported.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
-  Widget google_button({
+  Widget? google_button({
     HandleSignInFn? on_pressed,
   }) {
     return widget.available_login_providers == AvailableLoginProviders.all ||
             widget.available_login_providers == AvailableLoginProviders.google
         ? web.renderButton()
-        : Container();
+        : null;
   }
 }

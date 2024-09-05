@@ -112,7 +112,7 @@ extension StateExtension on LoginAndRestoreViewState {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 !use_email_signin && !verification_code_sent.value
-                    ? Container()
+                    ? const SizedBox()
                     : SizedBox(
                         height: sized_box_space,
                       ),
@@ -121,7 +121,7 @@ extension StateExtension on LoginAndRestoreViewState {
                   children: [
                     second_button(),
                     third_button(),
-                  ],
+                  ].where((widget) => widget != null).cast<Widget>().toList(),
                 ),
               ],
             ),
@@ -150,6 +150,7 @@ extension StateExtension on LoginAndRestoreViewState {
                 google_button(
                   on_pressed: () async {
                     // This in only call on Mobile, for Web the button is "renderButton()" and it's rendered from the web SDK
+
                     GoogleSignInAccount? google_signin_account = await handle_google_signin();
                     if (google_signin_account != null) {
                       signin_with_google(google_signin_account);
@@ -160,7 +161,7 @@ extension StateExtension on LoginAndRestoreViewState {
                   height: sized_box_space,
                 ),
                 apple_button(),
-              ],
+              ].where((widget) => widget != null).cast<Widget>().toList(),
             ),
         ],
       ),

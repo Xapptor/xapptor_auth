@@ -6,7 +6,7 @@ import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart'
 import 'package:xapptor_auth/login_and_restore_view/third_party_signin_method_shape.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
-  Widget google_button({
+  Widget? google_button({
     HandleSignInFn? on_pressed,
   }) {
     double screen_width = MediaQuery.of(context).size.width;
@@ -18,6 +18,6 @@ extension StateExtension on LoginAndRestoreViewState {
             shape: third_party_signin_method_shape(screen_width),
             onPressed: on_pressed ?? () {},
           )
-        : Container();
+        : null;
   }
 }
