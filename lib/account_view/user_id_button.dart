@@ -5,11 +5,11 @@ import 'package:xapptor_ui/utils/copy_to_clipboard.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
 extension StateExtension on AccountViewState {
-  Widget user_id_button() {
+  Widget? user_id_button() {
     User? user = FirebaseAuth.instance.currentUser;
 
     return user == null
-        ? Container()
+        ? null
         : Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

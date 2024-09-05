@@ -11,7 +11,7 @@ import 'package:xapptor_ui/utils/show_alert.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
 extension StateExtension on AccountViewState {
-  Widget unlink_email_button(bool email_linked, List<UserInfo> user_providers) {
+  Widget? unlink_email_button(bool email_linked, List<UserInfo> user_providers) {
     return is_edit_account(widget.auth_form_type) && email_linked && user_providers.length > 1
         ? Container(
             margin: EdgeInsets.only(bottom: sized_box_space),
@@ -70,6 +70,6 @@ extension StateExtension on AccountViewState {
               ),
             ),
           )
-        : Container();
+        : null;
   }
 }

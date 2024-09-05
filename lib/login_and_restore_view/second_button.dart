@@ -3,9 +3,9 @@ import 'package:xapptor_auth/auth_form_functions/send_verification_code.dart';
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
-  Widget second_button() {
+  Widget? second_button() {
     return !use_email_signin && !verification_code_sent.value
-        ? Container()
+        ? null
         : TextButton(
             style: ButtonStyle(
               shape: WidgetStateProperty.all<RoundedRectangleBorder>(

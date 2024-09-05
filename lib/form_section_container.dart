@@ -33,9 +33,9 @@ form_section_container({
           child: child,
         ),
       ),
-      add_final_padding ? const Spacer(flex: 1) : Container(),
+      if (add_final_padding) const Spacer(flex: 1),
       icon == null || icon_color == null || icon_on_press == null
-          ? Container()
+          ? const SizedBox()
           : Expanded(
               flex: 1,
               child: IconButton(
