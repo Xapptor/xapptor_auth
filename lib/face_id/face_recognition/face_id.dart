@@ -212,23 +212,21 @@ class FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                                   oval_size_multiplier: animation?.value ?? 1,
                                 ),
                               ),
-                              minimize_frame
-                                  ? FeedbackLayer(
-                                      main_color: widget.main_color,
-                                      texts: feedback_texts,
-                                      on_main_button_pressed: on_main_feedback_button_pressed,
-                                      main_button_enabled: face_is_ready_to_init_scan,
-                                      on_close_button_pressed: on_close_feedback_button_pressed,
-                                      undetected_face_feedback: undetected_face_feedback,
-                                    )
-                                  : Container(),
-                              show_frame_toast
-                                  ? frame_container(
-                                      screen_width: screen_width,
-                                      screen_height: screen_height,
-                                      outline_border_radius: outline_border_radius,
-                                    )
-                                  : Container(),
+                              if (minimize_frame)
+                                FeedbackLayer(
+                                  main_color: widget.main_color,
+                                  texts: feedback_texts,
+                                  on_main_button_pressed: on_main_feedback_button_pressed,
+                                  main_button_enabled: face_is_ready_to_init_scan,
+                                  on_close_button_pressed: on_close_feedback_button_pressed,
+                                  undetected_face_feedback: undetected_face_feedback,
+                                ),
+                              if (show_frame_toast)
+                                frame_container(
+                                  screen_width: screen_width,
+                                  screen_height: screen_height,
+                                  outline_border_radius: outline_border_radius,
+                                ),
                             ],
                           ),
               ),
