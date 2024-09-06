@@ -9,9 +9,8 @@ extension StateExtension on LoginAndRestoreViewState {
   init_state() async {
     check_if_app_enabled();
 
-    if (!is_quick_login(widget.auth_form_type)) {
-      check_login();
-    }
+    if (!is_quick_login(widget.auth_form_type)) check_login();
+
     init_prefs();
 
     translation_stream = TranslationStream(
