@@ -10,7 +10,7 @@ signin_with_apple(
 ) async {
   final AuthCredential credential = OAuthProvider("apple.com").credential(
     idToken: authorization_credential.identityToken,
-    //rawNonce: raw_nonce,
+    rawNonce: raw_nonce,
   );
   await FirebaseAuth.instance.signInWithCredential(credential).then(
     (value) async {
