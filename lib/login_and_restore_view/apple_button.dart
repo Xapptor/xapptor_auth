@@ -5,6 +5,7 @@ import 'package:xapptor_auth/login_and_restore_view/available_login_providers.da
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_auth/login_and_restore_view/third_party_signin_method_shape.dart';
 import 'package:xapptor_auth/signin_with_apple.dart';
+import 'package:xapptor_logic/string/sha256_of_string.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
   Widget? apple_button() {
@@ -17,7 +18,7 @@ extension StateExtension on LoginAndRestoreViewState {
             shape: third_party_signin_method_shape(screen_width),
             onPressed: () async {
               final raw_nonce = generateNonce();
-              //final nonce = sha256_of_string(raw_nonce);
+              final nonce = sha256_of_string(raw_nonce);
 
               AuthorizationCredentialAppleID credential = await SignInWithApple.getAppleIDCredential(
                 webAuthenticationOptions: WebAuthenticationOptions(
@@ -28,7 +29,7 @@ extension StateExtension on LoginAndRestoreViewState {
                   AppleIDAuthorizationScopes.email,
                   AppleIDAuthorizationScopes.fullName,
                 ],
-                //nonce: nonce,
+                nonce: nonce,
               );
 
               signin_with_apple(

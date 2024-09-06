@@ -43,6 +43,7 @@ class LoginAndRestoreView extends StatefulWidget {
   final bool verify_email;
   AvailableLoginProviders available_login_providers;
   Function? quick_login_callback;
+  final bool enable_biometrics;
 
   LoginAndRestoreView({
     super.key,
@@ -71,6 +72,7 @@ class LoginAndRestoreView extends StatefulWidget {
     this.verify_email = true,
     this.available_login_providers = AvailableLoginProviders.email_and_phone,
     this.quick_login_callback,
+    required this.enable_biometrics,
   });
 
   @override
