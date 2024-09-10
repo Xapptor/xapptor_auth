@@ -15,7 +15,11 @@ signin_with_apple(
   await FirebaseAuth.instance.signInWithCredential(credential).then(
     (value) async {
       await XapptorDB.instance.collection("users").doc(value.user!.uid).set(
-        {},
+        {
+          "email": authorization_credential.email,
+          "firstname": authorization_credential.givenName,
+          "lastname": authorization_credential.familyName,
+        },
         SetOptions(
           merge: true,
         ),
