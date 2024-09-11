@@ -8,7 +8,7 @@ import 'package:xapptor_auth/login_and_restore_view/check_remember_me.dart';
 import 'package:xapptor_auth/login_and_restore_view/init_state.dart';
 import 'package:xapptor_auth/login_and_restore_view/return_widget.dart';
 import 'package:xapptor_translation/model/text_list.dart';
-import 'package:xapptor_ui/values/country_phone_codes.dart';
+import 'package:xapptor_ui/values/country/country.dart';
 import 'package:xapptor_translation/translation_stream.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -161,7 +161,7 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
     setState(() {});
   }
 
-  ValueNotifier<CountryPhoneCode> current_phone_code = ValueNotifier(country_phone_code_list.first);
+  ValueNotifier<Country> current_phone_code = ValueNotifier(countries_list.first);
 
   @override
   Widget build(BuildContext context) {
