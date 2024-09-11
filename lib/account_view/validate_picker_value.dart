@@ -1,11 +1,15 @@
-import 'package:xapptor_auth/account_view/account_view.dart';
-
-extension StateExtension on AccountViewState {
-  String validate_picker_value(String value, List<String> list) {
-    bool match = false;
-    for (var list_item in list) {
-      if (list_item == value) match = true;
+String validate_picker_value(
+  String value,
+  List<String> list,
+) {
+  for (var list_item in list) {
+    if (list_item == value) {
+      return value;
     }
-    return match ? value : list.first;
   }
+
+  return list.firstWhere(
+    (element) => element.contains(value),
+    orElse: () => list.first,
+  );
 }
