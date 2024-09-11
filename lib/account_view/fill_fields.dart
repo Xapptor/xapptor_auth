@@ -6,6 +6,7 @@ import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/account_view/validate_picker_value.dart';
 import 'package:xapptor_logic/date/timestamp_to_date_string.dart';
 import 'package:xapptor_db/xapptor_db.dart';
+import 'package:xapptor_ui/values/country/country.dart';
 
 extension StateExtension on AccountViewState {
   fill_fields() async {
@@ -17,7 +18,10 @@ extension StateExtension on AccountViewState {
     confirm_password_input_controller.text = "Aa00000000";
     birthday_label = birthday;
     gender_value = widget.gender_values.get(source_language_index)[gender_index];
-    country_value = widget.country_values != null ? validate_picker_value(country, widget.country_values!) : "";
+    country_value = validate_picker_value(
+      country,
+      countries_list.map((e) => e.name).toList(),
+    );
     selected_date = date;
 
     password_visible = false;

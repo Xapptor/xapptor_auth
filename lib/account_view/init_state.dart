@@ -8,6 +8,7 @@ import 'package:xapptor_auth/account_view/update_text_list.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/check_if_app_enabled.dart';
 import 'package:xapptor_translation/translation_stream.dart';
+import 'package:xapptor_ui/values/country/country.dart';
 
 extension StateExtension on AccountViewState {
   init_state() async {
@@ -40,7 +41,7 @@ extension StateExtension on AccountViewState {
 
     if (is_register(widget.auth_form_type)) {
       gender_value = widget.gender_values.get(source_language_index)[0];
-      country_value = widget.country_values?[0];
+      country_value = countries_list[0].name;
       setState(() {});
     }
 

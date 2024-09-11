@@ -8,6 +8,7 @@ import 'package:xapptor_auth/account_view/select_date.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/form_section_container.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
+import 'package:xapptor_ui/values/country/country.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
 extension StateExtension on AccountViewState {
@@ -163,46 +164,45 @@ extension StateExtension on AccountViewState {
               SizedBox(
                 height: sized_box_space,
               ),
-              if (widget.country_values != null)
-                DropdownButton<String>(
-                  icon: Icon(
-                    Icons.arrow_drop_down,
-                    color: widget.text_color,
-                  ),
-                  isExpanded: true,
-                  value: country_value == "" ? widget.country_values![0] : country_value,
-                  iconSize: 24,
-                  elevation: 16,
-                  style: TextStyle(
-                    color: widget.text_color,
-                  ),
-                  underline: Container(
-                    height: 1,
-                    color: widget.text_color,
-                  ),
-                  dropdownColor: dropdown_color,
-                  onChanged: is_edit_account(widget.auth_form_type) && !editing_name_and_info
-                      ? null
-                      : (new_value) {
-                          if (is_edit_account(widget.auth_form_type)) {
-                            if (editing_name_and_info) {
-                              setState(() {
-                                country_value = new_value!;
-                              });
-                            }
-                          } else {
+              DropdownButton<String>(
+                icon: Icon(
+                  Icons.arrow_drop_down,
+                  color: widget.text_color,
+                ),
+                isExpanded: true,
+                value: country_value == "" ? countries_list[0].name : country_value,
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(
+                  color: widget.text_color,
+                ),
+                underline: Container(
+                  height: 1,
+                  color: widget.text_color,
+                ),
+                dropdownColor: dropdown_color,
+                onChanged: is_edit_account(widget.auth_form_type) && !editing_name_and_info
+                    ? null
+                    : (new_value) {
+                        if (is_edit_account(widget.auth_form_type)) {
+                          if (editing_name_and_info) {
                             setState(() {
                               country_value = new_value!;
                             });
                           }
-                        },
-                  items: widget.country_values!.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
+                        } else {
+                          setState(() {
+                            country_value = new_value!;
+                          });
+                        }
+                      },
+                items: countries_list.map<DropdownMenuItem<String>>((Country country) {
+                  return DropdownMenuItem<String>(
+                    value: country.name,
+                    child: Text(country.name),
+                  );
+                }).toList(),
+              ),
               if (is_register(widget.auth_form_type))
                 Column(
                   children: [
