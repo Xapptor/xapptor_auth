@@ -8,7 +8,7 @@ import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart'
 import 'package:xapptor_auth/login_and_restore_view/on_pressed_first_button.dart';
 import 'package:xapptor_logic/form_field_validators.dart';
 import 'package:xapptor_ui/values/ui.dart';
-import 'package:xapptor_ui/widgets/country_phone_codes_picker.dart';
+import 'package:xapptor_ui/widgets/country_picker.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
   Widget email_form_section(int current_phone_code_flex) {
@@ -26,10 +26,11 @@ extension StateExtension on LoginAndRestoreViewState {
                   flex: current_phone_code_flex,
                   child: Container(
                     margin: const EdgeInsets.only(top: 10),
-                    child: CountryPhoneCodesPicker(
+                    child: CountryPicker(
                       current_phone_code: current_phone_code,
                       text_color: widget.text_color,
                       setState: setState,
+                      country_picker_type: CountryPickerType.phone,
                     ),
                   ),
                 ),
