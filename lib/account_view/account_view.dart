@@ -29,7 +29,6 @@ class AccountView extends StatefulWidget {
   final Function? first_button_action;
   final Function? second_button_action;
   final TranslationTextListArray gender_values;
-  final List<String>? country_values;
   final Color text_color;
   final LinearGradient first_button_color;
   final Color second_button_color;
@@ -52,7 +51,6 @@ class AccountView extends StatefulWidget {
     required this.first_button_action,
     required this.second_button_action,
     required this.gender_values,
-    required this.country_values,
     required this.text_color,
     required this.first_button_color,
     required this.second_button_color,
