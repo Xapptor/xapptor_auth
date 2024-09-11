@@ -36,6 +36,7 @@ extension StateExtension on AccountViewState {
               onPressed: () {
                 if (editing_email || editing_password || editing_name_and_info) {
                   Navigator.of(dialog_context).pop();
+
                   show_authentication_alert_dialog(
                     context: context,
                     email: email,
