@@ -1,9 +1,6 @@
-// ignore_for_file: invalid_use_of_protected_member, use_build_context_synchronously
-
 import 'dart:async';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:xapptor_auth/auth_form_functions/check_user_token.dart';
-import 'package:xapptor_auth/check_logo_image_width.dart';
 import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
 import 'package:xapptor_auth/login_and_restore_view/check_biometrics.dart';
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
@@ -59,12 +56,5 @@ extension StateExtension on LoginAndRestoreViewState {
 
   _user_is_not_signed_in() {
     debugPrint("User is not signed in from Google");
-    check_logo_image_width(
-      context: context,
-      logo_path: widget.logo_path,
-      callback: (new_logo_image_width) => setState(() {
-        logo_image_width = new_logo_image_width;
-      }),
-    );
   }
 }

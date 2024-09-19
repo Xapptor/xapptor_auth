@@ -1,14 +1,14 @@
-// ignore_for_file: invalid_use_of_protected_member
+// ignore_for_file: invalid_use_of_protected_member, use_build_context_synchronously
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
+import 'package:xapptor_auth/account_view/get_user_country.dart';
 import 'package:xapptor_auth/check_logo_image_width.dart';
 import 'package:xapptor_auth/account_view/fill_fields.dart';
 import 'package:xapptor_auth/account_view/update_text_list.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/check_if_app_enabled.dart';
 import 'package:xapptor_translation/translation_stream.dart';
-import 'package:xapptor_ui/values/country/country.dart';
 
 extension StateExtension on AccountViewState {
   init_state() async {
@@ -41,8 +41,12 @@ extension StateExtension on AccountViewState {
 
     if (is_register(widget.auth_form_type)) {
       gender_value = widget.gender_values.get(source_language_index)[0];
-      country_value = countries_list[0].name;
       setState(() {});
+
+      await get_user_country().then((country) {
+        country_value = country.name;
+        setState(() {});
+      });
     }
 
     if (is_edit_account(widget.auth_form_type)) fetch_fields();
