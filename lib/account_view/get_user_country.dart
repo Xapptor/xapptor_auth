@@ -10,7 +10,7 @@ Future<Country> get_user_country() async {
   if (address_from_position.isNotEmpty) {
     Country country = countries_list.firstWhere(
       (country) => country.alpha_2.toLowerCase() == address_from_position.first.isoCountryCode?.toLowerCase(),
-      orElse: () => _get_usa_country(),
+      orElse: () => get_usa_country(),
     );
     return country;
   } else {
@@ -19,16 +19,16 @@ Future<Country> get_user_country() async {
     if (country_code != null) {
       Country country = countries_list.firstWhere(
         (country) => country.alpha_2.toLowerCase() == country_code.toLowerCase(),
-        orElse: () => _get_usa_country(),
+        orElse: () => get_usa_country(),
       );
       return country;
     } else {
-      return _get_usa_country();
+      return get_usa_country();
     }
   }
 }
 
-Country _get_usa_country() {
+Country get_usa_country() {
   return countries_list.firstWhere(
     (country) => country.alpha_3.toLowerCase() == "usa",
     orElse: () => countries_list.first,
