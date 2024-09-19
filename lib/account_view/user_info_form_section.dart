@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';
 import 'package:xapptor_auth/account_view/fill_fields.dart';
 import 'package:xapptor_auth/account_view/get_edit_icon_color.dart';
+import 'package:xapptor_auth/account_view/get_user_country.dart';
 import 'package:xapptor_auth/account_view/select_date.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/form_section_container.dart';
@@ -170,7 +171,7 @@ extension StateExtension on AccountViewState {
                   color: widget.text_color,
                 ),
                 isExpanded: true,
-                value: country_value == "" ? countries_list[0].name : country_value,
+                value: country_value == "" ? get_usa_country().name : country_value,
                 iconSize: 24,
                 elevation: 16,
                 style: TextStyle(
