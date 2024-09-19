@@ -31,6 +31,7 @@ dependencies:
   pointer_interceptor: ^0.10.1+1
   flutter_secure_storage: ^9.2.2
   local_auth: ^2.3.0
+  geocoding: ^3.0.0
 
   # xapptor_api_key:
   #   path: ../xapptor_api_key
