@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
-import 'package:xapptor_auth/login_and_restore_view/google_button/google_button.dart';
+import 'package:xapptor_auth/login_and_restore_view/google_button/unsupported.dart';
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_auth/login_and_restore_view/third_party_signin_method_shape.dart';
 
