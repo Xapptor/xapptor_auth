@@ -27,7 +27,7 @@ extension StateExtension on AccountViewState {
                     },
                     style: ButtonStyle(
                       foregroundColor: WidgetStateProperty.all<Color>(
-                        Colors.grey.withOpacity(0.3),
+                        Colors.grey.withValues(alpha: 0.3),
                       ),
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(

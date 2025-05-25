@@ -21,7 +21,7 @@ extension StateExtension on AccountViewState {
             : 7,
         on_pressed: on_pressed_first_button,
         linear_gradient: widget.first_button_color,
-        splash_color: widget.second_button_color.withOpacity(0.2),
+        splash_color: widget.second_button_color.withValues(alpha: 0.2),
         child: Center(
           child: Text(
             widget.text_list.get(source_language_index)[is_edit_account(widget.auth_form_type) ? 7 : 7],
