@@ -32,7 +32,7 @@ extension StateExtension on LoginAndRestoreViewState {
             : 7,
         on_pressed: on_pressed_first_button,
         linear_gradient: widget.first_button_color,
-        splash_color: widget.second_button_color.withOpacity(0.2),
+        splash_color: widget.second_button_color.withValues(alpha: 0.2),
         child: Center(
           child: Text(
             main_button_text,

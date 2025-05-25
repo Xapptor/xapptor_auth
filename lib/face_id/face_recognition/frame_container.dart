@@ -17,7 +17,7 @@ extension StateExtension on FaceIDState {
           maxWidth: screen_width * 0.65,
         ),
         decoration: BoxDecoration(
-          color: widget.main_color.withOpacity(0.85),
+          color: widget.main_color.withValues(alpha: 0.85),
           borderRadius: BorderRadius.all(
             Radius.circular(outline_border_radius),
           ),

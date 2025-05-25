@@ -12,12 +12,12 @@ extension StateExtension on FaceIDState {
           curve: Curves.easeInOutCubicEmphasized,
           duration: const Duration(milliseconds: 900),
           decoration: BoxDecoration(
-            color: widget.main_color.withOpacity(comparison_result_animate ? 1 : 0),
+            color: widget.main_color.withValues(alpha: comparison_result_animate ? 1 : 0),
             shape: BoxShape.circle,
           ),
           child: Icon(
             comparison_result ? Icons.check : Icons.close,
-            color: Colors.white.withOpacity(comparison_result_animate ? 1 : 0),
+            color: Colors.white.withValues(alpha: comparison_result_animate ? 1 : 0),
             size: screen_width * 0.1,
           ),
         ),
