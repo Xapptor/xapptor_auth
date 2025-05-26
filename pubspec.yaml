@@ -22,7 +22,7 @@ dependencies:
 
   universal_platform: ^1.1.0
   shared_preferences: ^2.5.3
-  intl: ^0.19.0
+  intl: ^0.20.0
   http: ^1.4.0
   crypto: ^3.0.6
   google_mlkit_face_detection: ^0.13.1
