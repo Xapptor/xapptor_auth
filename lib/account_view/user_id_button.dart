@@ -16,7 +16,7 @@ extension StateExtension on AccountViewState {
               Expanded(
                 flex: 10,
                 child: Container(
-                  margin: EdgeInsets.only(bottom: sized_box_space),
+                  margin: const EdgeInsets.only(bottom: sized_box_space),
                   child: TextButton(
                     onPressed: () {
                       copy_to_clipboard(
@@ -30,7 +30,7 @@ extension StateExtension on AccountViewState {
                         Colors.grey.withValues(alpha: 0.3),
                       ),
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
+                        const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(
                             Radius.circular(outline_border_radius),
                           ),

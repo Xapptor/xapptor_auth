@@ -17,7 +17,7 @@ form_section_container({
       Expanded(
         flex: 10,
         child: Container(
-          padding: EdgeInsets.all(
+          padding: const EdgeInsets.all(
             outline_padding,
           ),
           decoration: BoxDecoration(
@@ -26,7 +26,7 @@ form_section_container({
               width: outline_width,
               color: outline_border ? border_color! : background_color!,
             ),
-            borderRadius: BorderRadius.all(
+            borderRadius: const BorderRadius.all(
               Radius.circular(outline_border_radius),
             ),
           ),

@@ -26,9 +26,7 @@ extension StateExtension on LoginAndRestoreViewState {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: sized_box_space,
-            ),
+            const SizedBox(height: sized_box_space),
             get_auth_view_logo(
               context: context,
               logo_path: widget.logo_path,
@@ -38,9 +36,7 @@ extension StateExtension on LoginAndRestoreViewState {
             if (!is_login(widget.auth_form_type))
               Column(
                 children: [
-                  SizedBox(
-                    height: sized_box_space,
-                  ),
+                  const SizedBox(height: sized_box_space),
                   Text(
                     widget.text_list.get(source_language_index)[0],
                     textAlign: TextAlign.center,
@@ -52,9 +48,7 @@ extension StateExtension on LoginAndRestoreViewState {
                   ),
                 ],
               ),
-            SizedBox(
-              height: sized_box_space,
-            ),
+            const SizedBox(height: sized_box_space),
             quick_login_widgets(),
           ],
         ),

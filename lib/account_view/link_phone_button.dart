@@ -13,12 +13,10 @@ extension StateExtension on AccountViewState {
   Widget? link_phone_button(bool phone_linked) {
     return is_edit_account(widget.auth_form_type) && !phone_linked
         ? Container(
-            margin: EdgeInsets.only(bottom: sized_box_space),
+            margin: const EdgeInsets.only(bottom: sized_box_space),
             child: Column(
               children: [
-                SizedBox(
-                  height: sized_box_space,
-                ),
+                const SizedBox(height: sized_box_space),
                 form_section_container(
                   outline_border: widget.outline_border,
                   border_color: widget.text_color,

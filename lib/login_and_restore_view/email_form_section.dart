@@ -68,9 +68,7 @@ extension StateExtension on LoginAndRestoreViewState {
               ),
             ],
           ),
-          SizedBox(
-            height: sized_box_space,
-          ),
+          const SizedBox(height: sized_box_space),
         ],
       ),
     );
