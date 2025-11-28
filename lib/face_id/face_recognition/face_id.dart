@@ -177,9 +177,7 @@ class FaceIDState extends State<FaceID> with SingleTickerProviderStateMixin {
                     width: 4,
                     color: widget.main_color,
                   ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(outline_border_radius),
-                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(outline_border_radius)),
                 ),
                 child: show_loader
                     ? face_id_loader(

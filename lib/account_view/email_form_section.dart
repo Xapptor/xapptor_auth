@@ -14,7 +14,7 @@ extension StateExtension on AccountViewState {
     return is_edit_account(widget.auth_form_type) && !email_linked && !linking_email
         ? null
         : Container(
-            margin: EdgeInsets.only(bottom: sized_box_space),
+            margin: const EdgeInsets.only(bottom: sized_box_space),
             child: Form(
               key: email_form_key,
               child: form_section_container(
@@ -53,9 +53,7 @@ extension StateExtension on AccountViewState {
                       ).validate(),
                       keyboardType: TextInputType.emailAddress,
                     ),
-                    SizedBox(
-                      height: sized_box_space,
-                    ),
+                    const SizedBox(height: sized_box_space),
                     if (is_register(widget.auth_form_type) || is_edit_account(widget.auth_form_type))
                       TextFormField(
                         style: TextStyle(color: widget.text_color),

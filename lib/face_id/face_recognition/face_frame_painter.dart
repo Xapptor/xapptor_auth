@@ -27,7 +27,7 @@ class FaceFramePainter extends CustomPainter {
               0,
               size.width,
               size.height,
-              Radius.circular(outline_border_radius),
+              const Radius.circular(outline_border_radius),
             ),
           ),
         Path()

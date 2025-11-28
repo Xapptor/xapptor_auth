@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_protected_member
+// ignore_for_file: invalid_use_of_protected_member, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:xapptor_auth/account_view/account_view.dart';

@@ -12,9 +12,7 @@ extension StateExtension on AccountViewState {
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: sized_box_space,
-              ),
+              const SizedBox(height: sized_box_space),
               TextButton(
                 style: ButtonStyle(
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -48,9 +46,7 @@ extension StateExtension on AccountViewState {
                   ),
                 ),
               ),
-              SizedBox(
-                height: sized_box_space,
-              ),
+              const SizedBox(height: sized_box_space),
             ],
           )
         : null;

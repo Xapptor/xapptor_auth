@@ -55,7 +55,7 @@ extension StateExtension on LoginAndRestoreViewState {
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         color: use_email_signin ? widget.text_color : Colors.white,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(outline_border_radius),
                       ),
                       child: IconButton(
                         padding: EdgeInsets.zero,
@@ -80,7 +80,7 @@ extension StateExtension on LoginAndRestoreViewState {
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         color: !use_email_signin ? widget.text_color : Colors.white,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(outline_border_radius),
                       ),
                       child: IconButton(
                         padding: EdgeInsets.zero,
@@ -100,9 +100,7 @@ extension StateExtension on LoginAndRestoreViewState {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: sized_box_space * 0.7,
-                ),
+                const SizedBox(height: sized_box_space * 0.7),
               ],
             ),
           email_form_section(current_phone_code_flex),
@@ -111,10 +109,7 @@ extension StateExtension on LoginAndRestoreViewState {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (use_email_signin || verification_code_sent.value)
-                  SizedBox(
-                    height: sized_box_space,
-                  ),
+                if (use_email_signin || verification_code_sent.value) const SizedBox(height: sized_box_space),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -124,13 +119,9 @@ extension StateExtension on LoginAndRestoreViewState {
                 ),
               ],
             ),
-          SizedBox(
-            height: sized_box_space,
-          ),
+          const SizedBox(height: sized_box_space),
           main_button(),
-          SizedBox(
-            height: sized_box_space,
-          ),
+          const SizedBox(height: sized_box_space),
           if (current_login_providers == AvailableLoginProviders.all ||
               current_login_providers == AvailableLoginProviders.apple ||
               current_login_providers == AvailableLoginProviders.google)
@@ -143,9 +134,7 @@ extension StateExtension on LoginAndRestoreViewState {
                     color: widget.text_color,
                   ),
                 ),
-                SizedBox(
-                  height: sized_box_space,
-                ),
+                const SizedBox(height: sized_box_space),
                 google_button(
                   on_pressed: () async {
                     // This in only call on Mobile, for Web the button is "renderButton()" and it's rendered from the web SDK
@@ -156,9 +145,7 @@ extension StateExtension on LoginAndRestoreViewState {
                     }
                   },
                 ),
-                SizedBox(
-                  height: sized_box_space,
-                ),
+                const SizedBox(height: sized_box_space),
                 apple_button(),
               ].where((widget) => widget != null).cast<Widget>().toList(),
             ),

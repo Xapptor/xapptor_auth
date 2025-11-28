@@ -162,18 +162,14 @@ class AccountViewState extends State<AccountView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: sized_box_space,
-            ),
+            const SizedBox(height: sized_box_space),
             get_auth_view_logo(
               context: context,
               logo_path: widget.logo_path,
               logo_image_width: logo_image_width,
               image_border_radius: widget.image_border_radius,
             ),
-            SizedBox(
-              height: sized_box_space,
-            ),
+            const SizedBox(height: sized_box_space),
             user_id_button(),
             unlink_phone_button(phone_linked, user_providers),
             unlink_email_button(email_linked, user_providers),
@@ -183,13 +179,9 @@ class AccountViewState extends State<AccountView> {
             link_email_button(email_linked),
             user_info_form_section(),
             second_button(),
-            SizedBox(
-              height: sized_box_space,
-            ),
+            const SizedBox(height: sized_box_space),
             main_button(),
-            SizedBox(
-              height: sized_box_space,
-            ),
+            const SizedBox(height: sized_box_space),
           ].where((widget) => widget != null).cast<Widget>().toList(),
         ),
       ),

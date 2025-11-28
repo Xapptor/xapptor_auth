@@ -23,9 +23,7 @@ extension StateExtension on LoginAndRestoreViewState {
               key: const ValueKey<int>(0),
               child: Column(
                 children: [
-                  SizedBox(
-                    height: sized_box_space,
-                  ),
+                  const SizedBox(height: sized_box_space),
                   form_section_container(
                     outline_border: widget.outline_border,
                     border_color: widget.text_color,
@@ -77,9 +75,7 @@ extension StateExtension on LoginAndRestoreViewState {
                                   FilteringTextInputFormatter.digitsOnly,
                                 ],
                         ),
-                        SizedBox(
-                          height: sized_box_space,
-                        ),
+                        const SizedBox(height: sized_box_space),
                         TextButton(
                           onPressed: () {
                             remember_me = !remember_me;

@@ -9,6 +9,7 @@ import 'package:xapptor_auth/auth_form_functions/send_verification_code.dart';
 import 'package:xapptor_auth/check_provider.dart';
 import 'package:xapptor_logic/firebase_tasks/delete.dart';
 import 'package:xapptor_ui/utils/show_alert.dart';
+import 'package:xapptor_ui/values/ui.dart';
 
 delete_account({
   required BuildContext context,
@@ -74,7 +75,7 @@ delete_account({
               margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.red,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(outline_border_radius),
               ),
               child: TextButton(
                 onPressed: () async {

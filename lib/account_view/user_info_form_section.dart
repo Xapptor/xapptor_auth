@@ -19,7 +19,7 @@ extension StateExtension on AccountViewState {
     Color dropdown_color = widget.text_color == Colors.white ? widget.text_field_background_color! : Colors.white;
 
     return Container(
-      margin: EdgeInsets.only(bottom: sized_box_space),
+      margin: const EdgeInsets.only(bottom: sized_box_space),
       child: Form(
         key: name_and_info_form_key,
         child: form_section_container(
@@ -57,9 +57,7 @@ extension StateExtension on AccountViewState {
                   type: FormFieldValidatorsType.name,
                 ).validate(),
               ),
-              SizedBox(
-                height: sized_box_space,
-              ),
+              const SizedBox(height: sized_box_space),
               TextFormField(
                 style: TextStyle(color: widget.text_color),
                 enabled: is_edit_account(widget.auth_form_type) ? editing_name_and_info : true,
@@ -80,9 +78,7 @@ extension StateExtension on AccountViewState {
                   type: FormFieldValidatorsType.name,
                 ).validate(),
               ),
-              SizedBox(
-                height: sized_box_space,
-              ),
+              const SizedBox(height: sized_box_space),
               SizedBox(
                 width: screen_width,
                 child: ElevatedButton(
@@ -120,9 +116,7 @@ extension StateExtension on AccountViewState {
                   ),
                 ),
               ),
-              SizedBox(
-                height: sized_box_space,
-              ),
+              const SizedBox(height: sized_box_space),
               DropdownButton<String>(
                 icon: Icon(
                   Icons.arrow_drop_down,
@@ -162,9 +156,7 @@ extension StateExtension on AccountViewState {
                   );
                 }).toList(),
               ),
-              SizedBox(
-                height: sized_box_space,
-              ),
+              const SizedBox(height: sized_box_space),
               DropdownButton<String>(
                 icon: Icon(
                   Icons.arrow_drop_down,
@@ -207,9 +199,7 @@ extension StateExtension on AccountViewState {
               if (is_register(widget.auth_form_type))
                 Column(
                   children: [
-                    SizedBox(
-                      height: sized_box_space,
-                    ),
+                    const SizedBox(height: sized_box_space),
                     TextButton(
                       style: ButtonStyle(
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -242,9 +232,7 @@ extension StateExtension on AccountViewState {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: sized_box_space,
-                    ),
+                    const SizedBox(height: sized_box_space),
                   ],
                 ),
             ],
