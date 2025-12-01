@@ -95,7 +95,8 @@ class _AuthContainerState extends State<AuthContainer> {
               Container(
                 margin: const EdgeInsets.only(right: 20),
                 width: widget.language_picker_show_icon ? 170 : 150,
-                child: widget.has_language_picker
+                // Only show LanguagePicker after translation streams are initialized
+                child: widget.has_language_picker && widget.translation_stream_list.isNotEmpty
                     ? LanguagePicker(
                         translation_stream_list: widget.translation_stream_list,
                         language_picker_items_text_color: widget.text_color,

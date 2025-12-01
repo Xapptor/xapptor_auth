@@ -26,6 +26,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AccountView extends StatefulWidget {
   final TranslationTextListArray text_list;
   final RichText tc_and_pp_text;
+
+  /// Optional translation text list for Terms & Privacy text.
+  /// When provided, this is used instead of tc_and_pp_text for dynamic translations.
+  /// Index: 0 = "I accept the ", 1 = "privacy policies."
+  final TranslationTextListArray? tc_and_pp_text_list;
+
+  /// Builder function for creating the T&C/Privacy Policy text widget.
+  /// Called with the current source_language_index to build a translated widget.
+  /// If not provided, tc_and_pp_text is used.
+  final RichText Function(int source_language_index)? tc_and_pp_text_builder;
+
+  /// Color for the privacy policy link text in the T&C checkbox.
+  /// Used when tc_and_pp_text_list is provided.
+  final Color? tc_and_pp_link_color;
+
   final Function? first_button_action;
   final Function? second_button_action;
   final TranslationTextListArray gender_values;
@@ -77,6 +92,9 @@ class AccountView extends StatefulWidget {
     super.key,
     required this.text_list,
     required this.tc_and_pp_text,
+    this.tc_and_pp_text_list,
+    this.tc_and_pp_text_builder,
+    this.tc_and_pp_link_color,
     required this.first_button_action,
     required this.second_button_action,
     required this.gender_values,

@@ -5,6 +5,7 @@ import 'package:xapptor_auth/login_and_restore_view/available_login_providers.da
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_auth/login_and_restore_view/third_party_signin_method_shape.dart';
 import 'package:xapptor_auth/signin_with_apple.dart';
+import 'package:xapptor_auth/translation_text_values.dart';
 import 'package:xapptor_logic/string/sha256_of_string.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
@@ -13,8 +14,10 @@ extension StateExtension on LoginAndRestoreViewState {
 
     return widget.available_login_providers == AvailableLoginProviders.all ||
             widget.available_login_providers == AvailableLoginProviders.apple
-        ? SignInButton(
-            Buttons.apple,
+        ? SignInButtonBuilder(
+            text: social_login_values.get(source_language_index)[2], // "Sign in with Apple"
+            icon: Icons.apple,
+            backgroundColor: Colors.black,
             shape: third_party_signin_method_shape(screen_width),
             onPressed: () async {
               final raw_nonce = generateNonce();

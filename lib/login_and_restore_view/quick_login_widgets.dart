@@ -14,16 +14,26 @@ import 'package:xapptor_auth/login_and_restore_view/password_form_section.dart';
 import 'package:xapptor_auth/login_and_restore_view/second_button.dart';
 import 'package:xapptor_auth/login_and_restore_view/third_button.dart';
 import 'package:xapptor_auth/signin_with_google.dart';
+import 'package:xapptor_auth/translation_text_values.dart';
 import 'package:xapptor_ui/values/ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
   /// Wraps a social button with a gradient border container if gradient is provided.
+  /// Also ensures consistent width for all social buttons.
   Widget? _wrap_social_button(Widget? child) {
     if (child == null) return null;
-    if (widget.social_button_border_gradient == null) return child;
+
+    // Wrap in SizedBox for consistent width across all social buttons
+    final sized_child = SizedBox(
+      width: 280,
+      child: child,
+    );
+
+    if (widget.social_button_border_gradient == null) return sized_child;
 
     return Container(
+      width: 280,
       decoration: BoxDecoration(
         gradient: widget.social_button_border_gradient,
         borderRadius: BorderRadius.circular(24),
@@ -220,7 +230,7 @@ extension StateExtension on LoginAndRestoreViewState {
             Column(
               children: [
                 Text(
-                  "Or",
+                  social_login_values.get(source_language_index)[0], // "Or" / "O"
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: widget.text_color,

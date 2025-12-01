@@ -163,3 +163,47 @@ TranslationTextListArray gender_values = TranslationTextListArray(
     ),
   ],
 );
+
+/// Social login text values
+/// Index: 0 = Or, 1 = Sign in with Google, 2 = Sign in with Apple
+TranslationTextListArray social_login_values = TranslationTextListArray(
+  [
+    TranslationTextList(
+      source_language: "en",
+      text_list: [
+        "Or",
+        "Sign in with Google",
+        "Sign in with Apple",
+      ],
+    ),
+    TranslationTextList(
+      source_language: "es",
+      text_list: [
+        "O",
+        "Iniciar sesión con Google",
+        "Iniciar sesión con Apple",
+      ],
+    ),
+  ],
+);
+
+/// Terms and Conditions / Privacy Policy text values
+/// Index: 0 = I accept the, 1 = privacy policies.
+TranslationTextListArray tc_and_pp_values = TranslationTextListArray(
+  [
+    TranslationTextList(
+      source_language: "en",
+      text_list: [
+        "I accept the ",
+        "privacy policies.",
+      ],
+    ),
+    TranslationTextList(
+      source_language: "es",
+      text_list: [
+        "Acepto las ",
+        "políticas de privacidad.",
+      ],
+    ),
+  ],
+);

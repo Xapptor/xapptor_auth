@@ -13,6 +13,43 @@ import 'package:xapptor_ui/values/country/country.dart';
 import 'package:xapptor_ui/values/ui.dart';
 
 extension StateExtension on AccountViewState {
+  /// Builds the Terms & Conditions / Privacy Policy text widget.
+  /// Priority:
+  /// 1. tc_and_pp_text_builder (if provided)
+  /// 2. tc_and_pp_text_list (if provided, builds RichText dynamically)
+  /// 3. tc_and_pp_text (static RichText, fallback)
+  Widget _build_tc_and_pp_text() {
+    // Option 1: Use builder function if provided
+    if (widget.tc_and_pp_text_builder != null) {
+      return widget.tc_and_pp_text_builder!(source_language_index);
+    }
+
+    // Option 2: Build from text list if provided
+    if (widget.tc_and_pp_text_list != null) {
+      final text_list = widget.tc_and_pp_text_list!.get(source_language_index);
+      return RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: text_list[0], // "I accept the "
+              style: TextStyle(color: widget.text_color),
+            ),
+            TextSpan(
+              text: text_list[1], // "privacy policies."
+              style: TextStyle(
+                color: widget.tc_and_pp_link_color ?? widget.text_color,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Option 3: Use static text (fallback)
+    return widget.tc_and_pp_text;
+  }
+
   Widget user_info_form_section() {
     double screen_width = MediaQuery.of(context).size.width;
 
@@ -227,7 +264,7 @@ extension StateExtension on AccountViewState {
                           const Spacer(flex: 1),
                           Expanded(
                             flex: 12,
-                            child: widget.tc_and_pp_text,
+                            child: _build_tc_and_pp_text(),
                           ),
                           const Spacer(flex: 1),
                         ],
