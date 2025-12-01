@@ -14,7 +14,8 @@ extension StateExtension on AccountViewState {
     const double buttonHeight = 50.0;
     const double borderRadius = 25.0; // Half of height for pill shape
 
-    final String buttonText = widget.text_list.get(source_language_index)[is_edit_account(widget.auth_form_type) ? 7 : 7];
+    final String buttonText =
+        widget.text_list.get(source_language_index)[is_edit_account(widget.auth_form_type) ? 7 : 7];
 
     // Use gradient border style when enabled
     if (widget.use_gradient_border_button && widget.form_border_gradient != null) {
@@ -42,7 +43,7 @@ extension StateExtension on AccountViewState {
                 child: Text(
                   buttonText,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
