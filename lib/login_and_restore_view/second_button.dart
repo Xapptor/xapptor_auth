@@ -46,8 +46,9 @@ extension StateExtension on LoginAndRestoreViewState {
                   : widget.text_list.get(source_language_index)[widget.text_list.get(source_language_index).length - 2],
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: widget.second_button_color,
-                fontSize: 12,
+                color: widget.secondary_text_color ?? widget.second_button_color,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
               ),
             ),
           );

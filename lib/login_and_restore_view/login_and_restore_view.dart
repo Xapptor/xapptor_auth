@@ -45,6 +45,44 @@ class LoginAndRestoreView extends StatefulWidget {
   Function? quick_login_callback;
   final bool enable_biometrics;
 
+  /// Background color for the auth container body.
+  /// Defaults to Colors.white if not specified.
+  final Color? background_color;
+
+  /// Language picker selected text color (for dark themes).
+  /// If null, uses text_color.
+  final Color? language_picker_selected_text_color;
+
+  /// Back button icon color.
+  /// Defaults to Colors.white if not specified.
+  final Color? back_button_color;
+
+  /// Optional gradient for form container borders (for elegant dark theme styling).
+  /// Takes precedence over outline_border color when provided.
+  final LinearGradient? form_border_gradient;
+
+  /// Background color for form containers (if different from text_field_background_color).
+  final Color? form_container_background_color;
+
+  /// Gradient for social login button borders (Google, Apple).
+  /// Creates elegant gradient-bordered buttons when provided.
+  final LinearGradient? social_button_border_gradient;
+
+  /// Text color for secondary/tertiary buttons (e.g., "Forgot Password", "Register").
+  /// Defaults to second_button_color and third_button_color if not specified.
+  final Color? secondary_text_color;
+
+  /// When true, main button uses gradient border style instead of filled gradient.
+  /// Creates an elegant outlined button matching the dark theme aesthetic.
+  final bool use_gradient_border_button;
+
+  /// Gradient for email/phone toggle buttons when using gradient style.
+  /// When null, uses default solid fill style.
+  final LinearGradient? toggle_button_gradient;
+
+  /// Background color for toggle buttons in unselected state.
+  final Color? toggle_button_background_color;
+
   LoginAndRestoreView({
     super.key,
     required this.auth_form_type,
@@ -73,6 +111,16 @@ class LoginAndRestoreView extends StatefulWidget {
     this.available_login_providers = AvailableLoginProviders.email_and_phone,
     this.quick_login_callback,
     required this.enable_biometrics,
+    this.background_color,
+    this.language_picker_selected_text_color,
+    this.back_button_color,
+    this.form_border_gradient,
+    this.form_container_background_color,
+    this.social_button_border_gradient,
+    this.secondary_text_color,
+    this.use_gradient_border_button = false,
+    this.toggle_button_gradient,
+    this.toggle_button_background_color,
   });
 
   @override

@@ -21,6 +21,8 @@ Widget get_auth_view_logo({
           : Image.asset(
               logo_path,
               fit: BoxFit.contain,
+              filterQuality: FilterQuality.high,
+              isAntiAlias: true,
             ),
     ),
   );

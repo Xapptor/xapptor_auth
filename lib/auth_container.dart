@@ -21,6 +21,18 @@ class AuthContainer extends StatefulWidget {
   final List<TranslationStream> translation_stream_list;
   final Function({required int new_source_language_index}) update_source_language;
 
+  /// Background color for the auth container body.
+  /// Defaults to Colors.white if not specified.
+  final Color? background_color;
+
+  /// Language picker selected text color (for dark themes).
+  /// If null, uses text_color.
+  final Color? language_picker_selected_text_color;
+
+  /// Back button icon color.
+  /// Defaults to Colors.white if not specified.
+  final Color? back_button_color;
+
   const AuthContainer({
     super.key,
     required this.child,
@@ -32,6 +44,9 @@ class AuthContainer extends StatefulWidget {
     required this.user_info_form_type,
     required this.translation_stream_list,
     required this.update_source_language,
+    this.background_color,
+    this.language_picker_selected_text_color,
+    this.back_button_color,
   });
 
   @override
@@ -51,6 +66,10 @@ class _AuthContainerState extends State<AuthContainer> {
   Widget build(BuildContext context) {
     bool portrait = is_portrait(context);
 
+    // Use provided background color or default to white
+    final Color bg_color = widget.background_color ?? Colors.white;
+    final Color back_btn_color = widget.back_button_color ?? Colors.white;
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -59,6 +78,7 @@ class _AuthContainerState extends State<AuthContainer> {
         canPop: widget.has_back_button,
         child: Scaffold(
           key: scaffold_key,
+          backgroundColor: bg_color,
           appBar: TopBar(
             context: context,
             background_color: widget.topbar_color,
@@ -71,6 +91,7 @@ class _AuthContainerState extends State<AuthContainer> {
                     ? LanguagePicker(
                         translation_stream_list: widget.translation_stream_list,
                         language_picker_items_text_color: widget.text_color,
+                        selected_text_color: widget.language_picker_selected_text_color ?? widget.text_color,
                         update_source_language: widget.update_source_language,
                       )
                     : null,
@@ -81,9 +102,9 @@ class _AuthContainerState extends State<AuthContainer> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       FontAwesomeIcons.angleLeft,
-                      color: Colors.white,
+                      color: back_btn_color,
                     ),
                   )
                 : null,
@@ -91,7 +112,7 @@ class _AuthContainerState extends State<AuthContainer> {
           ),
           body: Container(
             height: MediaQuery.of(context).size.height,
-            color: Colors.white,
+            color: bg_color,
             child: LayoutBuilder(
               builder: (
                 BuildContext context,
@@ -112,11 +133,11 @@ class _AuthContainerState extends State<AuthContainer> {
                               children: [
                                 widget.custom_background ??
                                     Container(
-                                      color: Colors.white,
+                                      color: bg_color,
                                     ),
                                 PointerInterceptor(
                                   child: Container(
-                                    color: widget.custom_background != null ? Colors.transparent : Colors.white,
+                                    color: widget.custom_background != null ? Colors.transparent : bg_color,
                                     child: FractionallySizedBox(
                                       widthFactor: portrait ? 0.9 : 0.3,
                                       child: widget.child,
@@ -131,7 +152,7 @@ class _AuthContainerState extends State<AuthContainer> {
                               flex: 1,
                               child: AppVersionContainer(
                                 text_color: widget.topbar_color,
-                                background_color: Colors.white,
+                                background_color: bg_color,
                               ),
                             ),
                         ],
