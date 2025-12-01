@@ -44,6 +44,29 @@ class AccountView extends StatefulWidget {
   final bool? edit_icon_use_text_field_background_color;
   final int source_language_index;
 
+  /// Background color for the auth container body.
+  /// Defaults to Colors.white if not specified.
+  final Color? background_color;
+
+  /// Language picker selected text color (for dark themes).
+  /// If null, uses text_color.
+  final Color? language_picker_selected_text_color;
+
+  /// Back button icon color.
+  /// Defaults to Colors.white if not specified.
+  final Color? back_button_color;
+
+  /// Optional gradient for form container borders (for elegant dark theme styling).
+  /// Takes precedence over outline_border color when provided.
+  final LinearGradient? form_border_gradient;
+
+  /// Background color for form containers (if different from text_field_background_color).
+  final Color? form_container_background_color;
+
+  /// When true, main button uses gradient border style instead of filled gradient.
+  /// Creates an elegant outlined button matching the dark theme aesthetic.
+  final bool use_gradient_border_button;
+
   const AccountView({
     super.key,
     required this.text_list,
@@ -65,6 +88,12 @@ class AccountView extends StatefulWidget {
     required this.text_field_background_color,
     this.edit_icon_use_text_field_background_color,
     this.source_language_index = 0,
+    this.background_color,
+    this.language_picker_selected_text_color,
+    this.back_button_color,
+    this.form_border_gradient,
+    this.form_container_background_color,
+    this.use_gradient_border_button = false,
   });
 
   @override
@@ -157,6 +186,9 @@ class AccountViewState extends State<AccountView> {
       text_color: widget.text_color,
       has_back_button: widget.has_back_button,
       update_source_language: update_source_language,
+      background_color: widget.background_color,
+      language_picker_selected_text_color: widget.language_picker_selected_text_color,
+      back_button_color: widget.back_button_color,
       child: Form(
         key: user_info_view_form_key,
         child: Column(

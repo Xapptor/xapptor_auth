@@ -21,9 +21,54 @@ extension StateExtension on LoginAndRestoreViewState {
               (is_login(widget.auth_form_type) || is_quick_login(widget.auth_form_type) ? 3 : 1)];
     }
 
+    final double buttonWidth = screen_width / (portrait ? 2 : 8);
+    const double buttonHeight = 50.0;
+    const double borderRadius = 25.0; // Half of height for pill shape
+
+    // Use gradient border style when enabled
+    if (widget.use_gradient_border_button && widget.form_border_gradient != null) {
+      return Container(
+        height: buttonHeight,
+        width: buttonWidth,
+        decoration: BoxDecoration(
+          gradient: widget.form_border_gradient,
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: Container(
+          margin: const EdgeInsets.all(2.0),
+          decoration: BoxDecoration(
+            color: widget.form_container_background_color ?? widget.background_color ?? Colors.transparent,
+            borderRadius: BorderRadius.circular(borderRadius - 2),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(borderRadius - 2),
+              onTap: on_pressed_first_button,
+              splashColor: widget.text_color.withValues(alpha: 0.1),
+              highlightColor: widget.text_color.withValues(alpha: 0.05),
+              child: Center(
+                child: Text(
+                  main_button_text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Default filled gradient style
     return SizedBox(
-      height: 50,
-      width: screen_width / (portrait ? 2 : 8),
+      height: buttonHeight,
+      width: buttonWidth,
       child: CustomCard(
         border_radius: screen_width,
         elevation: (widget.first_button_color.colors.first == Colors.transparent &&

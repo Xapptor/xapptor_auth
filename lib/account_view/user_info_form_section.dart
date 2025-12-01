@@ -25,7 +25,8 @@ extension StateExtension on AccountViewState {
         child: form_section_container(
           outline_border: widget.outline_border,
           border_color: widget.text_color,
-          background_color: widget.text_field_background_color,
+          background_color: widget.form_container_background_color ?? widget.text_field_background_color,
+          border_gradient: widget.form_border_gradient,
           icon: editing_name_and_info ? Icons.delete_outlined : Icons.edit,
           icon_color: get_edit_icon_color(),
           icon_on_press: () {

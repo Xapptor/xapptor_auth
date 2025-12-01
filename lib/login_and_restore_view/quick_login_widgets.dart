@@ -18,6 +18,126 @@ import 'package:xapptor_ui/values/ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
+  /// Wraps a social button with a gradient border container if gradient is provided.
+  Widget? _wrap_social_button(Widget? child) {
+    if (child == null) return null;
+    if (widget.social_button_border_gradient == null) return child;
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: widget.social_button_border_gradient,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Container(
+        margin: const EdgeInsets.all(1.5),
+        decoration: BoxDecoration(
+          color: widget.form_container_background_color ?? widget.text_field_background_color ?? Colors.transparent,
+          borderRadius: BorderRadius.circular(22.5),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(22.5),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  /// Creates a toggle button for email/phone selection with gradient styling.
+  Widget _build_toggle_button({
+    required bool isSelected,
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    const double buttonSize = 44.0;
+    const double borderRadius = 12.0;
+    const double iconSize = 22.0;
+
+    // Use gradient style when toggle_button_gradient is provided
+    if (widget.toggle_button_gradient != null) {
+      if (isSelected) {
+        // Selected: filled gradient background
+        return Container(
+          height: buttonSize,
+          width: buttonSize,
+          margin: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            gradient: widget.toggle_button_gradient,
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(borderRadius),
+              onTap: onPressed,
+              child: Center(
+                child: Icon(
+                  icon,
+                  color: Colors.white,
+                  size: iconSize,
+                ),
+              ),
+            ),
+          ),
+        );
+      } else {
+        // Unselected: gradient border with transparent/charcoal fill
+        return Container(
+          height: buttonSize,
+          width: buttonSize,
+          margin: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            gradient: widget.toggle_button_gradient,
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          child: Container(
+            margin: const EdgeInsets.all(1.5),
+            decoration: BoxDecoration(
+              color: widget.toggle_button_background_color ??
+                  widget.form_container_background_color ??
+                  Colors.transparent,
+              borderRadius: BorderRadius.circular(borderRadius - 1.5),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(borderRadius - 1.5),
+                onTap: onPressed,
+                child: Center(
+                  child: Icon(
+                    icon,
+                    color: widget.text_color,
+                    size: iconSize,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+
+    // Default style (original behavior)
+    return Container(
+      height: 38,
+      width: 38,
+      margin: const EdgeInsets.only(right: 5),
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: isSelected ? widget.text_color : Colors.white,
+        borderRadius: BorderRadius.circular(outline_border_radius),
+      ),
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
+        icon: Icon(
+          icon,
+          color: isSelected ? Colors.white : widget.text_color,
+          size: 30,
+        ),
+      ),
+    );
+  }
+
   Widget quick_login_widgets() {
     int current_phone_code_length =
         current_phone_code.value.name.split(',').first.length + current_phone_code.value.dial_code.length;
@@ -48,55 +168,27 @@ extension StateExtension on LoginAndRestoreViewState {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 38,
-                      width: 38,
-                      margin: const EdgeInsets.only(right: 5),
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: use_email_signin ? widget.text_color : Colors.white,
-                        borderRadius: BorderRadius.circular(outline_border_radius),
-                      ),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          use_email_signin = !use_email_signin;
-                          email_input_controller.clear();
-                          password_input_controller.clear();
-                          check_remember_me();
-                          setState(() {});
-                        },
-                        icon: Icon(
-                          FontAwesomeIcons.envelope,
-                          color: use_email_signin ? Colors.white : widget.text_color,
-                          size: 30,
-                        ),
-                      ),
+                    _build_toggle_button(
+                      isSelected: use_email_signin,
+                      icon: FontAwesomeIcons.envelope,
+                      onPressed: () {
+                        use_email_signin = !use_email_signin;
+                        email_input_controller.clear();
+                        password_input_controller.clear();
+                        check_remember_me();
+                        setState(() {});
+                      },
                     ),
-                    Container(
-                      height: 38,
-                      width: 38,
-                      margin: const EdgeInsets.only(right: 5),
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: !use_email_signin ? widget.text_color : Colors.white,
-                        borderRadius: BorderRadius.circular(outline_border_radius),
-                      ),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          use_email_signin = !use_email_signin;
-                          email_input_controller.clear();
-                          password_input_controller.clear();
-                          check_remember_me();
-                          setState(() {});
-                        },
-                        icon: Icon(
-                          FontAwesomeIcons.commentSms,
-                          color: !use_email_signin ? Colors.white : widget.text_color,
-                          size: 30,
-                        ),
-                      ),
+                    _build_toggle_button(
+                      isSelected: !use_email_signin,
+                      icon: FontAwesomeIcons.commentSms,
+                      onPressed: () {
+                        use_email_signin = !use_email_signin;
+                        email_input_controller.clear();
+                        password_input_controller.clear();
+                        check_remember_me();
+                        setState(() {});
+                      },
                     ),
                   ],
                 ),
@@ -135,18 +227,20 @@ extension StateExtension on LoginAndRestoreViewState {
                   ),
                 ),
                 const SizedBox(height: sized_box_space),
-                google_button(
-                  on_pressed: () async {
-                    // This in only call on Mobile, for Web the button is "renderButton()" and it's rendered from the web SDK
+                _wrap_social_button(
+                  google_button(
+                    on_pressed: () async {
+                      // This in only call on Mobile, for Web the button is "renderButton()" and it's rendered from the web SDK
 
-                    GoogleSignInAccount? google_signin_account = await handle_google_signin();
-                    if (google_signin_account != null) {
-                      signin_with_google(google_signin_account);
-                    }
-                  },
+                      GoogleSignInAccount? google_signin_account = await handle_google_signin();
+                      if (google_signin_account != null) {
+                        signin_with_google(google_signin_account);
+                      }
+                    },
+                  ),
                 ),
                 const SizedBox(height: sized_box_space),
-                apple_button(),
+                _wrap_social_button(apple_button()),
               ].where((widget) => widget != null).cast<Widget>().toList(),
             ),
         ],

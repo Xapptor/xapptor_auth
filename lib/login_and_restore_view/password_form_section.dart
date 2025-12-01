@@ -27,7 +27,8 @@ extension StateExtension on LoginAndRestoreViewState {
                   form_section_container(
                     outline_border: widget.outline_border,
                     border_color: widget.text_color,
-                    background_color: widget.text_field_background_color,
+                    background_color: widget.form_container_background_color ?? widget.text_field_background_color,
+                    border_gradient: widget.form_border_gradient,
                     child: Column(
                       children: [
                         TextFormField(

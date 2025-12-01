@@ -23,6 +23,9 @@ extension StateExtension on LoginAndRestoreViewState {
         text_color: widget.text_color,
         has_back_button: widget.has_back_button,
         update_source_language: update_source_language,
+        background_color: widget.background_color,
+        language_picker_selected_text_color: widget.language_picker_selected_text_color,
+        back_button_color: widget.back_button_color,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
