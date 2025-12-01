@@ -83,6 +83,12 @@ class LoginAndRestoreView extends StatefulWidget {
   /// Background color for toggle buttons in unselected state.
   final Color? toggle_button_background_color;
 
+  /// Whether to show a language icon in the picker.
+  final bool language_picker_show_icon;
+
+  /// Color for the language picker icon.
+  final Color? language_picker_icon_color;
+
   LoginAndRestoreView({
     super.key,
     required this.auth_form_type,
@@ -121,6 +127,8 @@ class LoginAndRestoreView extends StatefulWidget {
     this.use_gradient_border_button = false,
     this.toggle_button_gradient,
     this.toggle_button_background_color,
+    this.language_picker_show_icon = false,
+    this.language_picker_icon_color,
   });
 
   @override

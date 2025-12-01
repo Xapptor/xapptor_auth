@@ -67,6 +67,12 @@ class AccountView extends StatefulWidget {
   /// Creates an elegant outlined button matching the dark theme aesthetic.
   final bool use_gradient_border_button;
 
+  /// Whether to show a language icon in the picker.
+  final bool language_picker_show_icon;
+
+  /// Color for the language picker icon.
+  final Color? language_picker_icon_color;
+
   const AccountView({
     super.key,
     required this.text_list,
@@ -94,6 +100,8 @@ class AccountView extends StatefulWidget {
     this.form_border_gradient,
     this.form_container_background_color,
     this.use_gradient_border_button = false,
+    this.language_picker_show_icon = false,
+    this.language_picker_icon_color,
   });
 
   @override
@@ -189,6 +197,8 @@ class AccountViewState extends State<AccountView> {
       background_color: widget.background_color,
       language_picker_selected_text_color: widget.language_picker_selected_text_color,
       back_button_color: widget.back_button_color,
+      language_picker_show_icon: widget.language_picker_show_icon,
+      language_picker_icon_color: widget.language_picker_icon_color,
       child: Form(
         key: user_info_view_form_key,
         child: Column(
