@@ -33,6 +33,12 @@ class AuthContainer extends StatefulWidget {
   /// Defaults to Colors.white if not specified.
   final Color? back_button_color;
 
+  /// Whether to show a language icon in the picker.
+  final bool language_picker_show_icon;
+
+  /// Color for the language picker icon.
+  final Color? language_picker_icon_color;
+
   const AuthContainer({
     super.key,
     required this.child,
@@ -47,6 +53,8 @@ class AuthContainer extends StatefulWidget {
     this.background_color,
     this.language_picker_selected_text_color,
     this.back_button_color,
+    this.language_picker_show_icon = false,
+    this.language_picker_icon_color,
   });
 
   @override
@@ -86,13 +94,15 @@ class _AuthContainerState extends State<AuthContainer> {
             actions: [
               Container(
                 margin: const EdgeInsets.only(right: 20),
-                width: 150,
+                width: widget.language_picker_show_icon ? 170 : 150,
                 child: widget.has_language_picker
                     ? LanguagePicker(
                         translation_stream_list: widget.translation_stream_list,
                         language_picker_items_text_color: widget.text_color,
                         selected_text_color: widget.language_picker_selected_text_color ?? widget.text_color,
                         update_source_language: widget.update_source_language,
+                        show_icon: widget.language_picker_show_icon,
+                        icon_color: widget.language_picker_icon_color,
                       )
                     : null,
               ),
