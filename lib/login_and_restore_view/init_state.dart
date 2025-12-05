@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/check_if_app_enabled.dart';
 import 'package:xapptor_auth/login_and_restore_view/check_login.dart';
