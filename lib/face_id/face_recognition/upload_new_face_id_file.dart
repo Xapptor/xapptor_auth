@@ -20,14 +20,14 @@ upload_new_face_id_file({
     e_b = source_bytes;
   }
 
-  String timeStamp = DateTime.now().toIso8601String();
+  String time_stamp = DateTime.now().toIso8601String();
 
   Reference face_id_ref = FirebaseStorage.instance
       .ref()
       .child('users')
       .child('/${current_user.uid}')
       .child('/face_id')
-      .child('/$timeStamp.jpg');
+      .child('/$time_stamp.jpg');
 
   final metadata = SettableMetadata(
     contentType: 'image/jpeg',

@@ -21,29 +21,29 @@ extension StateExtension on LoginAndRestoreViewState {
               (is_login(widget.auth_form_type) || is_quick_login(widget.auth_form_type) ? 3 : 1)];
     }
 
-    final double buttonWidth = screen_width / (portrait ? 2 : 8);
-    const double buttonHeight = 50.0;
-    const double borderRadius = 25.0; // Half of height for pill shape
+    final double button_width = screen_width / (portrait ? 2 : 8);
+    const double button_height = 50.0;
+    const double border_radius = 25.0; // Half of height for pill shape
 
     // Use gradient border style when enabled
     if (widget.use_gradient_border_button && widget.form_border_gradient != null) {
       return Container(
-        height: buttonHeight,
-        width: buttonWidth,
+        height: button_height,
+        width: button_width,
         decoration: BoxDecoration(
           gradient: widget.form_border_gradient,
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(border_radius),
         ),
         child: Container(
           margin: const EdgeInsets.all(2.0),
           decoration: BoxDecoration(
             color: widget.form_container_background_color ?? widget.background_color ?? Colors.transparent,
-            borderRadius: BorderRadius.circular(borderRadius - 2),
+            borderRadius: BorderRadius.circular(border_radius - 2),
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(borderRadius - 2),
+              borderRadius: BorderRadius.circular(border_radius - 2),
               onTap: on_pressed_first_button,
               splashColor: widget.text_color.withValues(alpha: 0.1),
               highlightColor: widget.text_color.withValues(alpha: 0.05),
@@ -67,8 +67,8 @@ extension StateExtension on LoginAndRestoreViewState {
 
     // Default filled gradient style
     return SizedBox(
-      height: buttonHeight,
-      width: buttonWidth,
+      height: button_height,
+      width: button_width,
       child: CustomCard(
         border_radius: screen_width,
         elevation: (widget.first_button_color.colors.first == Colors.transparent &&

@@ -54,36 +54,36 @@ extension StateExtension on LoginAndRestoreViewState {
 
   /// Creates a toggle button for email/phone selection with gradient styling.
   Widget _build_toggle_button({
-    required bool isSelected,
+    required bool is_selected,
     required IconData icon,
-    required VoidCallback onPressed,
+    required VoidCallback on_pressed,
   }) {
-    const double buttonSize = 44.0;
-    const double borderRadius = 12.0;
-    const double iconSize = 22.0;
+    const double button_size = 44.0;
+    const double border_radius = 12.0;
+    const double icon_size = 22.0;
 
     // Use gradient style when toggle_button_gradient is provided
     if (widget.toggle_button_gradient != null) {
-      if (isSelected) {
+      if (is_selected) {
         // Selected: filled gradient background
         return Container(
-          height: buttonSize,
-          width: buttonSize,
+          height: button_size,
+          width: button_size,
           margin: const EdgeInsets.only(right: 8),
           decoration: BoxDecoration(
             gradient: widget.toggle_button_gradient,
-            borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(border_radius),
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(borderRadius),
-              onTap: onPressed,
+              borderRadius: BorderRadius.circular(border_radius),
+              onTap: on_pressed,
               child: Center(
                 child: Icon(
                   icon,
                   color: Colors.white,
-                  size: iconSize,
+                  size: icon_size,
                 ),
               ),
             ),
@@ -92,12 +92,12 @@ extension StateExtension on LoginAndRestoreViewState {
       } else {
         // Unselected: gradient border with transparent/charcoal fill
         return Container(
-          height: buttonSize,
-          width: buttonSize,
+          height: button_size,
+          width: button_size,
           margin: const EdgeInsets.only(right: 8),
           decoration: BoxDecoration(
             gradient: widget.toggle_button_gradient,
-            borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(border_radius),
           ),
           child: Container(
             margin: const EdgeInsets.all(1.5),
@@ -105,18 +105,18 @@ extension StateExtension on LoginAndRestoreViewState {
               color: widget.toggle_button_background_color ??
                   widget.form_container_background_color ??
                   Colors.transparent,
-              borderRadius: BorderRadius.circular(borderRadius - 1.5),
+              borderRadius: BorderRadius.circular(border_radius - 1.5),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(borderRadius - 1.5),
-                onTap: onPressed,
+                borderRadius: BorderRadius.circular(border_radius - 1.5),
+                onTap: on_pressed,
                 child: Center(
                   child: Icon(
                     icon,
                     color: widget.text_color,
-                    size: iconSize,
+                    size: icon_size,
                   ),
                 ),
               ),
@@ -133,15 +133,15 @@ extension StateExtension on LoginAndRestoreViewState {
       margin: const EdgeInsets.only(right: 5),
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: isSelected ? widget.text_color : Colors.white,
+        color: is_selected ? widget.text_color : Colors.white,
         borderRadius: BorderRadius.circular(outline_border_radius),
       ),
       child: IconButton(
         padding: EdgeInsets.zero,
-        onPressed: onPressed,
+        onPressed: on_pressed,
         icon: Icon(
           icon,
-          color: isSelected ? Colors.white : widget.text_color,
+          color: is_selected ? Colors.white : widget.text_color,
           size: 30,
         ),
       ),
@@ -179,9 +179,9 @@ extension StateExtension on LoginAndRestoreViewState {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     _build_toggle_button(
-                      isSelected: use_email_signin,
+                      is_selected: use_email_signin,
                       icon: FontAwesomeIcons.envelope,
-                      onPressed: () {
+                      on_pressed: () {
                         use_email_signin = !use_email_signin;
                         email_input_controller.clear();
                         password_input_controller.clear();
@@ -190,9 +190,9 @@ extension StateExtension on LoginAndRestoreViewState {
                       },
                     ),
                     _build_toggle_button(
-                      isSelected: !use_email_signin,
+                      is_selected: !use_email_signin,
                       icon: FontAwesomeIcons.commentSms,
-                      onPressed: () {
+                      on_pressed: () {
                         use_email_signin = !use_email_signin;
                         email_input_controller.clear();
                         password_input_controller.clear();
