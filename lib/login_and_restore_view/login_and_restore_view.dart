@@ -1,12 +1,14 @@
 // ignore_for_file: must_be_immutable
 
 import 'dart:async';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/auth_form_type.dart';
 import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
 import 'package:xapptor_auth/login_and_restore_view/check_remember_me.dart';
 import 'package:xapptor_auth/login_and_restore_view/init_state.dart';
 import 'package:xapptor_auth/login_and_restore_view/return_widget.dart';
+import 'package:xapptor_auth/signin_with_google_web.dart';
 import 'package:xapptor_translation/model/text_list.dart';
 import 'package:xapptor_ui/values/country/country.dart';
 import 'package:xapptor_translation/translation_stream.dart';
@@ -190,6 +192,11 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
       google_signin = GoogleSignIn(
         scopes: google_signin_scopes,
       );
+
+      // On web, initialize the userDataEvents listener for renderButton()
+      if (kIsWeb) {
+        init_google_signin_web_listener();
+      }
     }
 
     source_language_index = widget.source_language_index;
@@ -204,6 +211,10 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
   @override
   void dispose() {
+    // Dispose the web listener when the widget is disposed
+    if (kIsWeb) {
+      dispose_google_signin_web_listener();
+    }
     email_input_controller.dispose();
     password_input_controller.dispose();
     super.dispose();

@@ -1,36 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:sign_in_button/sign_in_button.dart';
+import 'package:google_sign_in_web/web_only.dart' as gsi_web;
 import 'package:xapptor_auth/login_and_restore_view/available_login_providers.dart';
-import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_auth/login_and_restore_view/google_button/unsupported.dart';
-import 'package:xapptor_auth/login_and_restore_view/third_party_signin_method_shape.dart';
-import 'package:xapptor_auth/translation_text_values.dart';
+import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
+  /// Returns Google's official Sign-In button for web.
+  ///
+  /// On web, this uses Google Identity Services (GIS) `renderButton()` which:
+  /// - Handles authentication through Google's official UI
+  /// - Returns an ID token with user info embedded (no People API needed)
+  /// - Emits credentials via `userDataEvents` stream
+  ///
+  /// The [on_pressed] callback is ignored on web since the button
+  /// handles its own click events internally.
   Widget? google_button({
     HandleSignInFn? on_pressed,
   }) {
-    double screen_width = MediaQuery.of(context).size.width;
-
     return widget.available_login_providers == AvailableLoginProviders.all ||
             widget.available_login_providers == AvailableLoginProviders.google
-        ? SignInButtonBuilder(
-            text: social_login_values.get(source_language_index)[1], // "Sign in with Google"
-            image: Image.network(
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/48px-Google_%22G%22_logo.svg.png',
-              height: 24,
-              width: 24,
-              errorBuilder: (context, error, stackTrace) => const Icon(
-                Icons.g_mobiledata,
-                size: 24,
-                color: Colors.red,
-              ),
-            ),
-            backgroundColor: Colors.white,
-            textColor: Colors.black87,
-            shape: third_party_signin_method_shape(screen_width),
-            onPressed: on_pressed ?? () {},
-          )
+        ? gsi_web.renderButton()
         : null;
   }
 }
