@@ -18,7 +18,9 @@ extension StateExtension on LoginAndRestoreViewState {
           if (await auth.canCheckBiometrics) {
             bool did_authenticate = await auth.authenticate(
               localizedReason: 'Please authenticate to access your account',
-              biometricOnly: true,
+              options: const AuthenticationOptions(
+                biometricOnly: true,
+              ),
             );
 
             if (did_authenticate) {
