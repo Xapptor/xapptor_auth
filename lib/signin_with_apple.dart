@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:xapptor_router/app_screens.dart';
+import 'package:xapptor_router/V2/app_screens_v2.dart';
 import 'package:xapptor_db/xapptor_db.dart';
 
 signin_with_apple(
@@ -24,7 +24,7 @@ signin_with_apple(
           merge: true,
         ),
       ).then((value) {
-        open_screen("home");
+        open_screen_v2("home");
       });
     },
   );

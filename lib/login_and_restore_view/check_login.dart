@@ -5,7 +5,7 @@ import 'package:xapptor_auth/login_and_restore_view/available_login_providers.da
 import 'package:xapptor_auth/login_and_restore_view/check_biometrics.dart';
 import 'package:xapptor_auth/login_and_restore_view/login_and_restore_view.dart';
 import 'package:xapptor_auth/signin_with_google.dart';
-import 'package:xapptor_router/app_screens.dart';
+import 'package:xapptor_router/V2/app_screens_v2.dart';
 import 'package:flutter/foundation.dart';
 
 extension StateExtension on LoginAndRestoreViewState {
@@ -19,7 +19,7 @@ extension StateExtension on LoginAndRestoreViewState {
         callback: () async {
           if (user_token_is_valid) {
             debugPrint("User is signed in from Firebase");
-            open_screen("home");
+            open_screen_v2("home");
           } else {
             if (current_login_providers == AvailableLoginProviders.all ||
                 current_login_providers == AvailableLoginProviders.google) {

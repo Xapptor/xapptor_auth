@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:xapptor_router/app_screens.dart';
+import 'package:xapptor_router/V2/app_screens_v2.dart';
 import 'package:xapptor_db/xapptor_db.dart';
 
 signin_with_google(
@@ -50,7 +50,7 @@ signin_with_google(
         merge: true,
       ),
     ).then((value) {
-      open_screen("home");
+      open_screen_v2("home");
     });
   });
 }

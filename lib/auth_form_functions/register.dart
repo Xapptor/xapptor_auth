@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/model/xapptor_user.dart';
 import 'package:xapptor_ui/utils/show_alert.dart';
-import 'package:xapptor_router/app_screens.dart';
+import 'package:xapptor_router/V2/app_screens_v2.dart';
 import 'package:xapptor_db/xapptor_db.dart';
 
 extension Register on AuthFormFunctions {
@@ -70,7 +70,7 @@ extension Register on AuthFormFunctions {
                   password_input_controller.clear();
                   confirm_password_input_controller.clear();
 
-                  open_screen("login");
+                  open_screen_v2("login");
                 }).catchError((err) {
                   debugPrint(err);
                 });

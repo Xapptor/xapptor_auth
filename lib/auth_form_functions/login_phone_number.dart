@@ -11,7 +11,7 @@ import 'package:xapptor_auth/login_and_restore_view/available_login_providers.da
 import 'package:xapptor_auth/model/xapptor_user.dart';
 import 'package:xapptor_auth/show_quick_login.dart';
 import 'package:xapptor_ui/utils/show_alert.dart';
-import 'package:xapptor_router/app_screens.dart';
+import 'package:xapptor_router/V2/app_screens_v2.dart';
 
 extension LoginPhoneNumber on AuthFormFunctions {
   // Login with sms verification code
@@ -143,7 +143,7 @@ extension LoginPhoneNumber on AuthFormFunctions {
       if (callback != null) {
         callback();
       } else {
-        open_screen("home");
+        open_screen_v2("home");
       }
     } else {
       XapptorDB.instance.collection("users").doc(user_credential.user!.uid).set(xapptor_user.to_json()).then((value) {
@@ -161,7 +161,7 @@ extension LoginPhoneNumber on AuthFormFunctions {
         if (callback != null) {
           callback();
         } else {
-          open_screen("home");
+          open_screen_v2("home");
         }
       });
     }

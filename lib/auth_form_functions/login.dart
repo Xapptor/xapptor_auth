@@ -7,7 +7,7 @@ import 'package:universal_platform/universal_platform.dart';
 import 'package:xapptor_auth/auth_form_functions/auth_form_functions.dart';
 import 'package:xapptor_auth/auth_form_functions/show_email_verification_alert_dialog.dart';
 import 'package:xapptor_ui/utils/show_alert.dart';
-import 'package:xapptor_router/app_screens.dart';
+import 'package:xapptor_router/V2/app_screens_v2.dart';
 
 extension Login on AuthFormFunctions {
   login({
@@ -39,7 +39,7 @@ extension Login on AuthFormFunctions {
             if (remember_me) prefs.setString("email", value.user!.email!);
             email_input_controller.clear();
             password_input_controller.clear();
-            open_screen("home");
+            open_screen_v2("home");
           } else {
             show_email_verification_alert_dialog(
               context: context,
@@ -50,7 +50,7 @@ extension Login on AuthFormFunctions {
           if (remember_me) prefs.setString("email", value.user!.email!);
           email_input_controller.clear();
           password_input_controller.clear();
-          open_screen("home");
+          open_screen_v2("home");
         }
 
         return null;
