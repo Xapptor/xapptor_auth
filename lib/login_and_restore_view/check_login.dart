@@ -23,21 +23,24 @@ extension StateExtension on LoginAndRestoreViewState {
           } else {
             if (current_login_providers == AvailableLoginProviders.all ||
                 current_login_providers == AvailableLoginProviders.google) {
-              google_signin!.onCurrentUserChanged.listen((GoogleSignInAccount? google_signin_account) async {
-                bool is_authorized = google_signin_account != null;
+              // Listen for authentication events (replaces onCurrentUserChanged)
+              auth_events_subscription?.cancel();
+              auth_events_subscription = GoogleSignIn.instance.authenticationEvents.listen(
+                (GoogleSignInAuthenticationEvent event) async {
+                  if (event is GoogleSignInAuthenticationEventSignIn) {
+                    GoogleSignInAccount google_signin_account = event.user;
+                    debugPrint("User is authorized from Google");
+                    signin_with_google(google_signin_account);
+                  }
+                },
+                onError: (error) {
+                  debugPrint("Google Sign-In auth event error: $error");
+                },
+              );
 
-                if (kIsWeb && google_signin_account != null) {
-                  is_authorized = await google_signin!.canAccessScopes(google_signin_scopes);
-                  if (!is_authorized) is_authorized = await google_signin!.requestScopes(google_signin_scopes);
-                }
-
-                debugPrint("User is authorized from Google: $is_authorized");
-                if (is_authorized) signin_with_google(google_signin_account!);
-              });
-
-              await google_signin!.signInSilently();
-
-              GoogleSignInAccount? google_signin_account = google_signin!.currentUser;
+              // Attempt lightweight authentication (replaces signInSilently)
+              GoogleSignInAccount? google_signin_account =
+                  await GoogleSignIn.instance.attemptLightweightAuthentication();
 
               if (google_signin_account != null) {
                 debugPrint("User is signed in from Google");

@@ -10,7 +10,6 @@ signin_with_google(
   final GoogleSignInAuthentication google_signin_authentication = await google_signin_account.authentication;
 
   final AuthCredential credential = GoogleAuthProvider.credential(
-    accessToken: google_signin_authentication.accessToken,
     idToken: google_signin_authentication.idToken,
   );
 

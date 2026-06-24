@@ -16,9 +16,9 @@ dependencies:
   firebase_storage: ^13.0.4
 
   sign_in_button: ^4.0.1
-  google_sign_in: ^6.3.0
-  google_sign_in_web: ^0.12.4+4
-  google_sign_in_platform_interface: ^2.4.5
+  google_sign_in: ^7.2.0
+  google_sign_in_web: ^1.1.0
+  google_sign_in_platform_interface: ^3.1.0
   sign_in_with_apple: ^7.0.1
 
   universal_platform: ^1.1.0

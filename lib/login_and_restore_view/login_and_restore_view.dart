@@ -8,7 +8,8 @@ import 'package:xapptor_auth/login_and_restore_view/available_login_providers.da
 import 'package:xapptor_auth/login_and_restore_view/check_remember_me.dart';
 import 'package:xapptor_auth/login_and_restore_view/init_state.dart';
 import 'package:xapptor_auth/login_and_restore_view/return_widget.dart';
-import 'package:xapptor_auth/signin_with_google_web.dart';
+import 'package:xapptor_auth/signin_with_google_stub.dart'
+    if (dart.library.js_util) 'package:xapptor_auth/signin_with_google_web.dart';
 import 'package:xapptor_translation/model/text_list.dart';
 import 'package:xapptor_ui/values/country/country.dart';
 import 'package:xapptor_translation/translation_stream.dart';
@@ -17,7 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 AvailableLoginProviders current_login_providers = AvailableLoginProviders.email_and_phone;
-GoogleSignIn? google_signin;
+bool google_signin_initialized = false;
 
 class LoginAndRestoreView extends StatefulWidget {
   AuthFormType auth_form_type;
@@ -165,6 +166,20 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
   double logo_image_width = 0;
 
+  StreamSubscription<GoogleSignInAuthenticationEvent>? auth_events_subscription;
+
+  Future<void> _init_google_signin() async {
+    if (!google_signin_initialized) {
+      await GoogleSignIn.instance.initialize();
+      google_signin_initialized = true;
+    }
+
+    // On web, initialize the web-specific listener for renderButton()
+    if (kIsWeb) {
+      init_google_signin_web_listener();
+    }
+  }
+
   List<String> google_signin_scopes = [
     'email',
     'https://www.googleapis.com/auth/userinfo.profile',
@@ -172,15 +187,14 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
   Future<GoogleSignInAccount?> handle_google_signin() async {
     try {
-      GoogleSignInAccount? google_signin_account = await google_signin?.signIn();
-      if (google_signin_account != null) {
-        return google_signin_account;
-      }
+      GoogleSignInAccount google_signin_account = await GoogleSignIn.instance.authenticate(
+        scopeHint: google_signin_scopes,
+      );
+      return google_signin_account;
     } catch (error) {
       debugPrint(error.toString());
       return null;
     }
-    return null;
   }
 
   @override
@@ -189,14 +203,7 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
     if (widget.available_login_providers == AvailableLoginProviders.all ||
         widget.available_login_providers == AvailableLoginProviders.google) {
-      google_signin = GoogleSignIn(
-        scopes: google_signin_scopes,
-      );
-
-      // On web, initialize the userDataEvents listener for renderButton()
-      if (kIsWeb) {
-        init_google_signin_web_listener();
-      }
+      _init_google_signin();
     }
 
     source_language_index = widget.source_language_index;
@@ -211,6 +218,7 @@ class LoginAndRestoreViewState extends State<LoginAndRestoreView> {
 
   @override
   void dispose() {
+    auth_events_subscription?.cancel();
     // Dispose the web listener when the widget is disposed
     if (kIsWeb) {
       dispose_google_signin_web_listener();
